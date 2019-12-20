@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FreeFileSync XmlType="BATCH" XmlFormat="14">
+    <Compare>
+        <Variant>TimeAndSize</Variant>
+        <Symlinks>Exclude</Symlinks>
+        <IgnoreTimeShift/>
+    </Compare>
+    <Synchronize>
+        <Variant>Mirror</Variant>
+        <DetectMovedFiles>false</DetectMovedFiles>
+        <DeletionPolicy>RecycleBin</DeletionPolicy>
+        <VersioningFolder Style="Replace"/>
+    </Synchronize>
+    <Filter>
+        <Include>
+            <Item>*</Item>
+        </Include>
+        <Exclude>
+            <Item>\System Volume Information\</Item>
+            <Item>\$Recycle.Bin\</Item>
+            <Item>\RECYCLER\</Item>
+            <Item>\RECYCLED\</Item>
+            <Item>*\desktop.ini</Item>
+            <Item>*\thumbs.db</Item>
+            <Item>\logreport\</Item>
+            <Item>\.git\</Item>
+            <Item>*\_notes\</Item>
+            <Item>\.gitignore</Item>
+            <Item>\data\</Item>
+            <Item>\index2.php</Item>
+            <Item>\sitemap.xml</Item>
+            <Item>\jry_wb\jry_wb_netdisk\jry_nd.fast_save_message</Item>
+            <Item>\jry_wb\jry_wb_tp_sdk\</Item>
+        </Exclude>
+        <TimeSpan Type="None">0</TimeSpan>
+        <SizeMin Unit="None">0</SizeMin>
+        <SizeMax Unit="None">0</SizeMax>
+    </Filter>
+    <FolderPairs>
+        <Pair>
+            <Left>D:\mydocument\science\juruoyun\juruoyun_bl\c\jry_bl</Left>
+            <Right>D:\mydocument\science\juruoyun\juruoyun_wl\c\jry_bl</Right>
+        </Pair>
+    </FolderPairs>
+    <Errors Ignore="true" Retry="0" Delay="5"/>
+    <LogFolder/>
+    <PostSyncCommand Condition="Completion"/>
+    <Batch>
+        <ProgressDialog Minimized="true" AutoClose="true"/>
+        <ErrorDialog>Show</ErrorDialog>
+        <PostSyncAction>None</PostSyncAction>
+    </Batch>
+</FreeFileSync>

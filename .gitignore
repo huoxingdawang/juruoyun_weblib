@@ -1,0 +1,9 @@
+*/tmp/**/*.o
+*/tmp/**/*.a
+*/exes/*
+*/testfiles/**/*.out
+*/testfiles/**/*.ans
+*/testfiles/**/*.html
+*/testfiles/**/*.jpg
+*/testfiles/**/*.png
+*.log

@@ -9,57 +9,15 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_string.h"
 #if JRY_BL_STRING_ENABLE==1
-inline jry_bl_string_size_type jry_bl_strlen(char *a){jry_bl_string_size_type b=0;while(a[b++]);--b;return b;}
-inline void 	jry_bl_string_init	(jry_bl_string *this)			{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);this->len=this->size=0;this->s=NULL;}
-inline void 	jry_bl_string_free	(jry_bl_string *this)			{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(this->size!=0&&this->s!=NULL)jry_bl_free(this->s);this->len=this->size=0;this->s=NULL;}
-inline unsigned char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
-{
-	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(i<0)
-		return 0;
-	if(i<this->len)
-		return this->s[i];
-	return 0;
-}
-inline unsigned char jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a)
-{
-	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(i<0)
-		return 0;
-	jry_bl_string_extend_to(this,i);
-	return this->s[i]=a;
-}
-inline void jry_bl_string_clear(jry_bl_string *this){if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);this->len=0;if(this->size==0)this->s=NULL;}
-void jry_bl_string_parse(jry_bl_string *this)
-{
-	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(this->size==0)
-		return;
-	if(this->len==0)
-		return jry_bl_string_free(this);
-	jry_bl_string_size_type size=(jry_bl_ceil((long double)(this->len)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
-	if(size>=this->size)
-		return ;
-	this->s=(unsigned char *)jry_bl_realloc(this->s,size);
-	this->size=size;
-}
-inline void jry_bl_string_extend_to(jry_bl_string *this,jry_bl_string_size_type size)
-{
-	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(this->size==0&&this->s!=NULL)
-	{
-		this->size=(jry_bl_ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
-		unsigned char * s=(unsigned char *)jry_bl_malloc(this->size);
-		jry_bl_memory_copy(s,this->s,this->len);
-		this->s=s;		
-	}
-	else if(size>this->size)
-	{
-//		printf("\n\textend\n");
-		this->size=(jry_bl_ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
-		this->s=(this->s==NULL?(unsigned char *)jry_bl_malloc(this->size):(unsigned char *)jry_bl_realloc(this->s,this->size));
-	}		
-}
+inline jry_bl_string_size_type	jry_bl_strlen			(char *a)											{jry_bl_string_size_type b=0;while(a[b++]);return b-1;}
+inline void 					jry_bl_string_init		(jry_bl_string *this)								{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);this->len=this->size=0;this->s=NULL;}
+inline void 					jry_bl_string_free		(jry_bl_string *this)								{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(this->size!=0&&this->s!=NULL)jry_bl_free(this->s);this->len=this->size=0;this->s=NULL;}
+inline void						jry_bl_string_clear		(jry_bl_string *this)								{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);this->len=0;if(this->size==0)this->s=NULL;}
+inline void						jry_bl_string_parse		(jry_bl_string *this)								{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(this->size==0)return;if(this->len==0)return jry_bl_string_free(this);jry_bl_string_size_type size=(jry_bl_ceil((long double)(this->len)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;if(size>=this->size)return ;this->s=(unsigned char *)jry_bl_realloc(this->s,size);this->size=size;}
+inline void						jry_bl_string_extend_to	(jry_bl_string *this,jry_bl_string_size_type size)	{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(this->size==0&&this->s!=NULL){this->size=(jry_bl_ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;unsigned char * s=(unsigned char *)jry_bl_malloc(this->size);jry_bl_memory_copy(s,this->s,this->len);this->s=s;}else if(size>this->size){this->size=(jry_bl_ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;this->s=(this->s==NULL?(unsigned char *)jry_bl_malloc(this->size):(unsigned char *)jry_bl_realloc(this->s,this->size));}}
+jry_bl_uint64					jry_bl_string_hash		(jry_bl_string *this)								{jry_bl_uint64 h=0;for(jry_bl_string_size_type i=0;i<this->len;i++)h=(h<<5)+h+this->s[i];return h;}
+inline unsigned char			jry_bl_string_get		(jry_bl_string *this,jry_bl_string_size_type i)		{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(i<0)return 0;if(i<this->len)return this->s[i];return 0;}
+inline unsigned char			jry_bl_string_set		(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a){if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(i<0)return 0;jry_bl_string_extend_to(this,i);return this->s[i]=a;}
 void jry_bl_string_add_string(jry_bl_string *this,jry_bl_string *in)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -68,21 +26,10 @@ void jry_bl_string_add_string(jry_bl_string *this,jry_bl_string *in)
 		this->s[this->len+i]=in->s[i];
 	this->len=(this->len+in->len);
 }
-
-void jry_bl_string_add_char_pointer(jry_bl_string *this,unsigned char *in)
-{
-	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string_size_type in_len=0;
-	while(in[in_len++]);--in_len;
-	jry_bl_string_extend(this,in_len);
-	for(jry_bl_string_size_type i=0;i<in_len;i++)
-		this->s[this->len+i]=in[i];
-	this->len=(this->len+in_len);
-}
 void jry_bl_string_add_char_pointer_length(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string_extend_to(this,this->len+len);
+	jry_bl_string_extend(this,len);
 	for(jry_bl_string_size_type i=0;i<len;i++)
 		this->s[this->len+i]=in[i];
 	this->len=(this->len+len);	
@@ -131,6 +78,23 @@ void jry_bl_string_add_double_length(jry_bl_string *this,double in,unsigned char
 		ji=(ji<<3)+(ji<<1),i++;
 	jry_bl_string_add_uint64(this,((jry_bl_uint64)((in*ji+0.5)/10)));
 }
+void jry_bl_string_add_unicode_as_utf8(jry_bl_string *this,unsigned long unicode)
+{
+	jry_bl_string_extend(this,6);
+	if(unicode<=0x7F)
+		jry_bl_string_add_char1(this,unicode&0x7F);
+	else if(unicode>=0x80&&unicode<=0x7FF)
+		jry_bl_string_add_char1(this,((unicode>>6)&0x1F)|0xC0),jry_bl_string_add_char1(this,(unicode&0x3F)|0x80);
+	else if(unicode>=0x800&&unicode<=0xFFFF)
+		jry_bl_string_add_char1(this,((unicode>>12)&0x0F)|0xE0),jry_bl_string_add_char1(this,((unicode>>6)&0x3F)|0x80),jry_bl_string_add_char1(this,(unicode&0x3F)|0x80);
+	else if(unicode>=0x10000&&unicode<=0x10FFFF)
+		jry_bl_string_add_char1(this,((unicode>>18)&0x7)|0xF0),jry_bl_string_add_char1(this,((unicode>>12)&0x3F)|0x80),jry_bl_string_add_char1(this,((unicode>>6)&0x3F)|0x80),jry_bl_string_add_char1(this,(unicode&0x3F)|0x80);
+	else if(unicode>=0x200000&&unicode<=0x3FFFFFF)
+		jry_bl_string_add_char1(this,((unicode>>24)&0x3)|0xF8),jry_bl_string_add_char1(this,((unicode>>18)&0x3F)|0x80),jry_bl_string_add_char1(this,((unicode>>12)&0x3F)|0x80),jry_bl_string_add_char1(this,((unicode>>6)&0x3F)|0x80),jry_bl_string_add_char1(this,(unicode&0x3F)|0x80);
+	else if(unicode>=0x4000000&&unicode<=0x7FFFFFFF)
+		jry_bl_string_add_char1(this,((unicode>>30)&0x1)|0xFC),jry_bl_string_add_char1(this,((unicode>>24)&0x3F)|0x80),jry_bl_string_add_char1(this,((unicode>>18)&0x3F)|0x80),jry_bl_string_add_char1(this,((unicode>>12)&0x3F)|0x80),jry_bl_string_add_char1(this,((unicode>>6)&0x3F)|0x80),jry_bl_string_add_char1(this,(unicode&0x3F)|0x80);
+}
+
 inline void jry_bl_string_copy(jry_bl_string *this,jry_bl_string *in,jry_bl_uint8 copytype)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -149,7 +113,7 @@ inline void jry_bl_string_copy(jry_bl_string *this,jry_bl_string *in,jry_bl_uint
 char jry_bl_string_space_ship(jry_bl_string *this,jry_bl_string *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(this->s==that->s)
+	if(this==that||this->s==that->s)
 		return 0;
 	if(this->len!=that->len)
 		return (this->len<that->len)?-1:1;
@@ -172,6 +136,7 @@ jry_bl_int64 jry_bl_string_get_int64_start(jry_bl_string *this,jry_bl_string_siz
 	*start=i;
 	return f?-x:x;	
 }
+inline jry_bl_int64 jry_bl_string_get_int64_start_v(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_int64_start(this,&start);};
 jry_bl_uint64 jry_bl_string_get_uint64_start(jry_bl_string *this,jry_bl_string_size_type *start)
 {
 	if(this==NULL||start==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -184,6 +149,7 @@ jry_bl_uint64 jry_bl_string_get_uint64_start(jry_bl_string *this,jry_bl_string_s
 	*start=i;
 	return x;	
 }
+inline jry_bl_uint64 jry_bl_string_get_uint64_start_v(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_uint64_start(this,&start);};
 double jry_bl_string_get_double_start(jry_bl_string *this,jry_bl_string_size_type *start)
 {
 	if(this==NULL||start==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -201,13 +167,30 @@ double jry_bl_string_get_double_start(jry_bl_string *this,jry_bl_string_size_typ
 	*start=i;
 	return f?-(x+((long double)y/ji)):(x+((long double)y/ji));
 }
-inline jry_bl_int64		jry_bl_string_get_int64_start_v		(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_int64_start(this,&start);};
-inline jry_bl_uint64	jry_bl_string_get_uint64_start_v	(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_uint64_start(this,&start);};
-inline double			jry_bl_string_get_double_start_v	(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_double_start(this,&start);};
-void jry_bl_string_to_json(jry_bl_string *this,jry_bl_string *result)
+inline double jry_bl_string_get_double_start_v(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_double_start(this,&start);};
+jry_bl_uint64 jry_bl_string_get_hex_start(jry_bl_string *this,jry_bl_string_size_type *start)
+{
+	if(this==NULL||start==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	jry_bl_string_size_type i=*start; 	
+	if(i>=this->len)
+		return 0;
+	register unsigned char c;register jry_bl_uint64 x=0;
+	for(;((c=this->s[i])<'0'||c>'9')&&(c<'a'||c>'f')&&(c<'A'||c>'F')&&i<this->len;++i);
+	for(x=((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0'))),++i;(((c=this->s[i])>='0'&&c<='9')||(c>='a'&&c<='f')||(c>='A'&&c<='F'))&&i<this->len;x=(x<<4)+((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0'))),++i);
+	*start=i;
+	return x;
+}
+inline jry_bl_uint64 jry_bl_string_get_hex_start_v(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_hex_start(this,&start);};
+void jry_bl_string_to_json_ex(jry_bl_string *this,jry_bl_string *result,jry_bl_uint8 type)
 {
 	if(this==NULL||result==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string_extend(result,this->len+2);
+	if(type==1)
+	{
+		(*((jry_bl_string_size_type*)result))+=2+this->len;
+		return;
+	}
+	if(type==0)
+		jry_bl_string_extend(result,this->len+2);
 	jry_bl_string_add_char(result,'"');
 	for(jry_bl_string_size_type i=0;i<this->len;i++)
 		(this->s[i]=='"'?jry_bl_string_add_char(result,'\\'):' '),jry_bl_string_add_char(result,this->s[i]);
@@ -216,14 +199,20 @@ void jry_bl_string_to_json(jry_bl_string *this,jry_bl_string *result)
 jry_bl_string_size_type jry_bl_string_from_json_start(jry_bl_string *this,jry_bl_string *in,jry_bl_string_size_type start)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	register jry_bl_string_size_type i=start,n=in->len;
-	for(;(i<n)&&(!(in->s[i]=='"'&&(i==0||in->s[i-1]!='\\')));++i);
-	for(++i;i<n&&!(in->s[i]=='"'&&in->s[i-1]!='\\');++i)
-		if(!(in->s[i]=='\\'&&(i+1)<n&&in->s[i+1]=='"'))
-			jry_bl_string_add_char(this,in->s[i]);
-	if(i==n)
-		jry_bl_string_clear(this);
-	return i+1;
+	jry_bl_string_size_type i=start,n=in->len,no=this->len,st,en;
+	for(;(i<n)&&(!(in->s[i]=='"'&&(i==0||in->s[i-1]!='\\')));++i)if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')return start;++i;st=i;
+	for(;i<n&&!(in->s[i]=='"'&&in->s[i-1]!='\\');++i);en=i;++i;
+	if((i-1)>=n)
+		return start;
+	jry_bl_string_extend(this,en-st);
+	for(i=st;i<en;i++)
+	{
+		if(((i+1)<en)&&in->s[i]=='\\'&&in->s[i+1]=='u')
+			i+=2,jry_bl_string_add_unicode_as_utf8(this,jry_bl_string_get_hex_start(in,&i)),--i;
+		else
+			jry_bl_string_add_char1(this,in->s[i]);
+	}
+	return en+1;
 }
 jry_bl_string_size_type	jry_bl_string_find_char_start(jry_bl_string *this,unsigned char in,jry_bl_string_size_type start)
 {
@@ -245,12 +234,15 @@ inline void jry_bl_string_print(jry_bl_string *this,FILE * file)
 void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	for(register int i=0;i<tabs;++i,putc('\t',file));
+	if(tabs>=0)
+		for(register int i=0;i<tabs;++i,putc('\t',file));
+	else
+		tabs=-tabs;
 	if(a>=0)
 		fprintf(file,"jry_bl_string    %s %d:",str,a);
 	else
-		fprintf(file,"jry_bl_string:");
-	fprintf(file,"\tsize:%lld\tlen:%lld\ts:",(jry_bl_int64)this->size,(jry_bl_int64)this->len);
+		fprintf(file,"jry_bl_string     \t:");
+	fprintf(file,"size:%lld\tlen:%lld\ts:",(jry_bl_int64)this->size,(jry_bl_int64)this->len);
 	jry_bl_string_print(this,file);
 	fputc('\n',file);
 }

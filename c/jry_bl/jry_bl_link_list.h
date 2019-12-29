@@ -62,14 +62,15 @@ void					jry_bl_link_list_copy							(jry_bl_link_list *this,jry_bl_link_list *t
 #define					jry_bl_link_list_equal_light(a,b)				jry_bl_link_list_copy(a,b,JRY_BL_COPY_LIGHT)
 #define					jry_bl_link_list_equal_light_move(a,b)			jry_bl_link_list_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
 	
-void					jry_bl_link_list_to_json						(jry_bl_link_list *this,jry_bl_string *out);
+#define					jry_bl_link_list_to_json(x,y)					jry_bl_link_list_to_json_ex(x,y,0)
+void					jry_bl_link_list_to_json_ex						(jry_bl_link_list *this,jry_bl_string *out,jry_bl_uint8 type);
 #define					jry_bl_link_list_from_json(x,y)					jry_bl_link_list_from_json_start(x,y,0)
 jry_bl_string_size_type	jry_bl_link_list_from_json_start				(jry_bl_link_list *this,jry_bl_string *in,jry_bl_string_size_type start);
 void					jry_bl_link_list_merge							(jry_bl_link_list *this,jry_bl_link_list *that);
 void					jry_bl_link_list_merge_light					(jry_bl_link_list *this,jry_bl_link_list *that);
 
 #if JRY_BL_USE_STDIO==1
-#define					jry_bl_link_list_view(x,y) 						jry_bl_link_list_view_ex(x,y,#x,__LINE__,jry_bl_view_default_tabs_num)
+#define					jry_bl_link_list_view(x,y) 						jry_bl_link_list_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void 					jry_bl_link_list_view_ex						(jry_bl_link_list *this,FILE * file,char*str,int a,int tabs);
 #endif
 

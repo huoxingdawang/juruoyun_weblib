@@ -16,10 +16,10 @@ void jry_bl_sha1_process(unsigned int hb[5],unsigned int *mbc,unsigned char mb[6
 	for(register char t=0;t<16;W[t]=mb[t*4]<<24,W[t]|=mb[t*4+1]<<16,W[t]|=mb[t*4+2]<<8,W[t]|=mb[t*4+3],++t);
 	for(register unsigned char t=16;t<80;tmp=W[t-3]^W[t-8]^W[t-14]^W[t-16],W[t]=((tmp<<1)|(tmp>>31)),++t);
 	A=hb[0],B=hb[1],C=hb[2],D=hb[3],E=hb[4];
-	for(register char t=0;t<20;tmp=((A<<5)|(A>>27))+((B&C)|((~B)&D))+E+W[t]+K[0],E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,++t);
+	for(register char t=0;t<20;tmp=((A<<5)|(A>>27))+((B&C)|((~B)&D))+E+W[t]+K[0],E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,++t);	
 	for(register char t=20;t<40;tmp=((A<<5)|(A>>27))+(B^C^D)+E+W[t]+K[1],E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,++t);
-	for(register char t=40;t<60;tmp=((A<<5)|(A>>27))+((B&C)|(B&D)|(C&D))+E+W[t]+K[2],E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,t++);
-	for(register char t=60;t<80;tmp=((A<<5)|(A>>27))+(B^C^D)+E+W[t]+K[3],E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,t++);
+	for(register char t=40;t<60;tmp=((A<<5)|(A>>27))+((B&C)|(B&D)|(C&D))+E+W[t]+K[2],E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,++t);
+	for(register char t=60;t<80;tmp=((A<<5)|(A>>27))+(B^C^D)+E+W[t]+K[3],E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,++t);
 	hb[0]+=A,hb[1]+=B,hb[2]+=C,hb[3]+=D,hb[4]+=E;
 	(*mbc)=0;
 }

@@ -30,20 +30,32 @@ typedef struct __jry_bl_string
 jry_bl_string_size_type	jry_bl_strlen										(char *a);
 void					jry_bl_string_init									(jry_bl_string *this);
 void					jry_bl_string_free									(jry_bl_string *this);
-#define					jry_bl_string_const(s,len)							{len,0,s}
-unsigned char			jry_bl_string_get									(jry_bl_string *this,jry_bl_string_size_type i);
-unsigned char			jry_bl_string_set									(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a);
 void					jry_bl_string_clear									(jry_bl_string *this);
 void					jry_bl_string_parse									(jry_bl_string *this);
-void					jry_bl_string_extend_to								(jry_bl_string *this,jry_bl_string_size_type size);
 #define					jry_bl_string_extend(a,b)							jry_bl_string_extend_to((a),(jry_bl_string_get_length((a))+(b)))
+void					jry_bl_string_extend_to								(jry_bl_string *this,jry_bl_string_size_type size);
+jry_bl_uint64			jry_bl_string_hash									(jry_bl_string *this);
+unsigned char			jry_bl_string_get									(jry_bl_string *this,jry_bl_string_size_type i);
+#define					jry_bl_string_get1(this,i)							(((i)<0||(i)>=(this)->len)?0:(this)->s[(i)])
+unsigned char			jry_bl_string_set									(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a);
+#define					jry_bl_string_get_char_pointer(this)				((this)->s)
+#define					jry_bl_string_get_length(this) 						((this)->len)
+#define					jry_bl_string_get_size(this) 						((this)->size)
+#define					jry_bl_string_const(s,len)							{len,0,s}
 void					jry_bl_string_add_string							(jry_bl_string *this,jry_bl_string *in);
-void					jry_bl_string_add_char_pointer						(jry_bl_string *this,unsigned char *in);
+#define					jry_bl_string_add_char_pointer(x,y)					jry_bl_string_add_char_pointer_length(x,y,jry_bl_strlen(y))
 void					jry_bl_string_add_char_pointer_length				(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len);
 void					jry_bl_string_add_char								(jry_bl_string *this,unsigned char in);
+#define					jry_bl_string_add_char1(this,in)					(this)->s[(this)->len]=(in),++(this)->len
 void					jry_bl_string_add_int64								(jry_bl_string *this,jry_bl_int64 in);
 void					jry_bl_string_add_uint64							(jry_bl_string *this,jry_bl_uint64 in);
+#define					jry_bl_string_add_double(this,in)					jry_bl_string_add_double_length(this,in,10)
 void					jry_bl_string_add_double_length						(jry_bl_string *this,double in,unsigned char len);
+void					jry_bl_string_add_unicode_as_utf8					(jry_bl_string *this,unsigned long unicode);
+#define					jry_bl_string_delete_1(this)						((this->len)>0?(--(this)->len):(0))
+#define					jry_bl_string_equal(a,b)							jry_bl_string_copy(a,b,JRY_BL_COPY)
+#define					jry_bl_string_equal_light(a,b)						jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT)
+#define					jry_bl_string_equal_light_move(a,b)					jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
 #define					jry_bl_string_equal_string(a,b)						jry_bl_string_copy(a,b,JRY_BL_COPY)
 #define					jry_bl_string_equal_string_light(a,b)				jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT)
 #define					jry_bl_string_equal_string_light_move(a,b)			jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
@@ -56,43 +68,31 @@ void					jry_bl_string_add_double_length						(jry_bl_string *this,double in,uns
 #define					jry_bl_string_equal_uint64(this,in)					jry_bl_string_clear(this),jry_bl_string_add_uint64(this,in)
 #define					jry_bl_string_equal_double(this,in)					jry_bl_string_clear(this),jry_bl_string_add_double(this,in)
 #define					jry_bl_string_equal_double_length(this,in,l)		jry_bl_string_clear(this),jry_bl_string_add_double_length(this,in,l)
-
-
-
 void					jry_bl_string_copy									(jry_bl_string *this,jry_bl_string *in,jry_bl_uint8 copytype);
-#define					jry_bl_string_equal(a,b)							jry_bl_string_copy(a,b,JRY_BL_COPY)
-#define					jry_bl_string_equal_light(a,b)						jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT)
-#define					jry_bl_string_equal_light_move(a,b)					jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
 char					jry_bl_string_space_ship							(jry_bl_string *this,jry_bl_string *that);
-jry_bl_int64			jry_bl_string_get_int64_start						(jry_bl_string *this,jry_bl_string_size_type *start);
-jry_bl_uint64			jry_bl_string_get_uint64_start						(jry_bl_string *this,jry_bl_string_size_type *start);
-double					jry_bl_string_get_double_start						(jry_bl_string *this,jry_bl_string_size_type *start);
-void					jry_bl_string_to_json								(jry_bl_string *this,jry_bl_string *result);
-jry_bl_string_size_type	jry_bl_string_from_json_start						(jry_bl_string *this,jry_bl_string *in,jry_bl_string_size_type start);
-jry_bl_string_size_type	jry_bl_string_find_char_start						(jry_bl_string *this,unsigned char in,jry_bl_string_size_type start);
-jry_bl_int64			jry_bl_string_get_int64_start_v						(jry_bl_string *this,jry_bl_string_size_type start);
-jry_bl_uint64			jry_bl_string_get_uint64_start_v					(jry_bl_string *this,jry_bl_string_size_type start);
-double					jry_bl_string_get_double_start_v					(jry_bl_string *this,jry_bl_string_size_type start);
-#define					jry_bl_string_get_int64(this)						jry_bl_string_get_int64_start_v(this,0)
-#define					jry_bl_string_get_uint64(this)						jry_bl_string_get_uint64_start_v(this,0)
-#define					jry_bl_string_get_double(this)						jry_bl_string_get_double_start_v(this,0)
-#define					jry_bl_string_get_char_pointer(this)				((this)->s)
-#define					jry_bl_string_get_length(this) 						((this)->len)
-#define					jry_bl_string_get_size(this) 						((this)->size)
-#define					jry_bl_string_get1(this,i)							(((i)<0||(i)>=(this)->len)?0:(this)->s[(i)])
 #define					jry_bl_string_if_big(x,y)							(jry_bl_string_space_ship(x,y)>0)
 #define					jry_bl_string_if_equal(x,y)							(jry_bl_string_space_ship(x,y)==0)
 #define					jry_bl_string_if_small(x,y) 						(jry_bl_string_space_ship(x,y)<0)
 #define					jry_bl_string_if_equal_small(x,y)					(jry_bl_string_space_ship(x,y)<=0)
 #define					jry_bl_string_if_equal_big(x,y) 					(jry_bl_string_space_ship(x,y)>=0)
+#define					jry_bl_string_get_int64(this)						jry_bl_string_get_int64_start_v(this,0)
+jry_bl_int64			jry_bl_string_get_int64_start						(jry_bl_string *this,jry_bl_string_size_type *start);
+jry_bl_int64			jry_bl_string_get_int64_start_v						(jry_bl_string *this,jry_bl_string_size_type start);
+#define					jry_bl_string_get_uint64(this)						jry_bl_string_get_uint64_start_v(this,0)
+jry_bl_uint64			jry_bl_string_get_uint64_start						(jry_bl_string *this,jry_bl_string_size_type *start);
+jry_bl_uint64			jry_bl_string_get_uint64_start_v					(jry_bl_string *this,jry_bl_string_size_type start);
+#define					jry_bl_string_get_double(this)						jry_bl_string_get_double_start_v(this,0)
+double					jry_bl_string_get_double_start						(jry_bl_string *this,jry_bl_string_size_type *start);
+double					jry_bl_string_get_double_start_v					(jry_bl_string *this,jry_bl_string_size_type start);
+#define					jry_bl_string_get_hex(this)							jry_bl_string_get_hex_start_v(this,0)
+jry_bl_uint64			jry_bl_string_get_hex_start							(jry_bl_string *this,jry_bl_string_size_type *start);
+jry_bl_uint64			jry_bl_string_get_hex_start_v						(jry_bl_string *this,jry_bl_string_size_type start);
+#define					jry_bl_string_to_json(x,y)							jry_bl_string_to_json_ex(x,y,0)
+void					jry_bl_string_to_json_ex							(jry_bl_string *this,jry_bl_string *result,jry_bl_uint8 type);
 #define					jry_bl_string_from_json(this,in)					jry_bl_string_from_json_start(this,in,0)
-#define					jry_bl_string_add_char1(this,in)					(this)->s[(this)->len]=(in),++(this)->len
-#define					jry_bl_string_add_double(this,in)					jry_bl_string_add_double_length(this,in,10)
+jry_bl_string_size_type	jry_bl_string_from_json_start						(jry_bl_string *this,jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_string_find_char(this,in)					jry_bl_string_find_char_start(this,in,0)
-#define					jry_bl_string_delete_1(this)						((this->len)>0?(--(this)->len):(0))
-
-
-
+jry_bl_string_size_type	jry_bl_string_find_char_start						(jry_bl_string *this,unsigned char in,jry_bl_string_size_type start);
 #if JRY_BL_USE_STDIO==1
 void 					jry_bl_string_print									(jry_bl_string *this,FILE * file);
 #define					jry_bl_string_view(x,y) 							jry_bl_string_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)

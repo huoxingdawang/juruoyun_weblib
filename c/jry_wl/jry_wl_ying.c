@@ -9,7 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_wl_ying.h"
 #if JRY_WL_YING_ENABLE==1
-jry_bl_uint64 jry_wl_get_binary_ip(jry_bl_string *this)
+jry_bl_uint64 jry_wl_get_binary_ip(const jry_bl_string *this)
 {
 	jry_bl_string_size_type i=0;
 	return (jry_bl_string_get_uint64_start(this,&i))+(jry_bl_string_get_uint64_start(this,&i)<<8)+(jry_bl_string_get_uint64_start(this,&i)<<16)+(jry_bl_string_get_uint64_start(this,&i)<<24);

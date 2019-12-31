@@ -13,6 +13,7 @@
 #if JRY_WL_HTTP_ENABLE==1
 #define JRY_WL_HTTP_RESPONSE_SERVER_NAME "Juruoyun Web Server"
 
+#define JRY_WL_HTTP_MAX_HEADER_LENGTH 2048
 
 
 #endif

@@ -31,6 +31,7 @@ void	jry_wl_socket_start();
 void	jry_wl_socket_init			(jry_bl_socket_handle *this,jry_bl_uint64 ip,jry_bl_uint32 port,jry_bl_uint8 type);
 void	jry_wl_socket_send			(jry_bl_socket_handle *this,jry_bl_string *data);
 void	jry_wl_socket_receive		(jry_bl_socket_handle *this,jry_bl_string *data);
+void	jry_wl_socket_receive_length(jry_bl_socket_handle *this,jry_bl_string *data,jry_bl_string_size_type length);
 void	jry_wl_socket_accept		(jry_bl_socket_handle *this,jry_bl_socket_handle *client);
 void	jry_wl_socket_send_safe		(jry_bl_socket_handle *this,jry_bl_string *data);
 void	jry_wl_socket_receive_safe	(jry_bl_socket_handle *this,jry_bl_string *data);

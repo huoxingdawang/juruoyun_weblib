@@ -106,7 +106,6 @@
 #define JRY_WL_HTTP_CONTENT_TYPE_JPEG		"image/jpeg"
 #define JRY_WL_HTTP_CONTENT_TYPE_JPG		"image/jpeg"
 #define JRY_WL_HTTP_CONTENT_TYPE_JPE		"image/jpeg"
-#define JRY_WL_HTTP_CONTENT_TYPE_WEBP		"image/webp"
 #define JRY_WL_HTTP_CONTENT_TYPE_PNG		"image/png"
 #define JRY_WL_HTTP_CONTENT_TYPE_TIFF		"image/tiff"
 #define JRY_WL_HTTP_CONTENT_TYPE_TIF		"image/tif"
@@ -156,6 +155,6 @@
 #define JRY_WL_HTTP_CONTENT_TYPE_AVI		"video/x-msvideo"
 #define JRY_WL_HTTP_CONTENT_TYPE_MOVIE		"video/x-sgi-movie"
 #define JRY_WL_HTTP_CONTENT_TYPE_ICE		"x-conference/x-cooltalk"
-
+#define JRY_WL_HTTP_CONTENT_TYPE_ICO		"image/x-icon"
 #endif
 #endif

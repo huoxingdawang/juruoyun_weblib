@@ -142,11 +142,9 @@ a=[
 	["mxu"		,"video/vnd.mpegurl"],
 	["avi"		,"video/x-msvideo"],
 	["movie"	,"video/x-sgi-movie"],
-	["ice"		,"x-conference/x-cooltalk"]
+	["ice"		,"x-conference/x-cooltalk"],
+	["ico"		,"image/x-icon"]
 ];
 s="";
-a.forEach(function(a)
-{
-	s+="#define JRY_WL_HTTP_CONTENT_TYPE_"+a[0].toUpperCase()+(a[0].length<=2?'\t':'')+(a[0].length<=6?'\t':'')+'\t"'+a[1]+'"\n';
-	i++;
-});
+a.sort(function(c,b){return c[0]-b[0]});
+a.forEach(function(b){s+="#define JRY_WL_HTTP_CONTENT_TYPE_"+b[0].toUpperCase()+(b[0].length<=2?'\t':'')+(b[0].length<=6?'\t':'')+'\t"'+b[1]+'"\n';});

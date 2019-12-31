@@ -14,7 +14,7 @@
 #include "../jry_bl/jry_bl_include.h"
 #define jry_wl_start()	\
 jry_wl_socket_start()
-jry_bl_uint64	jry_wl_get_binary_ip(jry_bl_string *this);
+jry_bl_uint64	jry_wl_get_binary_ip(const jry_bl_string *this);
 void			jry_wl_get_string_ip(jry_bl_uint64 ip,jry_bl_string *this);
 
 #endif

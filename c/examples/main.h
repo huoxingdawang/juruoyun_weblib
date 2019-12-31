@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #ifdef __linux__
 #define filename "testfiles/test.png"
+#define logo_ico "testfiles/logo.ico"
 #else
 #define filename "testfiles\\test.png"
+#define logo_ico "testfiles\\logo.ico"
 #endif
 #endif

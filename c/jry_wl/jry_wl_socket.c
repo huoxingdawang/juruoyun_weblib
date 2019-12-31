@@ -20,6 +20,7 @@ void jry_wl_socket_start()
 }
 void jry_wl_socket_init(jry_bl_socket_handle *this,jry_bl_uint64 ip,jry_bl_uint32 port,jry_bl_uint8 type)
 {
+	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	*this=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	if((*this)==-1)
 		jry_wl_exception(JRY_WL_ERROR_SOCKET_INIT_FAILED);		
@@ -42,6 +43,7 @@ void jry_wl_socket_init(jry_bl_socket_handle *this,jry_bl_uint64 ip,jry_bl_uint3
 }
 inline void	jry_wl_socket_accept(jry_bl_socket_handle *this,jry_bl_socket_handle *client)
 {
+	if(this==NULL||client==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	struct sockaddr_in claddr;int length=sizeof(claddr);	
 	*client=accept(*this,(struct sockaddr*)&claddr,&length);
 	if(*client==-1)
@@ -49,10 +51,12 @@ inline void	jry_wl_socket_accept(jry_bl_socket_handle *this,jry_bl_socket_handle
 }
 inline void jry_wl_socket_send(jry_bl_socket_handle *this,jry_bl_string *data)
 {
+	if(this==NULL||data==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	send(*this,jry_bl_string_get_char_pointer(data),jry_bl_string_get_length(data),0);
 }
 void jry_wl_socket_receive(jry_bl_socket_handle *this,jry_bl_string *data)
 {
+	if(this==NULL||data==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
     char buf[256];
     int ret=0;
 	do
@@ -61,8 +65,14 @@ void jry_wl_socket_receive(jry_bl_socket_handle *this,jry_bl_string *data)
 		jry_bl_string_add_char_pointer_length(data,buf,ret);
 	}while(ret==256);
 }
+void jry_wl_socket_receive_length(jry_bl_socket_handle *this,jry_bl_string *data,jry_bl_string_size_type length)
+{
+	jry_bl_string_extend(data,length);
+	jry_bl_string_get_length(data)+=recv(*this,jry_bl_string_get_char_pointer(data)+jry_bl_string_get_length(data),length,0);
+}
 void jry_wl_socket_send_safe(jry_bl_socket_handle *this,jry_bl_string *data)
 {
+	if(this==NULL||data==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	char buf[16];
 	unsigned long long n=jry_bl_string_get_length(data);
 	jry_bl_memory_copy(buf,&n,sizeof n);
@@ -71,6 +81,7 @@ void jry_wl_socket_send_safe(jry_bl_socket_handle *this,jry_bl_string *data)
 }
 void jry_wl_socket_receive_safe(jry_bl_socket_handle *this,jry_bl_string *data)
 {
+	if(this==NULL||data==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
     char buf[256];int ret;
 	unsigned long long n=0,i=0;
 	recv(*this,buf,16,0);
@@ -80,6 +91,7 @@ void jry_wl_socket_receive_safe(jry_bl_socket_handle *this,jry_bl_string *data)
 }
 inline void jry_wl_socket_close(jry_bl_socket_handle *this)
 {
+	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 #ifdef __linux__	
 	close(*this);
 #else

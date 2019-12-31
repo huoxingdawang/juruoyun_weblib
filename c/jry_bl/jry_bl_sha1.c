@@ -23,12 +23,11 @@ void jry_bl_sha1_process(unsigned int hb[5],unsigned int *mbc,unsigned char mb[6
 	hb[0]+=A,hb[1]+=B,hb[2]+=C,hb[3]+=D,hb[4]+=E;
 	(*mbc)=0;
 }
-void jry_bl_sha1(jry_bl_string* this,jry_bl_string* out)
+void jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 {
 	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_size_type	size=jry_bl_string_get_length(this);
 	unsigned char 			*input=jry_bl_string_get_char_pointer(this),mb[64];
-	const char				hex[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 	unsigned int			hb[5]={0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0},mbc=0,ll=0,lh=0;
 	jry_bl_string_extend(out,40);
 	while(size--)
@@ -59,7 +58,7 @@ void jry_bl_sha1(jry_bl_string* this,jry_bl_string* out)
 	mb[56]=lh>>24,mb[57]=lh>>16,mb[58]=lh>>8,mb[59]=lh;
 	mb[60]=ll>>24,mb[61]=ll>>16,mb[62]=ll>>8,mb[63]=ll;
 	jry_bl_sha1_process(hb,&mbc,mb);
-	for(register char i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),jry_bl_string_add_char(out,hex[(mbc>>4)&0XF]),jry_bl_string_add_char(out,hex[mbc&0XF]),++i);
+	for(register char i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),jry_bl_string_add_hex8(out,mbc),++i);
 }
 
 #endif

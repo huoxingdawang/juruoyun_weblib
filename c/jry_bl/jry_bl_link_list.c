@@ -118,7 +118,7 @@ inline void jry_bl_link_list_swap_node(jry_bl_link_list *this,jry_bl_link_list_n
 	c=a->pre,a->pre=b->pre,b->pre=c;
 	c=a->nxt,a->nxt=b->nxt,b->nxt=c;
 }
-char jry_bl_link_list_space_ship(jry_bl_link_list *this,jry_bl_link_list *that)
+char jry_bl_link_list_space_ship(const jry_bl_link_list *this,const jry_bl_link_list *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(this==that)
@@ -145,7 +145,7 @@ void jry_bl_link_list_copy(jry_bl_link_list *this,jry_bl_link_list *that,jry_bl_
 			this->light_copy,that->light_copy,that->light_copy=true;
 	}
 }
-void jry_bl_link_list_to_json_ex(jry_bl_link_list *this,jry_bl_string *out,jry_bl_uint8 type)
+void jry_bl_link_list_to_json_ex(const jry_bl_link_list *this,jry_bl_string *out,jry_bl_uint8 type)
 {
 	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(type==1)
@@ -172,7 +172,7 @@ void jry_bl_link_list_to_json_ex(jry_bl_link_list *this,jry_bl_string *out,jry_b
 		jry_bl_string_delete_1(out);
 	jry_bl_string_add_char1(out,']');
 }
-jry_bl_string_size_type jry_bl_link_list_from_json_start(jry_bl_link_list *this,jry_bl_string *in,jry_bl_string_size_type start)
+jry_bl_string_size_type jry_bl_link_list_from_json_start(jry_bl_link_list *this,const jry_bl_string *in,jry_bl_string_size_type start)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	register jry_bl_string_size_type i=start,n=jry_bl_string_get_length(in),ii;

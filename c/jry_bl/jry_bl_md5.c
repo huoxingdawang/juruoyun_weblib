@@ -19,30 +19,6 @@
 #define JRY_BL_MD5_HH(a,b,c,d,x,s,ac) {(a)+=JRY_BL_MD5_H((b),(c),(d))+(x)+ac;(a)=JRY_BL_MD5_ROTATE_LEFT((a),(s));(a)+=(b);}
 #define JRY_BL_MD5_II(a,b,c,d,x,s,ac) {(a)+=JRY_BL_MD5_I((b),(c),(d))+(x)+ac;(a)=JRY_BL_MD5_ROTATE_LEFT((a),(s));(a)+=(b);}
 const char jry_bl_md5_hex_humbers[]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};;
-void jry_bl_md5_transform(unsigned int state[4],const unsigned char buffer[64]);
-void jry_bl_md5_encode(const unsigned int* input,unsigned char* output,jry_bl_string_size_type length);
-void jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsigned int state[4],unsigned int count[2],unsigned char buffer[64]);
-void jry_bl_md5(jry_bl_string* this,jry_bl_string* out)
-{
-	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	unsigned int state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
-	unsigned char padding[64]={0x80};
-	unsigned char buffer[64],digest[16];
-	register jry_bl_string_size_type len=jry_bl_string_get_length(this);
-	jry_bl_string_extend(out,32);
-	jry_bl_md5_init(jry_bl_string_get_char_pointer(this),len,state,count,buffer);
-	unsigned char bits[8];
-	unsigned int  index,padlen;
-	jry_bl_md5_encode(count,bits,8);
-	index=(unsigned int)((count[0]>>3)&0x3f);
-	padlen=(index<56)?(56-index):(120-index);
-	jry_bl_md5_init(padding,padlen,state,count,buffer);
-	jry_bl_md5_init(bits,8,state,count,buffer);
-	jry_bl_md5_encode(state,digest,16);
-	for (jry_bl_string_size_type i=0;i<16;++i)
-		jry_bl_string_add_char1(out,jry_bl_md5_hex_humbers[digest[i]>>4]),jry_bl_string_add_char1(out,jry_bl_md5_hex_humbers[digest[i]&15]);		
-	return;
-}
 void jry_bl_md5_transform(unsigned int state[4],const unsigned char block[64])
 {
 	register unsigned int a=state[0],b=state[1],c=state[2],d=state[3];
@@ -91,5 +67,26 @@ void jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsi
 	else
 		i = 0;
 	jry_bl_memory_copy(&buffer[index],&input[i],len-i);
+}
+void jry_bl_md5(const jry_bl_string* this,jry_bl_string* out)
+{
+	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	unsigned int state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
+	unsigned char padding[64]={0x80};
+	unsigned char buffer[64],digest[16];
+	register jry_bl_string_size_type len=jry_bl_string_get_length(this);
+	jry_bl_string_extend(out,32);
+	jry_bl_md5_init(jry_bl_string_get_char_pointer(this),len,state,count,buffer);
+	unsigned char bits[8];
+	unsigned int  index,padlen;
+	jry_bl_md5_encode(count,bits,8);
+	index=(unsigned int)((count[0]>>3)&0x3f);
+	padlen=(index<56)?(56-index):(120-index);
+	jry_bl_md5_init(padding,padlen,state,count,buffer);
+	jry_bl_md5_init(bits,8,state,count,buffer);
+	jry_bl_md5_encode(state,digest,16);
+	for (jry_bl_string_size_type i=0;i<16;++i)
+		jry_bl_string_add_hex8(out,digest[i]);
+	return;
 }
 #endif

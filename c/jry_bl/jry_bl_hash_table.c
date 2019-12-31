@@ -112,7 +112,7 @@ void jry_bl_hash_table_insert(jry_bl_hash_table *this,jry_bl_string *k,jry_bl_va
 	++this->len;
 	++this->nxt;
 }
-void jry_bl_hash_table_get(jry_bl_hash_table *this,jry_bl_string *k,jry_bl_var *v,jry_bl_uint8 vcpt)
+void jry_bl_hash_table_get(const jry_bl_hash_table *this,const jry_bl_string *k,jry_bl_var *v,jry_bl_uint8 vcpt)
 {
 	if(this==NULL||k==NULL||v==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(this->size!=0)
@@ -125,7 +125,7 @@ void jry_bl_hash_table_get(jry_bl_hash_table *this,jry_bl_string *k,jry_bl_var *
 	}
 	return jry_bl_var_init_as(v,JRY_BL_VAR_TYPE_UNUSE);
 }
-void jry_bl_hash_table_unset(jry_bl_hash_table *this,jry_bl_string *k)
+void jry_bl_hash_table_unset(jry_bl_hash_table *this,const jry_bl_string *k)
 {
 	if(this==NULL||k==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(this->size!=0)
@@ -146,7 +146,7 @@ void jry_bl_hash_table_unset(jry_bl_hash_table *this,jry_bl_string *k)
 			}
 	}
 }
-char jry_bl_hash_table_space_ship(jry_bl_hash_table *this,jry_bl_hash_table *that)
+char jry_bl_hash_table_space_ship(const jry_bl_hash_table *this,const jry_bl_hash_table *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(this==that)
@@ -204,7 +204,7 @@ void jry_bl_hash_table_merge(jry_bl_hash_table *this,jry_bl_hash_table *that,jry
 	jry_bl_hash_table_foreach(that,i)
 		jry_bl_hash_table_insert(this,&i->k,&i->v,copytype,copytype);
 }
-void jry_bl_hash_table_to_json_ex(jry_bl_hash_table *this,jry_bl_string *out,jry_bl_uint8 type)
+void jry_bl_hash_table_to_json_ex(const jry_bl_hash_table *this,jry_bl_string *out,jry_bl_uint8 type)
 {
 	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(type==1)
@@ -231,7 +231,7 @@ void jry_bl_hash_table_to_json_ex(jry_bl_hash_table *this,jry_bl_string *out,jry
 		jry_bl_string_delete_1(out);
 	jry_bl_string_add_char1(out,'}');
 }
-jry_bl_string_size_type jry_bl_hash_table_from_json_start(jry_bl_hash_table *this,jry_bl_string *in,jry_bl_string_size_type start)
+jry_bl_string_size_type jry_bl_hash_table_from_json_start(jry_bl_hash_table *this,const jry_bl_string *in,jry_bl_string_size_type start)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	register jry_bl_string_size_type i=start,n=jry_bl_string_get_length(in),ii;
@@ -300,7 +300,7 @@ void jry_bl_hash_table_rehash(jry_bl_hash_table *this)
 	this->nxt=j;
 }
 #if JRY_BL_USE_STDIO==1
-void jry_bl_hash_table_view_ex(jry_bl_hash_table *this,FILE * file,char*str,int a,int tabs)
+void jry_bl_hash_table_view_ex(const jry_bl_hash_table *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(tabs>=0)

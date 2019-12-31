@@ -15,6 +15,6 @@
 #include "jry_bl_malloc.h"
 #include "jry_bl_string.h"
 #include "jry_bl_ying.h"
-void jry_bl_md5(jry_bl_string* this,jry_bl_string* out);
+void jry_bl_md5(const jry_bl_string* this,jry_bl_string* out);
 #endif
 #endif

@@ -230,7 +230,7 @@ inline void jry_bl_aes_128_decode_16(jry_bl_aes_128_extened_key w,unsigned char*
 	b[3]=jry_bl_aes_invsbox[state[3][1]]^w[0][3][0],b[7]=jry_bl_aes_invsbox[state[3][2]]^w[0][3][1],b[11]=jry_bl_aes_invsbox[state[3][3]]^w[0][3][2],b[15]=jry_bl_aes_invsbox[state[3][0]]^w[0][3][3];
 }
 #if JRY_BL_AES_128_ECB_ENABLE==1
-void jry_bl_aes_128_ecb_encode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out)
+void jry_bl_aes_128_ecb_encode(jry_bl_aes_128_extened_key w,const jry_bl_string *in,jry_bl_string *out)
 {
 	if(w==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	unsigned char s[16];
@@ -242,7 +242,7 @@ void jry_bl_aes_128_ecb_encode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jr
 	for(register char j=0;i<jry_bl_string_get_length(in);s[j]=jry_bl_string_get1(in,i),++i,++j);
 	jry_bl_aes_128_encode_16(w,s,jry_bl_string_get_char_pointer(out)+jry_bl_string_get_length(out)),jry_bl_string_get_length(out)+=16;
 }
-void jry_bl_aes_128_ecb_decode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out)
+void jry_bl_aes_128_ecb_decode(jry_bl_aes_128_extened_key w,const jry_bl_string *in,jry_bl_string *out)
 {
 	if(w==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_extend(out,jry_bl_string_get_length(in));
@@ -252,7 +252,7 @@ void jry_bl_aes_128_ecb_decode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jr
 }
 #endif
 #if JRY_BL_AES_128_CBC_ENABLE==1
-void jry_bl_aes_128_cbc_encode(jry_bl_aes_128_extened_key w,unsigned char * vi,jry_bl_string *in,jry_bl_string *out)
+void jry_bl_aes_128_cbc_encode(jry_bl_aes_128_extened_key w,unsigned char * vi,const jry_bl_string *in,jry_bl_string *out)
 {
 	if(w==NULL||vi==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	unsigned char s[16],*vii=vi;
@@ -270,7 +270,7 @@ void jry_bl_aes_128_cbc_encode(jry_bl_aes_128_extened_key w,unsigned char * vi,j
 		jry_bl_aes_128_encode_16(w,s,jry_bl_string_get_char_pointer(out)+jry_bl_string_get_length(out)),jry_bl_string_get_length(out)+=16;
 	}
 }
-void jry_bl_aes_128_cbc_decode(jry_bl_aes_128_extened_key w,unsigned char * vi,jry_bl_string *in,jry_bl_string *out)
+void jry_bl_aes_128_cbc_decode(jry_bl_aes_128_extened_key w,unsigned char * vi,const jry_bl_string *in,jry_bl_string *out)
 {
 	if(w==NULL||vi==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	unsigned char *vii=vi,buf[16],s[16];

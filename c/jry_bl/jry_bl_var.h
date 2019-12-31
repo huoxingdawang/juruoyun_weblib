@@ -67,11 +67,11 @@ typedef struct __jry_bl_var_functions_struct
 {
 	size_t size;
 	void (*init)(void*);
-	void (*free)(jry_bl_string*);
-	void (*copy)(jry_bl_string*,jry_bl_string*,jry_bl_uint8);
-	char (*space_ship)(jry_bl_string*,jry_bl_string*);
-	void (*to_json)(jry_bl_string*,jry_bl_string*,jry_bl_uint8);
-	void (*view_ex)(jry_bl_string*,FILE*,char*,int,int);
+	void (*free)(void*);
+	void (*copy)(void*,void*,jry_bl_uint8);
+	char (*space_ship)(const void*,const void*);
+	void (*to_json)(void*,jry_bl_string*,jry_bl_uint8);
+	void (*view_ex)(const void*,FILE*,char*,int,int);
 }jry_bl_var_functions_struct;
 
 extern const jry_bl_var_functions_struct jry_bl_var_functions[4];
@@ -96,7 +96,7 @@ void					jry_bl_var_copy						(jry_bl_var *this,jry_bl_var *that,jry_bl_uint8 co
 #define					jry_bl_var_equal(a,b)				jry_bl_var_copy(a,b,JRY_BL_COPY)
 #define					jry_bl_var_equal_light(a,b)			jry_bl_var_copy(a,b,JRY_BL_COPY_LIGHT)
 #define					jry_bl_var_equal_light_move(a,b)	jry_bl_var_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
-char					jry_bl_var_space_ship				(jry_bl_var *this,jry_bl_var *that);
+char					jry_bl_var_space_ship				(const jry_bl_var *this,const jry_bl_var *that);
 #define					jry_bl_var_if_big(x,y)				(jry_bl_var_space_ship(x,y)>0)
 #define					jry_bl_var_if_equal(x,y)			(jry_bl_var_space_ship(x,y)==0)
 #define					jry_bl_var_if_small(x,y) 			(jry_bl_var_space_ship(x,y)<0)
@@ -114,17 +114,16 @@ char					jry_bl_var_space_ship				(jry_bl_var *this,jry_bl_var *that);
 #define 				jry_bl_var_equal_pointer(this,a)	jry_bl_var_init_as((this),JRY_BL_VAR_TYPE_POINTER)	,((this)->data.p=(a))
 #define 				jry_bl_var_equal_true(this)			jry_bl_var_init_as((this),JRY_BL_VAR_TYPE_TRUE)
 #define 				jry_bl_var_equal_false(this)		jry_bl_var_init_as((this),JRY_BL_VAR_TYPE_FALSE)
-void					jry_bl_var_turn						(jry_bl_var *this,jry_bl_var_type_type type);
 #if JRY_BL_STRING_ENABLE==1
-void					jry_bl_var_to_json_ex				(jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 type);
+void					jry_bl_var_to_json_ex				(const jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 type);
 #define					jry_bl_var_to_json(x,y)				jry_bl_var_to_json_ex(x,y,0)
-jry_bl_string_size_type	jry_bl_var_from_json_start			(jry_bl_var *this,jry_bl_string *in,jry_bl_string_size_type start);
+jry_bl_string_size_type	jry_bl_var_from_json_start			(jry_bl_var *this,const jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_var_from_json(this,in)		jry_bl_var_from_json_start(this,in,0)
 #endif
 
 #if JRY_BL_USE_STDIO==1
 #define					jry_bl_var_view(x,y) 				jry_bl_var_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
-void					jry_bl_var_view_ex					(jry_bl_var *this,FILE * file,char*str,int a,int tabs);
+void					jry_bl_var_view_ex					(const jry_bl_var *this,FILE * file,char*str,int a,int tabs);
 #endif
 #if JRY_BL_USE_STDARG==1
 void					jry_bl_var_inits					(int n,...);

@@ -50,7 +50,7 @@ void					jry_bl_link_list_swap_node						(jry_bl_link_list *this,jry_bl_link_lis
 #define 				jry_bl_link_list_data(x)						(&((x)->v))
 #define 				jry_bl_link_list_foreach(x,y)					for(jry_bl_link_list_node *(y)=(x)->head;(y)!=NULL;(y)=(y)->nxt)
 #define 				jry_bl_link_list_foreach_del(x,y,z)				for(jry_bl_link_list_node *(y)=(x)->head,*(z)=((y)==NULL?NULL:(y)->nxt);(y)!=NULL;(y)=(z),(z)=((y)==NULL?NULL:(y)->nxt))
-char					jry_bl_link_list_space_ship						(jry_bl_link_list *this,jry_bl_link_list *that);
+char					jry_bl_link_list_space_ship						(const jry_bl_link_list *this,const jry_bl_link_list *that);
 #define					jry_bl_link_list_if_big(x,y)					(jry_bl_link_list_space_ship(x,y)>0)
 #define					jry_bl_link_list_if_equal(x,y)					(jry_bl_link_list_space_ship(x,y)==0)
 #define					jry_bl_link_list_if_small(x,y) 					(jry_bl_link_list_space_ship(x,y)<0)
@@ -63,9 +63,9 @@ void					jry_bl_link_list_copy							(jry_bl_link_list *this,jry_bl_link_list *t
 #define					jry_bl_link_list_equal_light_move(a,b)			jry_bl_link_list_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
 	
 #define					jry_bl_link_list_to_json(x,y)					jry_bl_link_list_to_json_ex(x,y,0)
-void					jry_bl_link_list_to_json_ex						(jry_bl_link_list *this,jry_bl_string *out,jry_bl_uint8 type);
+void					jry_bl_link_list_to_json_ex						(const jry_bl_link_list *this,jry_bl_string *out,jry_bl_uint8 type);
 #define					jry_bl_link_list_from_json(x,y)					jry_bl_link_list_from_json_start(x,y,0)
-jry_bl_string_size_type	jry_bl_link_list_from_json_start				(jry_bl_link_list *this,jry_bl_string *in,jry_bl_string_size_type start);
+jry_bl_string_size_type	jry_bl_link_list_from_json_start				(jry_bl_link_list *this,const jry_bl_string *in,jry_bl_string_size_type start);
 void					jry_bl_link_list_merge							(jry_bl_link_list *this,jry_bl_link_list *that);
 void					jry_bl_link_list_merge_light					(jry_bl_link_list *this,jry_bl_link_list *that);
 

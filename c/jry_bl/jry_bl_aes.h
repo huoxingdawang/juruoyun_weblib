@@ -18,12 +18,12 @@
 typedef unsigned char jry_bl_aes_128_extened_key[11][4][4];
 void	jry_bl_aes_128_extend_key		(unsigned char* key,jry_bl_aes_128_extened_key w);
 #if JRY_BL_AES_128_ECB_ENABLE==1
-void	jry_bl_aes_128_ecb_encode		(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out);
-void	jry_bl_aes_128_ecb_decode		(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out);
+void	jry_bl_aes_128_ecb_encode		(jry_bl_aes_128_extened_key w,const jry_bl_string *in,jry_bl_string *out);
+void	jry_bl_aes_128_ecb_decode		(jry_bl_aes_128_extened_key w,const jry_bl_string *in,jry_bl_string *out);
 #endif
 #if JRY_BL_AES_128_CBC_ENABLE==1
-void	jry_bl_aes_128_cbc_encode		(jry_bl_aes_128_extened_key w,unsigned char *vi,jry_bl_string *in,jry_bl_string *out);
-void	jry_bl_aes_128_cbc_decode		(jry_bl_aes_128_extened_key w,unsigned char *vi,jry_bl_string *in,jry_bl_string *out);
+void	jry_bl_aes_128_cbc_encode		(jry_bl_aes_128_extened_key w,unsigned char *vi,const jry_bl_string *in,jry_bl_string *out);
+void	jry_bl_aes_128_cbc_decode		(jry_bl_aes_128_extened_key w,unsigned char *vi,const jry_bl_string *in,jry_bl_string *out);
 #endif
 #endif
 #endif

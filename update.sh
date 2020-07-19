@@ -1,0 +1,1 @@
+cat examples/makefile jbl/makefile jwl/makefile > makefile

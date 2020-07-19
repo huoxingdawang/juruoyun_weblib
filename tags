@@ -1,0 +1,1302 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+B0000_0000	jbl/jbl_ying.h	62;"	d
+B0000_0001	jbl/jbl_ying.h	63;"	d
+B0000_0010	jbl/jbl_ying.h	64;"	d
+B0000_0011	jbl/jbl_ying.h	65;"	d
+B0000_0100	jbl/jbl_ying.h	66;"	d
+B0000_0101	jbl/jbl_ying.h	67;"	d
+B0000_0110	jbl/jbl_ying.h	68;"	d
+B0000_0111	jbl/jbl_ying.h	69;"	d
+B0000_1000	jbl/jbl_ying.h	70;"	d
+B0000_1001	jbl/jbl_ying.h	71;"	d
+B0000_1010	jbl/jbl_ying.h	72;"	d
+B0000_1011	jbl/jbl_ying.h	73;"	d
+B0000_1100	jbl/jbl_ying.h	74;"	d
+B0000_1101	jbl/jbl_ying.h	75;"	d
+B0000_1110	jbl/jbl_ying.h	76;"	d
+B0000_1111	jbl/jbl_ying.h	77;"	d
+B0001_0000	jbl/jbl_ying.h	78;"	d
+B0001_0001	jbl/jbl_ying.h	79;"	d
+B0001_0010	jbl/jbl_ying.h	80;"	d
+B0001_0011	jbl/jbl_ying.h	81;"	d
+B0001_0100	jbl/jbl_ying.h	82;"	d
+B0001_0101	jbl/jbl_ying.h	83;"	d
+B0001_0110	jbl/jbl_ying.h	84;"	d
+B0001_0111	jbl/jbl_ying.h	85;"	d
+B0001_1000	jbl/jbl_ying.h	86;"	d
+B0001_1001	jbl/jbl_ying.h	87;"	d
+B0001_1010	jbl/jbl_ying.h	88;"	d
+B0001_1011	jbl/jbl_ying.h	89;"	d
+B0001_1100	jbl/jbl_ying.h	90;"	d
+B0001_1101	jbl/jbl_ying.h	91;"	d
+B0001_1110	jbl/jbl_ying.h	92;"	d
+B0001_1111	jbl/jbl_ying.h	93;"	d
+B0010_0000	jbl/jbl_ying.h	94;"	d
+B0010_0001	jbl/jbl_ying.h	95;"	d
+B0010_0010	jbl/jbl_ying.h	96;"	d
+B0010_0011	jbl/jbl_ying.h	97;"	d
+B0010_0100	jbl/jbl_ying.h	98;"	d
+B0010_0101	jbl/jbl_ying.h	99;"	d
+B0010_0110	jbl/jbl_ying.h	100;"	d
+B0010_0111	jbl/jbl_ying.h	101;"	d
+B0010_1000	jbl/jbl_ying.h	102;"	d
+B0010_1001	jbl/jbl_ying.h	103;"	d
+B0010_1010	jbl/jbl_ying.h	104;"	d
+B0010_1011	jbl/jbl_ying.h	105;"	d
+B0010_1100	jbl/jbl_ying.h	106;"	d
+B0010_1101	jbl/jbl_ying.h	107;"	d
+B0010_1110	jbl/jbl_ying.h	108;"	d
+B0010_1111	jbl/jbl_ying.h	109;"	d
+B0011_0000	jbl/jbl_ying.h	110;"	d
+B0011_0001	jbl/jbl_ying.h	111;"	d
+B0011_0010	jbl/jbl_ying.h	112;"	d
+B0011_0011	jbl/jbl_ying.h	113;"	d
+B0011_0100	jbl/jbl_ying.h	114;"	d
+B0011_0101	jbl/jbl_ying.h	115;"	d
+B0011_0110	jbl/jbl_ying.h	116;"	d
+B0011_0111	jbl/jbl_ying.h	117;"	d
+B0011_1000	jbl/jbl_ying.h	118;"	d
+B0011_1001	jbl/jbl_ying.h	119;"	d
+B0011_1010	jbl/jbl_ying.h	120;"	d
+B0011_1011	jbl/jbl_ying.h	121;"	d
+B0011_1100	jbl/jbl_ying.h	122;"	d
+B0011_1101	jbl/jbl_ying.h	123;"	d
+B0011_1110	jbl/jbl_ying.h	124;"	d
+B0011_1111	jbl/jbl_ying.h	125;"	d
+B0100_0000	jbl/jbl_ying.h	126;"	d
+B0100_0001	jbl/jbl_ying.h	127;"	d
+B0100_0010	jbl/jbl_ying.h	128;"	d
+B0100_0011	jbl/jbl_ying.h	129;"	d
+B0100_0100	jbl/jbl_ying.h	130;"	d
+B0100_0101	jbl/jbl_ying.h	131;"	d
+B0100_0110	jbl/jbl_ying.h	132;"	d
+B0100_0111	jbl/jbl_ying.h	133;"	d
+B0100_1000	jbl/jbl_ying.h	134;"	d
+B0100_1001	jbl/jbl_ying.h	135;"	d
+B0100_1010	jbl/jbl_ying.h	136;"	d
+B0100_1011	jbl/jbl_ying.h	137;"	d
+B0100_1100	jbl/jbl_ying.h	138;"	d
+B0100_1101	jbl/jbl_ying.h	139;"	d
+B0100_1110	jbl/jbl_ying.h	140;"	d
+B0100_1111	jbl/jbl_ying.h	141;"	d
+B0101_0000	jbl/jbl_ying.h	142;"	d
+B0101_0001	jbl/jbl_ying.h	143;"	d
+B0101_0010	jbl/jbl_ying.h	144;"	d
+B0101_0011	jbl/jbl_ying.h	145;"	d
+B0101_0100	jbl/jbl_ying.h	146;"	d
+B0101_0101	jbl/jbl_ying.h	147;"	d
+B0101_0110	jbl/jbl_ying.h	148;"	d
+B0101_0111	jbl/jbl_ying.h	149;"	d
+B0101_1000	jbl/jbl_ying.h	150;"	d
+B0101_1001	jbl/jbl_ying.h	151;"	d
+B0101_1010	jbl/jbl_ying.h	152;"	d
+B0101_1011	jbl/jbl_ying.h	153;"	d
+B0101_1100	jbl/jbl_ying.h	154;"	d
+B0101_1101	jbl/jbl_ying.h	155;"	d
+B0101_1110	jbl/jbl_ying.h	156;"	d
+B0101_1111	jbl/jbl_ying.h	157;"	d
+B0110_0000	jbl/jbl_ying.h	158;"	d
+B0110_0001	jbl/jbl_ying.h	159;"	d
+B0110_0010	jbl/jbl_ying.h	160;"	d
+B0110_0011	jbl/jbl_ying.h	161;"	d
+B0110_0100	jbl/jbl_ying.h	162;"	d
+B0110_0101	jbl/jbl_ying.h	163;"	d
+B0110_0110	jbl/jbl_ying.h	164;"	d
+B0110_0111	jbl/jbl_ying.h	165;"	d
+B0110_1000	jbl/jbl_ying.h	166;"	d
+B0110_1001	jbl/jbl_ying.h	167;"	d
+B0110_1010	jbl/jbl_ying.h	168;"	d
+B0110_1011	jbl/jbl_ying.h	169;"	d
+B0110_1100	jbl/jbl_ying.h	170;"	d
+B0110_1101	jbl/jbl_ying.h	171;"	d
+B0110_1110	jbl/jbl_ying.h	172;"	d
+B0110_1111	jbl/jbl_ying.h	173;"	d
+B0111_0000	jbl/jbl_ying.h	174;"	d
+B0111_0001	jbl/jbl_ying.h	175;"	d
+B0111_0010	jbl/jbl_ying.h	176;"	d
+B0111_0011	jbl/jbl_ying.h	177;"	d
+B0111_0100	jbl/jbl_ying.h	178;"	d
+B0111_0101	jbl/jbl_ying.h	179;"	d
+B0111_0110	jbl/jbl_ying.h	180;"	d
+B0111_0111	jbl/jbl_ying.h	181;"	d
+B0111_1000	jbl/jbl_ying.h	182;"	d
+B0111_1001	jbl/jbl_ying.h	183;"	d
+B0111_1010	jbl/jbl_ying.h	184;"	d
+B0111_1011	jbl/jbl_ying.h	185;"	d
+B0111_1100	jbl/jbl_ying.h	186;"	d
+B0111_1101	jbl/jbl_ying.h	187;"	d
+B0111_1110	jbl/jbl_ying.h	188;"	d
+B0111_1111	jbl/jbl_ying.h	189;"	d
+B1000_0000	jbl/jbl_ying.h	190;"	d
+B1000_0001	jbl/jbl_ying.h	191;"	d
+B1000_0010	jbl/jbl_ying.h	192;"	d
+B1000_0011	jbl/jbl_ying.h	193;"	d
+B1000_0100	jbl/jbl_ying.h	194;"	d
+B1000_0101	jbl/jbl_ying.h	195;"	d
+B1000_0110	jbl/jbl_ying.h	196;"	d
+B1000_0111	jbl/jbl_ying.h	197;"	d
+B1000_1000	jbl/jbl_ying.h	198;"	d
+B1000_1001	jbl/jbl_ying.h	199;"	d
+B1000_1010	jbl/jbl_ying.h	200;"	d
+B1000_1011	jbl/jbl_ying.h	201;"	d
+B1000_1100	jbl/jbl_ying.h	202;"	d
+B1000_1101	jbl/jbl_ying.h	203;"	d
+B1000_1110	jbl/jbl_ying.h	204;"	d
+B1000_1111	jbl/jbl_ying.h	205;"	d
+B1001_0000	jbl/jbl_ying.h	206;"	d
+B1001_0001	jbl/jbl_ying.h	207;"	d
+B1001_0010	jbl/jbl_ying.h	208;"	d
+B1001_0011	jbl/jbl_ying.h	209;"	d
+B1001_0100	jbl/jbl_ying.h	210;"	d
+B1001_0101	jbl/jbl_ying.h	211;"	d
+B1001_0110	jbl/jbl_ying.h	212;"	d
+B1001_0111	jbl/jbl_ying.h	213;"	d
+B1001_1000	jbl/jbl_ying.h	214;"	d
+B1001_1001	jbl/jbl_ying.h	215;"	d
+B1001_1010	jbl/jbl_ying.h	216;"	d
+B1001_1011	jbl/jbl_ying.h	217;"	d
+B1001_1100	jbl/jbl_ying.h	218;"	d
+B1001_1101	jbl/jbl_ying.h	219;"	d
+B1001_1110	jbl/jbl_ying.h	220;"	d
+B1001_1111	jbl/jbl_ying.h	221;"	d
+B1010_0000	jbl/jbl_ying.h	222;"	d
+B1010_0001	jbl/jbl_ying.h	223;"	d
+B1010_0010	jbl/jbl_ying.h	224;"	d
+B1010_0011	jbl/jbl_ying.h	225;"	d
+B1010_0100	jbl/jbl_ying.h	226;"	d
+B1010_0101	jbl/jbl_ying.h	227;"	d
+B1010_0110	jbl/jbl_ying.h	228;"	d
+B1010_0111	jbl/jbl_ying.h	229;"	d
+B1010_1000	jbl/jbl_ying.h	230;"	d
+B1010_1001	jbl/jbl_ying.h	231;"	d
+B1010_1010	jbl/jbl_ying.h	232;"	d
+B1010_1011	jbl/jbl_ying.h	233;"	d
+B1010_1100	jbl/jbl_ying.h	234;"	d
+B1010_1101	jbl/jbl_ying.h	235;"	d
+B1010_1110	jbl/jbl_ying.h	236;"	d
+B1010_1111	jbl/jbl_ying.h	237;"	d
+B1011_0000	jbl/jbl_ying.h	238;"	d
+B1011_0001	jbl/jbl_ying.h	239;"	d
+B1011_0010	jbl/jbl_ying.h	240;"	d
+B1011_0011	jbl/jbl_ying.h	241;"	d
+B1011_0100	jbl/jbl_ying.h	242;"	d
+B1011_0101	jbl/jbl_ying.h	243;"	d
+B1011_0110	jbl/jbl_ying.h	244;"	d
+B1011_0111	jbl/jbl_ying.h	245;"	d
+B1011_1000	jbl/jbl_ying.h	246;"	d
+B1011_1001	jbl/jbl_ying.h	247;"	d
+B1011_1010	jbl/jbl_ying.h	248;"	d
+B1011_1011	jbl/jbl_ying.h	249;"	d
+B1011_1100	jbl/jbl_ying.h	250;"	d
+B1011_1101	jbl/jbl_ying.h	251;"	d
+B1011_1110	jbl/jbl_ying.h	252;"	d
+B1011_1111	jbl/jbl_ying.h	253;"	d
+B1100_0000	jbl/jbl_ying.h	254;"	d
+B1100_0001	jbl/jbl_ying.h	255;"	d
+B1100_0010	jbl/jbl_ying.h	256;"	d
+B1100_0011	jbl/jbl_ying.h	257;"	d
+B1100_0100	jbl/jbl_ying.h	258;"	d
+B1100_0101	jbl/jbl_ying.h	259;"	d
+B1100_0110	jbl/jbl_ying.h	260;"	d
+B1100_0111	jbl/jbl_ying.h	261;"	d
+B1100_1000	jbl/jbl_ying.h	262;"	d
+B1100_1001	jbl/jbl_ying.h	263;"	d
+B1100_1010	jbl/jbl_ying.h	264;"	d
+B1100_1011	jbl/jbl_ying.h	265;"	d
+B1100_1100	jbl/jbl_ying.h	266;"	d
+B1100_1101	jbl/jbl_ying.h	267;"	d
+B1100_1110	jbl/jbl_ying.h	268;"	d
+B1100_1111	jbl/jbl_ying.h	269;"	d
+B1101_0000	jbl/jbl_ying.h	270;"	d
+B1101_0001	jbl/jbl_ying.h	271;"	d
+B1101_0010	jbl/jbl_ying.h	272;"	d
+B1101_0011	jbl/jbl_ying.h	273;"	d
+B1101_0100	jbl/jbl_ying.h	274;"	d
+B1101_0101	jbl/jbl_ying.h	275;"	d
+B1101_0110	jbl/jbl_ying.h	276;"	d
+B1101_0111	jbl/jbl_ying.h	277;"	d
+B1101_1000	jbl/jbl_ying.h	278;"	d
+B1101_1001	jbl/jbl_ying.h	279;"	d
+B1101_1010	jbl/jbl_ying.h	280;"	d
+B1101_1011	jbl/jbl_ying.h	281;"	d
+B1101_1100	jbl/jbl_ying.h	282;"	d
+B1101_1101	jbl/jbl_ying.h	283;"	d
+B1101_1110	jbl/jbl_ying.h	284;"	d
+B1101_1111	jbl/jbl_ying.h	285;"	d
+B1110_0000	jbl/jbl_ying.h	286;"	d
+B1110_0001	jbl/jbl_ying.h	287;"	d
+B1110_0010	jbl/jbl_ying.h	288;"	d
+B1110_0011	jbl/jbl_ying.h	289;"	d
+B1110_0100	jbl/jbl_ying.h	290;"	d
+B1110_0101	jbl/jbl_ying.h	291;"	d
+B1110_0110	jbl/jbl_ying.h	292;"	d
+B1110_0111	jbl/jbl_ying.h	293;"	d
+B1110_1000	jbl/jbl_ying.h	294;"	d
+B1110_1001	jbl/jbl_ying.h	295;"	d
+B1110_1010	jbl/jbl_ying.h	296;"	d
+B1110_1011	jbl/jbl_ying.h	297;"	d
+B1110_1100	jbl/jbl_ying.h	298;"	d
+B1110_1101	jbl/jbl_ying.h	299;"	d
+B1110_1110	jbl/jbl_ying.h	300;"	d
+B1110_1111	jbl/jbl_ying.h	301;"	d
+B1111_0000	jbl/jbl_ying.h	302;"	d
+B1111_0001	jbl/jbl_ying.h	303;"	d
+B1111_0010	jbl/jbl_ying.h	304;"	d
+B1111_0011	jbl/jbl_ying.h	305;"	d
+B1111_0100	jbl/jbl_ying.h	306;"	d
+B1111_0101	jbl/jbl_ying.h	307;"	d
+B1111_0110	jbl/jbl_ying.h	308;"	d
+B1111_0111	jbl/jbl_ying.h	309;"	d
+B1111_1000	jbl/jbl_ying.h	310;"	d
+B1111_1001	jbl/jbl_ying.h	311;"	d
+B1111_1010	jbl/jbl_ying.h	312;"	d
+B1111_1011	jbl/jbl_ying.h	313;"	d
+B1111_1100	jbl/jbl_ying.h	314;"	d
+B1111_1101	jbl/jbl_ying.h	315;"	d
+B1111_1110	jbl/jbl_ying.h	316;"	d
+B1111_1111	jbl/jbl_ying.h	317;"	d
+BITS	examples/makefile	/^BITS =$/;"	m
+BITS	makefile	/^BITS =$/;"	m
+CC	examples/makefile	/^CC = gcc$/;"	m
+CC	makefile	/^CC = gcc$/;"	m
+EXLIB	examples/makefile	/^EXLIB = $(JBL_EXLIB) $(JWL_EXLIB)$/;"	m
+EXLIB	makefile	/^EXLIB = $(JBL_EXLIB) $(JWL_EXLIB)$/;"	m
+F	jbl/jbl_md5.c	16;"	d
+FF	jbl/jbl_md5.c	21;"	d
+G	jbl/jbl_md5.c	17;"	d
+GG	jbl/jbl_md5.c	22;"	d
+H	examples/makefile	/^	H = \/$/;"	m
+H	examples/makefile	/^	H = \\\\$/;"	m
+H	jbl/jbl_md5.c	18;"	d
+H	makefile	/^	H = \/$/;"	m
+H	makefile	/^	H = \\\\$/;"	m
+HH	jbl/jbl_md5.c	23;"	d
+I	jbl/jbl_md5.c	19;"	d
+II	jbl/jbl_md5.c	24;"	d
+JBL_AES_128_CBC_ENABLE	jbl/jbl_aes_config.h	15;"	d
+JBL_AES_128_ECB_ENABLE	jbl/jbl_aes_config.h	16;"	d
+JBL_AES_128_ENABLE	jbl/jbl_config.h	17;"	d
+JBL_AES_128_FFMUL_TABLE_ENABLE	jbl/jbl_aes_config.h	17;"	d
+JBL_ARRAY_ENABLE	jbl/jbl_config.h	18;"	d
+JBL_BASE64_ENABLE	jbl/jbl_config.h	19;"	d
+JBL_BITSET_ENABLE	jbl/jbl_config.h	20;"	d
+JBL_CMD_ENABLE	jbl/jbl_config.h	21;"	d
+JBL_DOUBLE_PRECISION	jbl/jbl_ying_config.h	14;"	d
+JBL_EXCEPTION_ENABLE	jbl/jbl_config.h	22;"	d
+JBL_EXCEPTION_EXIT_FUNCTIONS_LENGTH	jbl/jbl_exception_config.h	15;"	d
+JBL_EXLIB	jbl/makefile	/^JBL_EXLIB = $/;"	m
+JBL_EXLIB	makefile	/^JBL_EXLIB = $/;"	m
+JBL_FILE_ENABLE	jbl/jbl_config.h	23;"	d
+JBL_FILE_TYPE_DIR	jbl/jbl_file.h	22;"	d
+JBL_FILE_TYPE_FILE	jbl/jbl_file.h	21;"	d
+JBL_FILE_TYPE_UNKNOW	jbl/jbl_file.h	20;"	d
+JBL_GC_ENABLE	jbl/jbl_config.h	24;"	d
+JBL_HT_ENABLE	jbl/jbl_config.h	25;"	d
+JBL_HT_MIN_SIZE	jbl/jbl_ht_config.h	23;"	d
+JBL_JSON_ENABLE	jbl/jbl_config.h	27;"	d
+JBL_LL_ENABLE	jbl/jbl_config.h	26;"	d
+JBL_MALLOC_COUNT	jbl/jbl_malloc_config.h	16;"	d
+JBL_MALLOC_ENABLE	jbl/jbl_config.h	28;"	d
+JBL_MALLOC_FAST	jbl/jbl_malloc_config.h	15;"	d
+JBL_MD5_ENABLE	jbl/jbl_config.h	29;"	d
+JBL_PRINT_COLORFUL_BLACK	jbl/jbl_ying.h	36;"	d
+JBL_PRINT_COLORFUL_GREEN	jbl/jbl_ying.h	41;"	d
+JBL_PRINT_COLORFUL_LIGHT_GREEN	jbl/jbl_ying.h	38;"	d
+JBL_PRINT_COLORFUL_PURPLE	jbl/jbl_ying.h	40;"	d
+JBL_PRINT_COLORFUL_RED	jbl/jbl_ying.h	37;"	d
+JBL_PRINT_COLORFUL_WHITE	jbl/jbl_ying.h	42;"	d
+JBL_PRINT_COLORFUL_YELLOW	jbl/jbl_ying.h	39;"	d
+JBL_RAND_ENABLE	jbl/jbl_config.h	30;"	d
+JBL_RAND_MERSENN	jbl/jbl_rand_config.h	16;"	d
+JBL_SHA1_ENABLE	jbl/jbl_config.h	31;"	d
+JBL_STREAM_ENABLE	jbl/jbl_config.h	32;"	d
+JBL_STREAM_EXCEED_LENGTH	jbl/jbl_stream_config.h	16;"	d
+JBL_STREAM_STDIN	jbl/jbl_stream_config.h	20;"	d
+JBL_STREAM_STDOUT	jbl/jbl_stream_config.h	22;"	d
+JBL_STRING_BASIC_LENGTH	jbl/jbl_string_config.h	23;"	d
+JBL_STRING_ENABLE	jbl/jbl_config.h	33;"	d
+JBL_TIME_DEFAULT_TIME_ZONE	jbl/jbl_time_config.h	16;"	d
+JBL_TIME_ENABLE	jbl/jbl_config.h	34;"	d
+JBL_TIME_ZONE_ASIA_SHANGHAI	jbl/jbl_time.h	16;"	d
+JBL_USE_STDARG	jbl/jbl_config.h	13;"	d
+JBL_VAR_ENABLE	jbl/jbl_config.h	35;"	d
+JBL_VIEW_DEFAULT_TABS	jbl/jbl_stream_config.h	17;"	d
+JBL_YING_ENABLE	jbl/jbl_config.h	36;"	d
+JWL_EXLIB	jwl/makefile	/^JWL_EXLIB = -lwsock32$/;"	m
+JWL_EXLIB	jwl/makefile	/^JWL_EXLIB =$/;"	m
+JWL_EXLIB	makefile	/^JWL_EXLIB = -lwsock32$/;"	m
+JWL_EXLIB	makefile	/^JWL_EXLIB =$/;"	m
+JWL_HTTP_CACHE_MAX_AGE	jwl/jwl_http.h	29;"	d
+JWL_HTTP_CACHE_NO	jwl/jwl_http.h	28;"	d
+JWL_HTTP_CACHE_UNKNOW	jwl/jwl_http.h	27;"	d
+JWL_HTTP_CONNECTION_CLOSE	jwl/jwl_http.h	25;"	d
+JWL_HTTP_CONNECTION_KEEP_ALIVE	jwl/jwl_http.h	24;"	d
+JWL_HTTP_CONNECTION_UNKNOW	jwl/jwl_http.h	23;"	d
+JWL_HTTP_CONNECTION_UPGRADE	jwl/jwl_http.h	26;"	d
+JWL_HTTP_CONTENT_TYPE_AI	jwl/jwl_http_content.h	29;"	d
+JWL_HTTP_CONTENT_TYPE_AIF	jwl/jwl_http_content.h	91;"	d
+JWL_HTTP_CONTENT_TYPE_AIFC	jwl/jwl_http_content.h	93;"	d
+JWL_HTTP_CONTENT_TYPE_AIFF	jwl/jwl_http_content.h	92;"	d
+JWL_HTTP_CONTENT_TYPE_ASC	jwl/jwl_http_content.h	134;"	d
+JWL_HTTP_CONTENT_TYPE_AU	jwl/jwl_http_content.h	82;"	d
+JWL_HTTP_CONTENT_TYPE_AVI	jwl/jwl_http_content.h	155;"	d
+JWL_HTTP_CONTENT_TYPE_BCPIO	jwl/jwl_http_content.h	40;"	d
+JWL_HTTP_CONTENT_TYPE_BIN	jwl/jwl_http_content.h	19;"	d
+JWL_HTTP_CONTENT_TYPE_BMP	jwl/jwl_http_content.h	102;"	d
+JWL_HTTP_CONTENT_TYPE_CDF	jwl/jwl_http_content.h	59;"	d
+JWL_HTTP_CONTENT_TYPE_CLASS	jwl/jwl_http_content.h	24;"	d
+JWL_HTTP_CONTENT_TYPE_CPIO	jwl/jwl_http_content.h	43;"	d
+JWL_HTTP_CONTENT_TYPE_CPT	jwl/jwl_http_content.h	17;"	d
+JWL_HTTP_CONTENT_TYPE_CSH	jwl/jwl_http_content.h	44;"	d
+JWL_HTTP_CONTENT_TYPE_CSS	jwl/jwl_http_content.h	131;"	d
+JWL_HTTP_CONTENT_TYPE_DCR	jwl/jwl_http_content.h	45;"	d
+JWL_HTTP_CONTENT_TYPE_DIR	jwl/jwl_http_content.h	46;"	d
+JWL_HTTP_CONTENT_TYPE_DJV	jwl/jwl_http_content.h	113;"	d
+JWL_HTTP_CONTENT_TYPE_DJVU	jwl/jwl_http_content.h	112;"	d
+JWL_HTTP_CONTENT_TYPE_DLL	jwl/jwl_http_content.h	26;"	d
+JWL_HTTP_CONTENT_TYPE_DMS	jwl/jwl_http_content.h	20;"	d
+JWL_HTTP_CONTENT_TYPE_DOC	jwl/jwl_http_content.h	18;"	d
+JWL_HTTP_CONTENT_TYPE_DVI	jwl/jwl_http_content.h	48;"	d
+JWL_HTTP_CONTENT_TYPE_DXR	jwl/jwl_http_content.h	47;"	d
+JWL_HTTP_CONTENT_TYPE_EPS	jwl/jwl_http_content.h	30;"	d
+JWL_HTTP_CONTENT_TYPE_ETX	jwl/jwl_http_content.h	145;"	d
+JWL_HTTP_CONTENT_TYPE_EXE	jwl/jwl_http_content.h	23;"	d
+JWL_HTTP_CONTENT_TYPE_EZ	jwl/jwl_http_content.h	15;"	d
+JWL_HTTP_CONTENT_TYPE_FLV	jwl/jwl_http_content.h	151;"	d
+JWL_HTTP_CONTENT_TYPE_GIF	jwl/jwl_http_content.h	103;"	d
+JWL_HTTP_CONTENT_TYPE_GIF	jwl/jwl_http_content.h	104;"	d
+JWL_HTTP_CONTENT_TYPE_GTAR	jwl/jwl_http_content.h	50;"	d
+JWL_HTTP_CONTENT_TYPE_HDF	jwl/jwl_http_content.h	51;"	d
+JWL_HTTP_CONTENT_TYPE_HQX	jwl/jwl_http_content.h	16;"	d
+JWL_HTTP_CONTENT_TYPE_HTM	jwl/jwl_http_content.h	133;"	d
+JWL_HTTP_CONTENT_TYPE_HTML	jwl/jwl_http_content.h	132;"	d
+JWL_HTTP_CONTENT_TYPE_ICE	jwl/jwl_http_content.h	157;"	d
+JWL_HTTP_CONTENT_TYPE_ICO	jwl/jwl_http_content.h	158;"	d
+JWL_HTTP_CONTENT_TYPE_IEF	jwl/jwl_http_content.h	105;"	d
+JWL_HTTP_CONTENT_TYPE_IGES	jwl/jwl_http_content.h	125;"	d
+JWL_HTTP_CONTENT_TYPE_IGS	jwl/jwl_http_content.h	124;"	d
+JWL_HTTP_CONTENT_TYPE_IN	jwl/jwl_http_content.h	136;"	d
+JWL_HTTP_CONTENT_TYPE_JPE	jwl/jwl_http_content.h	108;"	d
+JWL_HTTP_CONTENT_TYPE_JPEG	jwl/jwl_http_content.h	106;"	d
+JWL_HTTP_CONTENT_TYPE_JPG	jwl/jwl_http_content.h	107;"	d
+JWL_HTTP_CONTENT_TYPE_JS	jwl/jwl_http_content.h	52;"	d
+JWL_HTTP_CONTENT_TYPE_KAR	jwl/jwl_http_content.h	86;"	d
+JWL_HTTP_CONTENT_TYPE_LATEX	jwl/jwl_http_content.h	57;"	d
+JWL_HTTP_CONTENT_TYPE_LHA	jwl/jwl_http_content.h	21;"	d
+JWL_HTTP_CONTENT_TYPE_LZH	jwl/jwl_http_content.h	22;"	d
+JWL_HTTP_CONTENT_TYPE_M3U	jwl/jwl_http_content.h	94;"	d
+JWL_HTTP_CONTENT_TYPE_MAN	jwl/jwl_http_content.h	74;"	d
+JWL_HTTP_CONTENT_TYPE_ME	jwl/jwl_http_content.h	75;"	d
+JWL_HTTP_CONTENT_TYPE_MESH	jwl/jwl_http_content.h	127;"	d
+JWL_HTTP_CONTENT_TYPE_MID	jwl/jwl_http_content.h	84;"	d
+JWL_HTTP_CONTENT_TYPE_MIDI	jwl/jwl_http_content.h	85;"	d
+JWL_HTTP_CONTENT_TYPE_MIF	jwl/jwl_http_content.h	34;"	d
+JWL_HTTP_CONTENT_TYPE_MOV	jwl/jwl_http_content.h	153;"	d
+JWL_HTTP_CONTENT_TYPE_MOVIE	jwl/jwl_http_content.h	156;"	d
+JWL_HTTP_CONTENT_TYPE_MP2	jwl/jwl_http_content.h	88;"	d
+JWL_HTTP_CONTENT_TYPE_MP3	jwl/jwl_http_content.h	89;"	d
+JWL_HTTP_CONTENT_TYPE_MP4	jwl/jwl_http_content.h	90;"	d
+JWL_HTTP_CONTENT_TYPE_MPE	jwl/jwl_http_content.h	150;"	d
+JWL_HTTP_CONTENT_TYPE_MPEG	jwl/jwl_http_content.h	148;"	d
+JWL_HTTP_CONTENT_TYPE_MPG	jwl/jwl_http_content.h	149;"	d
+JWL_HTTP_CONTENT_TYPE_MPGA	jwl/jwl_http_content.h	87;"	d
+JWL_HTTP_CONTENT_TYPE_MS	jwl/jwl_http_content.h	76;"	d
+JWL_HTTP_CONTENT_TYPE_MSH	jwl/jwl_http_content.h	126;"	d
+JWL_HTTP_CONTENT_TYPE_MXU	jwl/jwl_http_content.h	154;"	d
+JWL_HTTP_CONTENT_TYPE_NC	jwl/jwl_http_content.h	58;"	d
+JWL_HTTP_CONTENT_TYPE_ODA	jwl/jwl_http_content.h	27;"	d
+JWL_HTTP_CONTENT_TYPE_OUT	jwl/jwl_http_content.h	137;"	d
+JWL_HTTP_CONTENT_TYPE_PBM	jwl/jwl_http_content.h	117;"	d
+JWL_HTTP_CONTENT_TYPE_PDB	jwl/jwl_http_content.h	100;"	d
+JWL_HTTP_CONTENT_TYPE_PDF	jwl/jwl_http_content.h	28;"	d
+JWL_HTTP_CONTENT_TYPE_PGM	jwl/jwl_http_content.h	118;"	d
+JWL_HTTP_CONTENT_TYPE_PGN	jwl/jwl_http_content.h	42;"	d
+JWL_HTTP_CONTENT_TYPE_PNG	jwl/jwl_http_content.h	109;"	d
+JWL_HTTP_CONTENT_TYPE_PNM	jwl/jwl_http_content.h	116;"	d
+JWL_HTTP_CONTENT_TYPE_PPM	jwl/jwl_http_content.h	119;"	d
+JWL_HTTP_CONTENT_TYPE_PPT	jwl/jwl_http_content.h	36;"	d
+JWL_HTTP_CONTENT_TYPE_PS	jwl/jwl_http_content.h	31;"	d
+JWL_HTTP_CONTENT_TYPE_QT	jwl/jwl_http_content.h	152;"	d
+JWL_HTTP_CONTENT_TYPE_RA	jwl/jwl_http_content.h	98;"	d
+JWL_HTTP_CONTENT_TYPE_RAM	jwl/jwl_http_content.h	95;"	d
+JWL_HTTP_CONTENT_TYPE_RAS	jwl/jwl_http_content.h	115;"	d
+JWL_HTTP_CONTENT_TYPE_RGB	jwl/jwl_http_content.h	120;"	d
+JWL_HTTP_CONTENT_TYPE_RM	jwl/jwl_http_content.h	96;"	d
+JWL_HTTP_CONTENT_TYPE_ROFF	jwl/jwl_http_content.h	73;"	d
+JWL_HTTP_CONTENT_TYPE_RPM	jwl/jwl_http_content.h	97;"	d
+JWL_HTTP_CONTENT_TYPE_RSS	jwl/jwl_http_content.h	14;"	d
+JWL_HTTP_CONTENT_TYPE_RTF	jwl/jwl_http_content.h	139;"	d
+JWL_HTTP_CONTENT_TYPE_RTX	jwl/jwl_http_content.h	138;"	d
+JWL_HTTP_CONTENT_TYPE_SGM	jwl/jwl_http_content.h	141;"	d
+JWL_HTTP_CONTENT_TYPE_SGML	jwl/jwl_http_content.h	140;"	d
+JWL_HTTP_CONTENT_TYPE_SH	jwl/jwl_http_content.h	60;"	d
+JWL_HTTP_CONTENT_TYPE_SHAR	jwl/jwl_http_content.h	61;"	d
+JWL_HTTP_CONTENT_TYPE_SILO	jwl/jwl_http_content.h	128;"	d
+JWL_HTTP_CONTENT_TYPE_SIT	jwl/jwl_http_content.h	63;"	d
+JWL_HTTP_CONTENT_TYPE_SKD	jwl/jwl_http_content.h	54;"	d
+JWL_HTTP_CONTENT_TYPE_SKM	jwl/jwl_http_content.h	56;"	d
+JWL_HTTP_CONTENT_TYPE_SKP	jwl/jwl_http_content.h	53;"	d
+JWL_HTTP_CONTENT_TYPE_SKT	jwl/jwl_http_content.h	55;"	d
+JWL_HTTP_CONTENT_TYPE_SMI	jwl/jwl_http_content.h	32;"	d
+JWL_HTTP_CONTENT_TYPE_SMIL	jwl/jwl_http_content.h	33;"	d
+JWL_HTTP_CONTENT_TYPE_SND	jwl/jwl_http_content.h	83;"	d
+JWL_HTTP_CONTENT_TYPE_SO	jwl/jwl_http_content.h	25;"	d
+JWL_HTTP_CONTENT_TYPE_SPL	jwl/jwl_http_content.h	49;"	d
+JWL_HTTP_CONTENT_TYPE_SRC	jwl/jwl_http_content.h	78;"	d
+JWL_HTTP_CONTENT_TYPE_SV4CPIO	jwl/jwl_http_content.h	64;"	d
+JWL_HTTP_CONTENT_TYPE_SV4CRC	jwl/jwl_http_content.h	65;"	d
+JWL_HTTP_CONTENT_TYPE_SWF	jwl/jwl_http_content.h	62;"	d
+JWL_HTTP_CONTENT_TYPE_T	jwl/jwl_http_content.h	71;"	d
+JWL_HTTP_CONTENT_TYPE_TAR	jwl/jwl_http_content.h	66;"	d
+JWL_HTTP_CONTENT_TYPE_TCL	jwl/jwl_http_content.h	67;"	d
+JWL_HTTP_CONTENT_TYPE_TEX	jwl/jwl_http_content.h	68;"	d
+JWL_HTTP_CONTENT_TYPE_TEXI	jwl/jwl_http_content.h	70;"	d
+JWL_HTTP_CONTENT_TYPE_TEXINFO	jwl/jwl_http_content.h	69;"	d
+JWL_HTTP_CONTENT_TYPE_TIF	jwl/jwl_http_content.h	111;"	d
+JWL_HTTP_CONTENT_TYPE_TIFF	jwl/jwl_http_content.h	110;"	d
+JWL_HTTP_CONTENT_TYPE_TR	jwl/jwl_http_content.h	72;"	d
+JWL_HTTP_CONTENT_TYPE_TSV	jwl/jwl_http_content.h	142;"	d
+JWL_HTTP_CONTENT_TYPE_TXT	jwl/jwl_http_content.h	135;"	d
+JWL_HTTP_CONTENT_TYPE_USTAR	jwl/jwl_http_content.h	77;"	d
+JWL_HTTP_CONTENT_TYPE_VCD	jwl/jwl_http_content.h	41;"	d
+JWL_HTTP_CONTENT_TYPE_VRML	jwl/jwl_http_content.h	130;"	d
+JWL_HTTP_CONTENT_TYPE_WAV	jwl/jwl_http_content.h	99;"	d
+JWL_HTTP_CONTENT_TYPE_WBMP	jwl/jwl_http_content.h	114;"	d
+JWL_HTTP_CONTENT_TYPE_WBXML	jwl/jwl_http_content.h	37;"	d
+JWL_HTTP_CONTENT_TYPE_WML	jwl/jwl_http_content.h	143;"	d
+JWL_HTTP_CONTENT_TYPE_WMLC	jwl/jwl_http_content.h	38;"	d
+JWL_HTTP_CONTENT_TYPE_WMLS	jwl/jwl_http_content.h	144;"	d
+JWL_HTTP_CONTENT_TYPE_WMLSC	jwl/jwl_http_content.h	39;"	d
+JWL_HTTP_CONTENT_TYPE_WRL	jwl/jwl_http_content.h	129;"	d
+JWL_HTTP_CONTENT_TYPE_XBM	jwl/jwl_http_content.h	121;"	d
+JWL_HTTP_CONTENT_TYPE_XHT	jwl/jwl_http_content.h	80;"	d
+JWL_HTTP_CONTENT_TYPE_XHTML	jwl/jwl_http_content.h	79;"	d
+JWL_HTTP_CONTENT_TYPE_XLS	jwl/jwl_http_content.h	35;"	d
+JWL_HTTP_CONTENT_TYPE_XML	jwl/jwl_http_content.h	147;"	d
+JWL_HTTP_CONTENT_TYPE_XPM	jwl/jwl_http_content.h	122;"	d
+JWL_HTTP_CONTENT_TYPE_XSL	jwl/jwl_http_content.h	146;"	d
+JWL_HTTP_CONTENT_TYPE_XWD	jwl/jwl_http_content.h	123;"	d
+JWL_HTTP_CONTENT_TYPE_XYZ	jwl/jwl_http_content.h	101;"	d
+JWL_HTTP_CONTENT_TYPE_ZIP	jwl/jwl_http_content.h	81;"	d
+JWL_HTTP_ENABLE	jwl/jwl_config.h	16;"	d
+JWL_HTTP_MAX_HEADER_LENGTH	jwl/jwl_http_config.h	16;"	d
+JWL_HTTP_METHOD_GET	jwl/jwl_http.h	18;"	d
+JWL_HTTP_METHOD_POST	jwl/jwl_http.h	19;"	d
+JWL_HTTP_METHOD_UNKNOW	jwl/jwl_http.h	17;"	d
+JWL_HTTP_PROTOCOL_HTTP	jwl/jwl_http.h	21;"	d
+JWL_HTTP_PROTOCOL_HTTPS	jwl/jwl_http.h	22;"	d
+JWL_HTTP_PROTOCOL_UNKNOW	jwl/jwl_http.h	20;"	d
+JWL_HTTP_RESPONSE_SERVER_NAME	jwl/jwl_http_config.h	14;"	d
+JWL_SOCKET_ENABLE	jwl/jwl_config.h	15;"	d
+JWL_SOCKET_RECEIVE_BUF_LENGTH	jwl/jwl_socket_config.h	14;"	d
+JWL_SOCKET_STREAM_BUF_LENGTH	jwl/jwl_socket_config.h	15;"	d
+JWL_YING_ENABLE	jwl/jwl_config.h	14;"	d
+NULL	jbl/jbl_ying.h	15;"	d
+RL	jbl/jbl_md5.c	20;"	d
+UC	jbl/jbl_ying.h	34;"	d
+Vis_jbl_double	jbl/jbl_var.h	97;"	d
+Vis_jbl_false	jbl/jbl_var.h	107;"	d
+Vis_jbl_ht	jbl/jbl_ht.h	34;"	d
+Vis_jbl_int	jbl/jbl_var.h	91;"	d
+Vis_jbl_ll	jbl/jbl_ll.h	30;"	d
+Vis_jbl_ntf	jbl/jbl_var.h	104;"	d
+Vis_jbl_null	jbl/jbl_var.h	105;"	d
+Vis_jbl_stream	jbl/jbl_stream.h	95;"	d
+Vis_jbl_string	jbl/jbl_string.h	136;"	d
+Vis_jbl_time	jbl/jbl_time.h	67;"	d
+Vis_jbl_true	jbl/jbl_var.h	106;"	d
+Vis_jbl_uint	jbl/jbl_var.h	85;"	d
+__INCLUE_H	examples/include.h	2;"	d
+__JBL_AES_CONFIG_H	jbl/jbl_aes_config.h	11;"	d
+__JBL_AES_H	jbl/jbl_aes.h	11;"	d
+__JBL_ARRAY_CONFIG_H	jbl/jbl_array_config.h	11;"	d
+__JBL_ARRAY_H	jbl/jbl_array.h	11;"	d
+__JBL_BASE64_CONFIG_H	jbl/jbl_base64_config.h	11;"	d
+__JBL_BASE64_H	jbl/jbl_base64.h	11;"	d
+__JBL_BITSET_CONFIG_H	jbl/jbl_bitset_config.h	11;"	d
+__JBL_BITSET_H	jbl/jbl_bitset.h	11;"	d
+__JBL_CMD_CONFIG_H	jbl/jbl_cmd_config.h	11;"	d
+__JBL_CMD_H	jbl/jbl_cmd.h	11;"	d
+__JBL_CONFIG_H	jbl/jbl_config.h	11;"	d
+__JBL_EXCEPTION_CONFIG_H	jbl/jbl_exception_config.h	11;"	d
+__JBL_EXCEPTION_H	jbl/jbl_exception.h	11;"	d
+__JBL_FILE_CONFIG_H	jbl/jbl_file_config.h	11;"	d
+__JBL_FILE_H	jbl/jbl_file.h	11;"	d
+__JBL_GC_CONFIG_H	jbl/jbl_gc_config.h	11;"	d
+__JBL_GC_H	jbl/jbl_gc.h	11;"	d
+__JBL_HT_CONFIG_H	jbl/jbl_ht_config.h	11;"	d
+__JBL_HT_H	jbl/jbl_ht.h	11;"	d
+__JBL_INCLUE_H	jbl/jbl_include.h	11;"	d
+__JBL_LL_CONFIG_H	jbl/jbl_ll_config.h	11;"	d
+__JBL_LL_H	jbl/jbl_ll.h	11;"	d
+__JBL_MALLOC_CONFIG_H	jbl/jbl_malloc_config.h	11;"	d
+__JBL_MALLOC_H	jbl/jbl_malloc.h	11;"	d
+__JBL_MD5_CONFIG_H	jbl/jbl_md5_config.h	11;"	d
+__JBL_MD5_H	jbl/jbl_md5.h	11;"	d
+__JBL_RAND_CONFIG_H	jbl/jbl_rand_config.h	11;"	d
+__JBL_RAND_H	jbl/jbl_rand.h	11;"	d
+__JBL_SHA1_CONFIG_H	jbl/jbl_sha1_config.h	11;"	d
+__JBL_SHA1_H	jbl/jbl_sha1.h	11;"	d
+__JBL_STREAM_CONFIG_H	jbl/jbl_stream_config.h	11;"	d
+__JBL_STREAM_H	jbl/jbl_stream.h	11;"	d
+__JBL_STRING_CONFIG_H	jbl/jbl_string_config.h	11;"	d
+__JBL_STRING_H	jbl/jbl_string.h	11;"	d
+__JBL_TIME_CONFIG_H	jbl/jbl_time_config.h	11;"	d
+__JBL_TIME_H	jbl/jbl_time.h	11;"	d
+__JBL_VAR_CONFIG_H	jbl/jbl_var_config.h	11;"	d
+__JBL_VAR_H	jbl/jbl_var.h	11;"	d
+__JBL_YING_CONFIG_H	jbl/jbl_ying_config.h	11;"	d
+__JBL_YING_H	jbl/jbl_ying.h	11;"	d
+__JWL_CONFIG_H	jwl/jwl_config.h	11;"	d
+__JWL_HTTP_CONFIG_H	jwl/jwl_http_config.h	11;"	d
+__JWL_HTTP_CONTENT_H	jwl/jwl_http_content.h	11;"	d
+__JWL_HTTP_H	jwl/jwl_http.h	11;"	d
+__JWL_INCLUE_H	jwl/jwl_include.h	11;"	d
+__JWL_SOCKET_CONFIG_H	jwl/jwl_socket_config.h	11;"	d
+__JWL_SOCKET_H	jwl/jwl_socket.h	11;"	d
+__JWL_YING_CONFIG_H	jwl/jwl_ying_config.h	11;"	d
+__JWL_YING_H	jwl/jwl_ying.h	11;"	d
+__MAIN_H	examples/main.h	2;"	d
+__jbl_aes_128_cbc_sdo	jbl/jbl_aes.c	/^void __jbl_aes_128_cbc_sdo(jbl_stream* this,jbl_uint8 flags)$/;"	f
+__jbl_aes_128_cbc_seo	jbl/jbl_aes.c	/^void __jbl_aes_128_cbc_seo(jbl_stream* this,jbl_uint8 flags)$/;"	f
+__jbl_aes_128_decode_16	jbl/jbl_aes.c	/^inline void __jbl_aes_128_decode_16(__jbl_aes_128_ex_key *w,jbl_uint8* a,jbl_uint8 *b)$/;"	f
+__jbl_aes_128_ecb_sdo	jbl/jbl_aes.c	/^void __jbl_aes_128_ecb_sdo(jbl_stream* this,jbl_uint8 flags)$/;"	f
+__jbl_aes_128_ecb_seo	jbl/jbl_aes.c	/^void __jbl_aes_128_ecb_seo(jbl_stream* this,jbl_uint8 flags)$/;"	f
+__jbl_aes_128_encode_16	jbl/jbl_aes.c	/^inline void __jbl_aes_128_encode_16(__jbl_aes_128_ex_key *w,jbl_uint8* a,jbl_uint8* b)$/;"	f
+__jbl_aes_128_ex_key	jbl/jbl_aes.h	/^typedef unsigned char __jbl_aes_128_ex_key[11][4][4];$/;"	t
+__jbl_aes_128_ffmul	jbl/jbl_aes.c	/^inline jbl_uint8 __jbl_aes_128_ffmul(jbl_uint8 a,jbl_uint8 b)$/;"	f
+__jbl_aes_128_ffmul_0x02	jbl/jbl_aes.c	/^static const jbl_uint8	__jbl_aes_128_ffmul_0x02[] ={0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130,132,134,136,138,140,142,144,146,148,150,152,154,156,158,160,162,164,166,168,170,172,174,176,178,180,182,184,186,188,190,192,194,196,198,200,202,204,206,208,210,212,214,216,218,220,222,224,226,228,230,232,234,236,238,240,242,244,246,248,250,252,254,27,25,31,29,19,17,23,21,11,9,15,13,3,1,7,5,59,57,63,61,51,49,55,53,43,41,47,45,35,33,39,37,91,89,95,93,83,81,87,85,75,73,79,77,67,65,71,69,123,121,127,125,115,113,119,117,107,105,111,109,99,97,103,101,155,153,159,157,147,145,151,149,139,137,143,141,131,129,135,133,187,185,191,189,179,177,183,181,171,169,175,173,163,161,167,165,219,217,223,221,211,209,215,213,203,201,207,205,195,193,199,197,251,249,255,253,243,241,247,245,235,233,239,237,227,225,231,229};$/;"	v
+__jbl_aes_128_ffmul_0x03	jbl/jbl_aes.c	/^static const jbl_uint8	__jbl_aes_128_ffmul_0x03[] ={0,3,6,5,12,15,10,9,24,27,30,29,20,23,18,17,48,51,54,53,60,63,58,57,40,43,46,45,36,39,34,33,96,99,102,101,108,111,106,105,120,123,126,125,116,119,114,113,80,83,86,85,92,95,90,89,72,75,78,77,68,71,66,65,192,195,198,197,204,207,202,201,216,219,222,221,212,215,210,209,240,243,246,245,252,255,250,249,232,235,238,237,228,231,226,225,160,163,166,165,172,175,170,169,184,187,190,189,180,183,178,177,144,147,150,149,156,159,154,153,136,139,142,141,132,135,130,129,155,152,157,158,151,148,145,146,131,128,133,134,143,140,137,138,171,168,173,174,167,164,161,162,179,176,181,182,191,188,185,186,251,248,253,254,247,244,241,242,227,224,229,230,239,236,233,234,203,200,205,206,199,196,193,194,211,208,213,214,223,220,217,218,91,88,93,94,87,84,81,82,67,64,69,70,79,76,73,74,107,104,109,110,103,100,97,98,115,112,117,118,127,124,121,122,59,56,61,62,55,52,49,50,35,32,37,38,47,44,41,42,11,8,13,14,7,4,1,2,19,16,21,22,31,28,25,26};$/;"	v
+__jbl_aes_128_ffmul_0x09	jbl/jbl_aes.c	/^static const jbl_uint8	__jbl_aes_128_ffmul_0x09[] ={0,9,18,27,36,45,54,63,72,65,90,83,108,101,126,119,144,153,130,139,180,189,166,175,216,209,202,195,252,245,238,231,59,50,41,32,31,22,13,4,115,122,97,104,87,94,69,76,171,162,185,176,143,134,157,148,227,234,241,248,199,206,213,220,118,127,100,109,82,91,64,73,62,55,44,37,26,19,8,1,230,239,244,253,194,203,208,217,174,167,188,181,138,131,152,145,77,68,95,86,105,96,123,114,5,12,23,30,33,40,51,58,221,212,207,198,249,240,235,226,149,156,135,142,177,184,163,170,236,229,254,247,200,193,218,211,164,173,182,191,128,137,146,155,124,117,110,103,88,81,74,67,52,61,38,47,16,25,2,11,215,222,197,204,243,250,225,232,159,150,141,132,187,178,169,160,71,78,85,92,99,106,113,120,15,6,29,20,43,34,57,48,154,147,136,129,190,183,172,165,210,219,192,201,246,255,228,237,10,3,24,17,46,39,60,53,66,75,80,89,102,111,116,125,161,168,179,186,133,140,151,158,233,224,251,242,205,196,223,214,49,56,35,42,21,28,7,14,121,112,107,98,93,84,79,70};$/;"	v
+__jbl_aes_128_ffmul_0x0b	jbl/jbl_aes.c	/^static const jbl_uint8	__jbl_aes_128_ffmul_0x0b[] ={0,11,22,29,44,39,58,49,88,83,78,69,116,127,98,105,176,187,166,173,156,151,138,129,232,227,254,245,196,207,210,217,123,112,109,102,87,92,65,74,35,40,53,62,15,4,25,18,203,192,221,214,231,236,241,250,147,152,133,142,191,180,169,162,246,253,224,235,218,209,204,199,174,165,184,179,130,137,148,159,70,77,80,91,106,97,124,119,30,21,8,3,50,57,36,47,141,134,155,144,161,170,183,188,213,222,195,200,249,242,239,228,61,54,43,32,17,26,7,12,101,110,115,120,73,66,95,84,247,252,225,234,219,208,205,198,175,164,185,178,131,136,149,158,71,76,81,90,107,96,125,118,31,20,9,2,51,56,37,46,140,135,154,145,160,171,182,189,212,223,194,201,248,243,238,229,60,55,42,33,16,27,6,13,100,111,114,121,72,67,94,85,1,10,23,28,45,38,59,48,89,82,79,68,117,126,99,104,177,186,167,172,157,150,139,128,233,226,255,244,197,206,211,216,122,113,108,103,86,93,64,75,34,41,52,63,14,5,24,19,202,193,220,215,230,237,240,251,146,153,132,143,190,181,168,163};$/;"	v
+__jbl_aes_128_ffmul_0x0d	jbl/jbl_aes.c	/^static const jbl_uint8	__jbl_aes_128_ffmul_0x0d[] ={0,13,26,23,52,57,46,35,104,101,114,127,92,81,70,75,208,221,202,199,228,233,254,243,184,181,162,175,140,129,150,155,187,182,161,172,143,130,149,152,211,222,201,196,231,234,253,240,107,102,113,124,95,82,69,72,3,14,25,20,55,58,45,32,109,96,119,122,89,84,67,78,5,8,31,18,49,60,43,38,189,176,167,170,137,132,147,158,213,216,207,194,225,236,251,246,214,219,204,193,226,239,248,245,190,179,164,169,138,135,144,157,6,11,28,17,50,63,40,37,110,99,116,121,90,87,64,77,218,215,192,205,238,227,244,249,178,191,168,165,134,139,156,145,10,7,16,29,62,51,36,41,98,111,120,117,86,91,76,65,97,108,123,118,85,88,79,66,9,4,19,30,61,48,39,42,177,188,171,166,133,136,159,146,217,212,195,206,237,224,247,250,183,186,173,160,131,142,153,148,223,210,197,200,235,230,241,252,103,106,125,112,83,94,73,68,15,2,21,24,59,54,33,44,12,1,22,27,56,53,34,47,100,105,126,115,80,93,74,71,220,209,198,203,232,229,242,255,180,185,174,163,128,141,154,151};$/;"	v
+__jbl_aes_128_ffmul_0x0e	jbl/jbl_aes.c	/^static const jbl_uint8	__jbl_aes_128_ffmul_0x0e[] ={0,14,28,18,56,54,36,42,112,126,108,98,72,70,84,90,224,238,252,242,216,214,196,202,144,158,140,130,168,166,180,186,219,213,199,201,227,237,255,241,171,165,183,185,147,157,143,129,59,53,39,41,3,13,31,17,75,69,87,89,115,125,111,97,173,163,177,191,149,155,137,135,221,211,193,207,229,235,249,247,77,67,81,95,117,123,105,103,61,51,33,47,5,11,25,23,118,120,106,100,78,64,82,92,6,8,26,20,62,48,34,44,150,152,138,132,174,160,178,188,230,232,250,244,222,208,194,204,65,79,93,83,121,119,101,107,49,63,45,35,9,7,21,27,161,175,189,179,153,151,133,139,209,223,205,195,233,231,245,251,154,148,134,136,162,172,190,176,234,228,246,248,210,220,206,192,122,116,102,104,66,76,94,80,10,4,22,24,50,60,46,32,236,226,240,254,212,218,200,198,156,146,128,142,164,170,184,182,12,2,16,30,52,58,40,38,124,114,96,110,68,74,88,86,55,57,43,37,15,1,19,29,71,73,91,85,127,113,99,109,215,217,203,197,239,225,243,253,167,169,187,181,159,145,131,141};$/;"	v
+__jbl_aes_128_key	jbl/jbl_aes.h	/^typedef struct __jbl_aes_128_key$/;"	s
+__jbl_aes_invsbox	jbl/jbl_aes.c	/^static const jbl_uint8 __jbl_aes_invsbox[] = $/;"	v
+__jbl_aes_sbox	jbl/jbl_aes.c	/^static const jbl_uint8 __jbl_aes_sbox[] =$/;"	v
+__jbl_base64_decode_table	jbl/jbl_base64.c	/^static const char __jbl_base64_decode_table[]={-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,62,-2,-2,-2,63,52,53,54,55,56,57,58,59,60,61,-2,-2,-2,-2,-2,-2,-2,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-2,-2,-2,-2,-2,-2,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2};$/;"	v
+__jbl_base64_encode_table	jbl/jbl_base64.c	/^static const char __jbl_base64_encode_table[]= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+\/"; $/;"	v
+__jbl_base64_sdo	jbl/jbl_base64.c	/^void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)$/;"	f
+__jbl_base64_seo	jbl/jbl_base64.c	/^void __jbl_base64_seo(jbl_stream* this,jbl_uint8 flags)$/;"	f
+__jbl_exception	jbl/jbl_exception.c	/^void __jbl_exception(const char * function,const char * file,int line,char * x)$/;"	f
+__jbl_file	jbl/jbl_file.h	/^typedef struct __jbl_file$/;"	s
+__jbl_free_aligned	jbl/jbl_malloc.c	/^void __jbl_free_aligned(void* ptr,mst size)$/;"	f
+__jbl_free_cached_chunks	jbl/jbl_malloc.c	/^void __jbl_free_cached_chunks()$/;"	f
+__jbl_free_chunk	jbl/jbl_malloc.c	/^void __jbl_free_chunk(void *ptr)$/;"	f
+__jbl_free_chunks	jbl/jbl_malloc.c	/^void __jbl_free_chunks()$/;"	f
+__jbl_free_huge	jbl/jbl_malloc.c	/^void __jbl_free_huge(void* ptr)$/;"	f
+__jbl_free_large	jbl/jbl_malloc.c	/^void __jbl_free_large(void *ptr)$/;"	f
+__jbl_free_page	jbl/jbl_malloc.c	/^void __jbl_free_page(void *ptr)$/;"	f
+__jbl_free_small	jbl/jbl_malloc.c	/^void __jbl_free_small(void* ptr)$/;"	f
+__jbl_free_smalls	jbl/jbl_malloc.c	/^void __jbl_free_smalls()$/;"	f
+__jbl_ht	jbl/jbl_ht.h	/^typedef struct __jbl_ht$/;"	s
+__jbl_ht_data	jbl/jbl_ht.h	/^typedef struct __jbl_ht_data$/;"	s
+__jbl_ht_data_free	jbl/jbl_ht.c	/^inline void __jbl_ht_data_free(jbl_ht_data *this)$/;"	f
+__jbl_ht_data_init	jbl/jbl_ht.c	/^inline void __jbl_ht_data_init(jbl_ht_data *this)$/;"	f
+__jbl_ht_get	jbl/jbl_ht.c	/^jbl_var * __jbl_ht_get(const jbl_ht *this,ht h,jbl_string *k)$/;"	f
+__jbl_ht_insert	jbl/jbl_ht.c	/^jbl_ht * __jbl_ht_insert(jbl_ht *this,ht h,jbl_string *k,jbl_var *v)$/;"	f
+__jbl_ht_size_type	jbl/jbl_ht_config.h	/^	typedef jbl_int32 			__jbl_ht_size_type;		$/;"	t
+__jbl_ht_size_type	jbl/jbl_ht_config.h	/^	typedef jbl_int64 			__jbl_ht_size_type;		$/;"	t
+__jbl_ht_unset	jbl/jbl_ht.c	/^jbl_ht * __jbl_ht_unset(jbl_ht *this,ht h,jbl_string *k)$/;"	f
+__jbl_ll	jbl/jbl_ll.h	/^typedef struct __jbl_ll$/;"	s
+__jbl_ll_node	jbl/jbl_ll.h	/^typedef struct __jbl_ll_node$/;"	s
+__jbl_malloc_aligned	jbl/jbl_malloc.c	/^void *__jbl_malloc_aligned(mst size,mst alignment)$/;"	f
+__jbl_malloc_chunk	jbl/jbl_malloc.c	/^void *__jbl_malloc_chunk()$/;"	f
+__jbl_malloc_chunk_struct	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_chunk_struct$/;"	s
+__jbl_malloc_count	jbl/jbl_malloc.c	/^	jbl_uint64 __jbl_malloc_count[3];$/;"	v
+__jbl_malloc_free_slot	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_free_slot$/;"	s
+__jbl_malloc_heap_struct	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_heap_struct$/;"	s
+__jbl_malloc_huge	jbl/jbl_malloc.c	/^void *__jbl_malloc_huge(mst size)$/;"	f
+__jbl_malloc_huge_struct	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_huge_struct$/;"	s
+__jbl_malloc_large	jbl/jbl_malloc.c	/^void* __jbl_malloc_large(mst size)$/;"	f
+__jbl_malloc_mmap	jbl/jbl_malloc.c	/^void* __jbl_malloc_mmap(mst size)$/;"	f
+__jbl_malloc_munmap	jbl/jbl_malloc.c	/^void __jbl_malloc_munmap(void *ptr, mst size)$/;"	f
+__jbl_malloc_page	jbl/jbl_malloc.c	/^void *__jbl_malloc_page(jbl_uint16 nums,jbl_uint8 type)\/\/type为0用于large，type为1用于small$/;"	f
+__jbl_malloc_small	jbl/jbl_malloc.c	/^void* __jbl_malloc_small(jbl_uint16 size)$/;"	f
+__jbl_malloc_small_count	jbl/jbl_malloc.c	/^	jbl_uint64 __jbl_malloc_small_count[30];$/;"	v
+__jbl_md5_encode	jbl/jbl_md5.c	/^void __jbl_md5_encode(const jbl_uint32* input,jbl_uint8* output,jbl_string_size_type length)$/;"	f
+__jbl_md5_init	jbl/jbl_md5.c	/^void __jbl_md5_init(const jbl_uint8* input,jbl_string_size_type len,jbl_uint32 state[4],jbl_uint32 count[2],jbl_uint8 buffer[64])$/;"	f
+__jbl_md5_transform	jbl/jbl_md5.c	/^void __jbl_md5_transform(jbl_uint32 state[4],const jbl_uint8 block[64])$/;"	f
+__jbl_rand_buf	jbl/jbl_rand.c	/^jbl_uint32 __jbl_rand_buf[624];$/;"	v
+__jbl_rand_generate	jbl/jbl_rand.c	/^void __jbl_rand_generate()$/;"	f
+__jbl_rand_index	jbl/jbl_rand.c	/^jbl_uint16 __jbl_rand_index;$/;"	v
+__jbl_rand_next	jbl/jbl_rand.c	/^jbl_uint32 __jbl_rand_next;$/;"	v
+__jbl_sha1_process	jbl/jbl_sha1.c	/^void __jbl_sha1_process(jbl_uint32 hb[5],jbl_uint32 *mbc,jbl_uint8 mb[64])$/;"	f
+__jbl_stream	jbl/jbl_stream.h	/^typedef struct __jbl_stream$/;"	s
+__jbl_stream_operater	jbl/jbl_stream.h	/^typedef struct __jbl_stream_operater$/;"	s
+__jbl_string	jbl/jbl_string.h	/^typedef struct __jbl_string$/;"	s
+__jbl_time	jbl/jbl_time.h	/^typedef struct __jbl_time$/;"	s
+__jbl_time_decoded	jbl/jbl_time.h	/^typedef struct __jbl_time_decoded$/;"	s
+__jbl_var	jbl/jbl_var.h	/^typedef struct __jbl_var$/;"	s
+__jbl_var_data	jbl/jbl_var.h	/^typedef struct __jbl_var_data$/;"	s
+__jbl_var_data_free	jbl/jbl_var.c	/^jbl_var * __jbl_var_data_free(jbl_var *this)$/;"	f
+__jbl_var_data_new	jbl/jbl_var.c	/^jbl_var * __jbl_var_data_new(const jbl_var_operators *ops)$/;"	f
+__jbl_var_operators	jbl/jbl_var.h	/^typedef struct __jbl_var_operators$/;"	s
+__jwl_http_reqh	jwl/jwl_http.h	/^typedef struct __jwl_http_reqh\/\/request head 请求头$/;"	s
+__jwl_http_resh	jwl/jwl_http.h	/^typedef struct __jwl_http_resh\/\/response head 响应头$/;"	s
+__jwl_socket	jwl/jwl_socket.h	/^typedef struct __jwl_socket$/;"	s
+_st	jbl/jbl_ht.c	21;"	d
+_st	jbl/jbl_ht.c	432;"	d
+applied_peak	jbl/jbl_malloc.h	/^		jbl_malloc_size_type applied_peak;\/\/申请峰值$/;"	m	struct:__jbl_malloc_heap_struct
+applied_size	jbl/jbl_malloc.h	/^		jbl_malloc_size_type applied_size;\/\/申请$/;"	m	struct:__jbl_malloc_heap_struct
+buf	jbl/jbl_stream.h	/^	unsigned char	*buf;$/;"	m	struct:__jbl_stream
+cache	jwl/jwl_http.h	/^	jbl_uint32		cache:2;$/;"	m	struct:__jwl_http_reqh
+cache	jwl/jwl_http.h	/^	jbl_uint32 		cache:2;$/;"	m	struct:__jwl_http_resh
+cache_max_age	jwl/jwl_http.h	/^	jbl_uint32		cache_max_age;$/;"	m	struct:__jwl_http_reqh
+cache_max_age	jwl/jwl_http.h	/^	jbl_uint32 		cache_max_age;	$/;"	m	struct:__jwl_http_resh
+cached_chunk	jbl/jbl_malloc.h	/^		jbl_malloc_chunk_struct	*cached_chunk;$/;"	m	struct:__jbl_malloc_heap_struct
+cached_chunk_count	jbl/jbl_malloc.h	/^		jbl_uint32	cached_chunk_count;$/;"	m	struct:__jbl_malloc_heap_struct
+child	jbl/jbl_file.h	/^			jbl_ht child;$/;"	m	struct:__jbl_file::__anon1::__anon3
+connection	jwl/jwl_http.h	/^	jbl_uint32		connection:2;$/;"	m	struct:__jwl_http_reqh
+content_type	jwl/jwl_http.h	/^	jbl_string *	content_type;$/;"	m	struct:__jwl_http_resh
+cookie	jwl/jwl_http.h	/^	jbl_ht *		cookie;$/;"	m	struct:__jwl_http_reqh
+copy	jbl/jbl_var.h	/^	void*	(*copy)(void*);$/;"	m	struct:__jbl_var_operators
+count	jbl/jbl_malloc.c	/^	jbl_uint16 count;$/;"	m	struct:__anon5
+d	jbl/jbl_var.h	/^		double d;$/;"	m	union:__jbl_var_data::__anon7
+data	jbl/jbl_ht.h	/^	jbl_ht_data		*data;$/;"	m	struct:__jbl_ht
+data	jbl/jbl_stream.h	/^	void		*data;$/;"	m	struct:__jbl_stream
+day	jbl/jbl_time.h	/^	int year,month,day,hour,minute,second,ms;$/;"	m	struct:__jbl_time_decoded
+det	jbl/jbl_base64.c	18;"	d
+dir	jbl/jbl_file.h	/^		}dir;$/;"	m	union:__jbl_file::__anon1	typeref:struct:__jbl_file::__anon1::__anon3
+dt	jbl/jbl_ht.c	23;"	d
+dt	jbl/jbl_ht.c	434;"	d
+en	jbl/jbl_stream.h	/^	jbl_uint16	en;$/;"	m	struct:__jbl_stream
+ent	jbl/jbl_base64.c	19;"	d
+etag	jwl/jwl_http.h	/^	jbl_string *	etag;$/;"	m	struct:__jwl_http_reqh
+etag	jwl/jwl_http.h	/^	jbl_string *	etag;$/;"	m	struct:__jwl_http_resh
+f	jbl/jbl_file.h	/^	struct __jbl_file *f;$/;"	m	struct:__jbl_file	typeref:struct:__jbl_file::__jbl_file
+false	jbl/jbl_ying.h	18;"	d
+ffmul	jbl/jbl_aes.c	409;"	d
+ffmul	jbl/jbl_aes.c	57;"	d
+ffmul	jbl/jbl_aes.c	65;"	d
+file	jbl/jbl_file.h	/^		}file;$/;"	m	union:__jbl_file::__anon1	typeref:struct:__jbl_file::__anon1::__anon2
+filename	examples/main.h	6;"	d
+filename	examples/main.h	9;"	d
+fmap	jbl/jbl_malloc.h	/^		jbl_bitset_type					fmap[jbl_malloc_fmap_len];		\/\/16*32bit$/;"	m	struct:__jbl_malloc_chunk_struct
+free	jbl/jbl_stream.h	/^	void  (*free)(void*);$/;"	m	struct:__jbl_stream_operater
+free	jbl/jbl_var.h	/^	void*	(*free)(void*);$/;"	m	struct:__jbl_var_operators
+free_pages	jbl/jbl_malloc.h	/^		jbl_uint16						free_pages;		$/;"	m	struct:__jbl_malloc_chunk_struct
+gc	jbl/jbl_aes.h	/^	jbl_gc gc;$/;"	m	struct:__jbl_aes_128_key
+gc	jbl/jbl_gc.h	/^	jbl_gc gc;$/;"	m	struct:__anon4
+gc	jbl/jbl_ht.h	/^	jbl_gc gc;	$/;"	m	struct:__jbl_ht
+gc	jbl/jbl_ll.h	/^	jbl_gc gc;$/;"	m	struct:__jbl_ll
+gc	jbl/jbl_stream.h	/^	jbl_gc gc;						\/\/注意，这个虽然有gc但是仍然是强制拷贝，使用gc是为了支持引用$/;"	m	struct:__jbl_stream
+gc	jbl/jbl_string.h	/^	jbl_gc 					gc;$/;"	m	struct:__jbl_string
+gc	jbl/jbl_time.h	/^	jbl_gc gc;$/;"	m	struct:__jbl_time
+gc	jbl/jbl_var.h	/^	jbl_gc gc;$/;"	m	struct:__jbl_var_data
+gc	jwl/jwl_http.h	/^	jbl_gc gc;$/;"	m	struct:__jwl_http_reqh
+gc	jwl/jwl_http.h	/^	jbl_gc gc;$/;"	m	struct:__jwl_http_resh
+gc	jwl/jwl_socket.h	/^	jbl_gc gc;$/;"	m	struct:__jwl_socket
+gh2	jbl/jbl_ht.c	24;"	d
+gh2	jbl/jbl_ht.c	435;"	d
+h	jbl/jbl_ht.h	/^	jbl_string_hash_type	h;$/;"	m	struct:__jbl_ht_data
+h	jbl/jbl_string.h	/^	jbl_string_hash_type 	h;$/;"	m	struct:__jbl_string
+handle	jbl/jbl_file.h	/^			FILE *handle;$/;"	m	struct:__jbl_file::__anon1::__anon2
+handle	jwl/jwl_socket.h	/^	SOCKET handle;$/;"	m	struct:__jwl_socket
+handle	jwl/jwl_socket.h	/^	int handle;$/;"	m	struct:__jwl_socket
+hb	jbl/jbl_bitset.c	131;"	d
+hb	jbl/jbl_bitset.c	63;"	d
+hb	jbl/jbl_bitset.c	66;"	d
+hb0	jbl/jbl_bitset.c	132;"	d
+hb0	jbl/jbl_bitset.c	64;"	d
+hb0	jbl/jbl_bitset.c	67;"	d
+head	jbl/jbl_ll.h	/^	struct __jbl_ll_node *head,*tail;$/;"	m	struct:__jbl_ll	typeref:struct:__jbl_ll::__jbl_ll_node
+host	jwl/jwl_http.h	/^	jbl_string *	host;$/;"	m	struct:__jwl_http_reqh
+hour	jbl/jbl_time.h	/^	int year,month,day,hour,minute,second,ms;$/;"	m	struct:__jbl_time_decoded
+ht	jbl/jbl_ht.c	22;"	d
+ht	jbl/jbl_ht.c	433;"	d
+htvh	jbl/jbl_ht.c	25;"	d
+htvh	jbl/jbl_ht.c	436;"	d
+huge_list	jbl/jbl_malloc.h	/^		struct __jbl_malloc_huge_struct *huge_list;$/;"	m	struct:__jbl_malloc_heap_struct	typeref:struct:__jbl_malloc_heap_struct::__jbl_malloc_huge_struct
+i	jbl/jbl_var.h	/^		jbl_int64 i;$/;"	m	union:__jbl_var_data::__anon7
+ip	examples/request.c	2;"	d
+ip	examples/test2.c	2;"	d
+jbl_V	jbl/jbl_var.h	54;"	d
+jbl_Vdouble_copy	jbl/jbl_var.c	/^inline jbl_var * jbl_Vdouble_copy(jbl_var * that)$/;"	f
+jbl_Vdouble_json_encode	jbl/jbl_var.c	/^jbl_string* jbl_Vdouble_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vdouble_json_put	jbl/jbl_var.c	/^void jbl_Vdouble_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vdouble_new	jbl/jbl_var.c	/^inline jbl_var * jbl_Vdouble_new(){return __jbl_var_data_new(&jbl_double_operators);}$/;"	f
+jbl_Vdouble_set	jbl/jbl_var.c	/^inline jbl_var * jbl_Vdouble_set(jbl_var * this,double data)$/;"	f
+jbl_Vdouble_space_ship	jbl/jbl_var.c	/^inline char jbl_Vdouble_space_ship(jbl_var * this,jbl_var * that)$/;"	f
+jbl_Vdouble_view_put	jbl/jbl_var.c	/^void jbl_Vdouble_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_Vfalse_new	jbl/jbl_var.c	/^inline jbl_var * jbl_Vfalse_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=1;return this;}$/;"	f
+jbl_Vht	jbl/jbl_ht.c	/^inline jbl_ht* jbl_Vht(jbl_var * this){if(!Vis_jbl_ht(this))jbl_exception("VAR TYPE ERROR");return((jbl_ht*)this);}$/;"	f
+jbl_Vht_new	jbl/jbl_ht.c	/^jbl_var * jbl_Vht_new()$/;"	f
+jbl_Vint_copy	jbl/jbl_var.c	/^inline jbl_var * jbl_Vint_copy(jbl_var * that)$/;"	f
+jbl_Vint_json_encode	jbl/jbl_var.c	/^jbl_string* jbl_Vint_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vint_json_put	jbl/jbl_var.c	/^void jbl_Vint_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vint_new	jbl/jbl_var.c	/^inline jbl_var * jbl_Vint_new(){return __jbl_var_data_new(&jbl_int_operators);}$/;"	f
+jbl_Vint_set	jbl/jbl_var.c	/^inline jbl_var * jbl_Vint_set(jbl_var * this,jbl_int64 data)$/;"	f
+jbl_Vint_space_ship	jbl/jbl_var.c	/^inline char jbl_Vint_space_ship(jbl_var * this,jbl_var * that)$/;"	f
+jbl_Vint_view_put	jbl/jbl_var.c	/^void jbl_Vint_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_Vll	jbl/jbl_ll.c	/^inline jbl_ll* jbl_Vll(jbl_var * this){if(!Vis_jbl_ll(this))jbl_exception("VAR TYPE ERROR");return((jbl_ll*)this);}$/;"	f
+jbl_Vll_new	jbl/jbl_ll.c	/^jbl_var * jbl_Vll_new()$/;"	f
+jbl_Vntf_copy	jbl/jbl_var.c	/^inline jbl_var * jbl_Vntf_copy(jbl_var * that)$/;"	f
+jbl_Vntf_json_encode	jbl/jbl_var.c	/^jbl_string* jbl_Vntf_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vntf_json_put	jbl/jbl_var.c	/^void jbl_Vntf_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vntf_space_ship	jbl/jbl_var.c	/^inline char jbl_Vntf_space_ship(jbl_var * this,jbl_var * that)$/;"	f
+jbl_Vntf_view_put	jbl/jbl_var.c	/^void jbl_Vntf_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_Vnull_new	jbl/jbl_var.c	/^inline jbl_var * jbl_Vnull_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=0;return this;}$/;"	f
+jbl_Vstream	jbl/jbl_stream.c	/^inline jbl_stream * jbl_Vstream(jbl_var * this){if(!Vis_jbl_stream(this))jbl_exception("VAR TYPE ERROR");return((jbl_stream*)this);}$/;"	f
+jbl_Vstream_new	jbl/jbl_stream.c	/^inline jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp)$/;"	f
+jbl_Vstring	jbl/jbl_string.c	/^inline jbl_string * jbl_Vstring(jbl_var * this){if(!Vis_jbl_string(this))jbl_exception("VAR TYPE ERROR");return((jbl_string*)this);}$/;"	f
+jbl_Vstring_new	jbl/jbl_string.c	/^jbl_var * jbl_Vstring_new()$/;"	f
+jbl_Vtime	jbl/jbl_time.c	/^inline jbl_time* jbl_Vtime(jbl_var * this){if(!Vis_jbl_time(this))jbl_exception("VAR TYPE ERROR");return((jbl_time*)this);}$/;"	f
+jbl_Vtime_new	jbl/jbl_time.c	/^jbl_var * jbl_Vtime_new()$/;"	f
+jbl_Vtime_to_string	jbl/jbl_time.h	58;"	d
+jbl_Vtrue_new	jbl/jbl_var.c	/^inline jbl_var * jbl_Vtrue_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=2;return this;}$/;"	f
+jbl_Vuint_copy	jbl/jbl_var.c	/^inline jbl_var * jbl_Vuint_copy(jbl_var * that)$/;"	f
+jbl_Vuint_json_encode	jbl/jbl_var.c	/^jbl_string* jbl_Vuint_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vuint_json_put	jbl/jbl_var.c	/^void jbl_Vuint_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_Vuint_new	jbl/jbl_var.c	/^inline jbl_var * jbl_Vuint_new(){return __jbl_var_data_new(&jbl_uint_operators);}$/;"	f
+jbl_Vuint_set	jbl/jbl_var.c	/^inline jbl_var * jbl_Vuint_set(jbl_var * this,jbl_uint64 data)$/;"	f
+jbl_Vuint_space_ship	jbl/jbl_var.c	/^inline char jbl_Vuint_space_ship(jbl_var * this,jbl_var * that)$/;"	f
+jbl_Vuint_view_put	jbl/jbl_var.c	/^void jbl_Vuint_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_aes_128_cbc_decode	jbl/jbl_aes.c	/^jbl_string * jbl_aes_128_cbc_decode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_string *in,jbl_string *out)$/;"	f
+jbl_aes_128_cbc_encode	jbl/jbl_aes.c	/^jbl_string * jbl_aes_128_cbc_encode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_string *in,jbl_string *out)$/;"	f
+jbl_aes_128_cbc_update_stream_buf	jbl/jbl_aes.c	/^void jbl_aes_128_cbc_update_stream_buf(jbl_stream *this)$/;"	f
+jbl_aes_128_ecb_decode	jbl/jbl_aes.c	/^jbl_string * jbl_aes_128_ecb_decode(jbl_aes_128_key *w,const jbl_string *in,jbl_string *out)$/;"	f
+jbl_aes_128_ecb_encode	jbl/jbl_aes.c	/^jbl_string * jbl_aes_128_ecb_encode(jbl_aes_128_key *w,const jbl_string *in,jbl_string *out)$/;"	f
+jbl_aes_128_extend_key	jbl/jbl_aes.c	/^jbl_aes_128_key* jbl_aes_128_extend_key(unsigned char* key)$/;"	f
+jbl_aes_128_key	jbl/jbl_aes.h	/^}jbl_aes_128_key;$/;"	t	typeref:struct:__jbl_aes_128_key
+jbl_aes_128_key_copy	jbl/jbl_aes.c	/^inline jbl_aes_128_key *jbl_aes_128_key_copy(jbl_aes_128_key *that)$/;"	f
+jbl_aes_128_key_free	jbl/jbl_aes.c	/^inline jbl_aes_128_key*	jbl_aes_128_key_free(jbl_aes_128_key* w)$/;"	f
+jbl_base64_decode	jbl/jbl_base64.c	/^jbl_string * jbl_base64_decode(const jbl_string *this,jbl_string *result)$/;"	f
+jbl_base64_encode	jbl/jbl_base64.c	/^jbl_string * jbl_base64_encode(const jbl_string *this,jbl_string *result)$/;"	f
+jbl_bitset_2bits	jbl/jbl_bitset.h	19;"	d
+jbl_bitset_2bits	jbl/jbl_bitset.h	22;"	d
+jbl_bitset_bits	jbl/jbl_bitset_config.h	16;"	d
+jbl_bitset_bits	jbl/jbl_bitset_config.h	18;"	d
+jbl_bitset_find0	jbl/jbl_bitset.c	/^jbl_uint32 jbl_bitset_find0(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 len)$/;"	f
+jbl_bitset_find1	jbl/jbl_bitset.c	/^jbl_uint32 jbl_bitset_find1(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 len)$/;"	f
+jbl_bitset_init	jbl/jbl_bitset.c	/^inline void jbl_bitset_init(jbl_bitset_type *bitset,jbl_uint32 len)$/;"	f
+jbl_bitset_reset	jbl/jbl_bitset.c	/^void jbl_bitset_reset(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 cnt)$/;"	f
+jbl_bitset_set	jbl/jbl_bitset.c	/^void jbl_bitset_set(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 cnt)$/;"	f
+jbl_bitset_type	jbl/jbl_bitset.h	/^typedef jbl_uint32 jbl_bitset_type;$/;"	t
+jbl_bitset_type	jbl/jbl_bitset.h	/^typedef jbl_uint64 jbl_bitset_type;$/;"	t
+jbl_bitset_view	jbl/jbl_bitset.h	27;"	d
+jbl_bitset_view	jbl/jbl_bitset.h	29;"	d
+jbl_ceil	jbl/jbl_ying.c	/^inline jbl_int64 jbl_ceil(long double i)$/;"	f
+jbl_derefer	jbl/jbl_gc.c	/^void * jbl_derefer(void *ptr)$/;"	f
+jbl_double_operators	jbl/jbl_var.c	/^const jbl_var_operators jbl_double_operators={$/;"	v
+jbl_exception	jbl/jbl_exception.h	19;"	d
+jbl_exception	jbl/jbl_exception.h	27;"	d
+jbl_exception_add_exit_function	jbl/jbl_exception.c	/^void jbl_exception_add_exit_function(void (*func)(void))$/;"	f
+jbl_exception_add_exit_function	jbl/jbl_exception.h	26;"	d
+jbl_exception_exit_functions	jbl/jbl_exception.c	/^void  (*jbl_exception_exit_functions[JBL_EXCEPTION_EXIT_FUNCTIONS_LENGTH])(void);$/;"	v
+jbl_exception_exit_functions_cnt	jbl/jbl_exception.c	/^jbl_uint32 jbl_exception_exit_functions_cnt;$/;"	v
+jbl_exception_on_error	jbl/jbl_exception.c	/^jbl_uint8 jbl_exception_on_error;$/;"	v
+jbl_execute_cmd	jbl/jbl_cmd.c	/^jbl_string * jbl_execute_cmd(const jbl_string *cmd,jbl_string *result)$/;"	f
+jbl_exit	jbl/jbl_exception.h	21;"	d
+jbl_exit	jbl/jbl_exception.h	28;"	d
+jbl_file	jbl/jbl_file.h	/^}jbl_file;$/;"	t	typeref:struct:__jbl_file
+jbl_file_clear	jbl/jbl_file.c	/^void jbl_file_clear(jbl_file *this)$/;"	f
+jbl_file_copy	jbl/jbl_file.c	/^void jbl_file_copy(jbl_file *this,jbl_file *that,jbl_copy_type cpt)$/;"	f
+jbl_file_equal	jbl/jbl_file.h	48;"	d
+jbl_file_equal_light	jbl/jbl_file.h	49;"	d
+jbl_file_equal_light_copy	jbl/jbl_file.h	50;"	d
+jbl_file_file_cd	jbl/jbl_file.c	/^void jbl_file_file_cd(jbl_file *this,jbl_file *that,jbl_string *name,jbl_copy_type ncpt)$/;"	f
+jbl_file_file_open_ex	jbl/jbl_file.c	/^void jbl_file_file_open_ex(jbl_file *this,jbl_file *f,jbl_string *name,jbl_copy_type ncpt,jbl_uint32 recursive_time)$/;"	f
+jbl_file_free	jbl/jbl_file.c	/^void jbl_file_free(jbl_file *this)$/;"	f
+jbl_file_init	jbl/jbl_file.c	/^void jbl_file_init(jbl_file *this)$/;"	f
+jbl_file_init_as	jbl/jbl_file.c	/^void jbl_file_init_as(jbl_file *this,jbl_uint8 type)$/;"	f
+jbl_file_open	jbl/jbl_file.h	54;"	d
+jbl_file_space_ship	jbl/jbl_file.c	/^inline char jbl_file_space_ship(const jbl_file *this,const jbl_file *that)$/;"	f
+jbl_file_view	jbl/jbl_file.h	52;"	d
+jbl_file_view_ex	jbl/jbl_file.c	/^void jbl_file_view_ex(const jbl_file *this,FILE * file,char*str,int a,int tabs)$/;"	f
+jbl_free	jbl/jbl_malloc.c	/^inline void jbl_free(void * p)$/;"	f
+jbl_gc	jbl/jbl_gc.h	/^typedef jbl_uint32 jbl_gc;$/;"	t
+jbl_gc_init	jbl/jbl_gc.h	31;"	d
+jbl_gc_is_pvar	jbl/jbl_gc.h	46;"	d
+jbl_gc_is_ref	jbl/jbl_gc.h	38;"	d
+jbl_gc_is_var	jbl/jbl_gc.h	42;"	d
+jbl_gc_minus	jbl/jbl_gc.h	33;"	d
+jbl_gc_plus	jbl/jbl_gc.h	32;"	d
+jbl_gc_refcnt	jbl/jbl_gc.h	34;"	d
+jbl_gc_set_pvar	jbl/jbl_gc.h	44;"	d
+jbl_gc_set_ref	jbl/jbl_gc.h	36;"	d
+jbl_gc_set_var	jbl/jbl_gc.h	40;"	d
+jbl_gc_view	jbl/jbl_gc.h	51;"	d
+jbl_highbit	jbl/jbl_bitset.c	/^jbl_uint8 jbl_highbit(jbl_uint64 a)$/;"	f
+jbl_highbit0	jbl/jbl_bitset.c	/^jbl_uint8 jbl_highbit0(jbl_uint64 a)$/;"	f
+jbl_highbit32	jbl/jbl_bitset.c	/^jbl_uint8 jbl_highbit32(jbl_uint32 a)$/;"	f
+jbl_highbit320	jbl/jbl_bitset.c	/^jbl_uint8 jbl_highbit320(jbl_uint32 a)$/;"	f
+jbl_ht	jbl/jbl_ht.h	/^}jbl_ht;$/;"	t	typeref:struct:__jbl_ht
+jbl_ht	jbl/jbl_ll.h	/^typedef struct __jbl_ht jbl_ht;$/;"	t	typeref:struct:__jbl_ht
+jbl_ht_copy	jbl/jbl_ht.c	/^inline jbl_ht *jbl_ht_copy(jbl_ht *that)$/;"	f
+jbl_ht_data	jbl/jbl_ht.h	/^}jbl_ht_data;$/;"	t	typeref:struct:__jbl_ht_data
+jbl_ht_extend	jbl/jbl_ht.c	/^inline jbl_ht * jbl_ht_extend(jbl_ht *this,st size)$/;"	f
+jbl_ht_extend_to	jbl/jbl_ht.c	/^jbl_ht * jbl_ht_extend_to(jbl_ht *this,st size)$/;"	f
+jbl_ht_foreach	jbl/jbl_ht.h	44;"	d
+jbl_ht_free	jbl/jbl_ht.c	/^jbl_ht* jbl_ht_free(jbl_ht *this)$/;"	f
+jbl_ht_get	jbl/jbl_ht.c	/^inline jbl_var * jbl_ht_get			(const jbl_ht *this,jbl_string *k)			{return __jbl_ht_get(this,jbl_string_hash(k),k);}$/;"	f
+jbl_ht_get_chars	jbl/jbl_ht.c	/^inline jbl_var * jbl_ht_get_chars	(const jbl_ht *this,unsigned char *kk)		{jbl_string * k=jbl_string_add_chars(NULL,kk);jbl_var *v=jbl_ht_get(this,k);jbl_string_free(k);return v;}$/;"	f
+jbl_ht_get_int	jbl/jbl_ht.c	/^inline jbl_var * jbl_ht_get_int		(const jbl_ht *this,ht h)					{return __jbl_ht_get(this,h,NULL);}$/;"	f
+jbl_ht_get_length	jbl/jbl_ht.h	64;"	d
+jbl_ht_if_big	jbl/jbl_ht.h	57;"	d
+jbl_ht_if_equal	jbl/jbl_ht.h	58;"	d
+jbl_ht_if_equal_big	jbl/jbl_ht.h	61;"	d
+jbl_ht_if_equal_small	jbl/jbl_ht.h	60;"	d
+jbl_ht_if_small	jbl/jbl_ht.h	59;"	d
+jbl_ht_init	jbl/jbl_ht.c	/^inline jbl_ht * jbl_ht_init(jbl_ht *this)$/;"	f
+jbl_ht_insert	jbl/jbl_ht.c	/^inline jbl_ht  * jbl_ht_insert		(jbl_ht *this,jbl_string *k,jbl_var *v)		{return __jbl_ht_insert(this,jbl_string_hash(k),k,v);}$/;"	f
+jbl_ht_insert_chars	jbl/jbl_ht.c	/^inline jbl_ht  * jbl_ht_insert_chars(jbl_ht *this,unsigned char *kk,jbl_var *v)	{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_insert(this,k,v);jbl_string_free(k);return this;}$/;"	f
+jbl_ht_insert_int	jbl/jbl_ht.c	/^inline jbl_ht  * jbl_ht_insert_int	(jbl_ht *this,ht h,jbl_var *v)				{return __jbl_ht_insert(this,h,NULL,v);}$/;"	f
+jbl_ht_json_decode	jbl/jbl_ht.c	/^jbl_ht* jbl_ht_json_decode(jbl_ht *this,const jbl_string* in,jbl_string_size_type *start)$/;"	f
+jbl_ht_json_encode	jbl/jbl_ht.c	/^jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_ht_json_put	jbl/jbl_ht.c	/^void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_ht_merge	jbl/jbl_ht.c	/^jbl_ht * jbl_ht_merge(jbl_ht *this,jbl_ht *that)$/;"	f
+jbl_ht_merge_int	jbl/jbl_ht.c	/^jbl_ht * jbl_ht_merge_int(jbl_ht *this)$/;"	f
+jbl_ht_merge_ll	jbl/jbl_ht.c	/^jbl_ht *jbl_ht_merge_ll(jbl_ht *this,jbl_ll *that)$/;"	f
+jbl_ht_new	jbl/jbl_ht.c	/^inline jbl_ht * jbl_ht_new()$/;"	f
+jbl_ht_operators	jbl/jbl_ht.c	/^const jbl_var_operators jbl_ht_operators={$/;"	v
+jbl_ht_rehash	jbl/jbl_ht.c	/^jbl_ht * jbl_ht_rehash(jbl_ht *this)$/;"	f
+jbl_ht_size_type	jbl/jbl_ht_config.h	/^	typedef jbl_uint32 			jbl_ht_size_type;		$/;"	t
+jbl_ht_size_type	jbl/jbl_ht_config.h	/^	typedef jbl_uint64 			jbl_ht_size_type;		$/;"	t
+jbl_ht_space_ship	jbl/jbl_ht.c	/^char jbl_ht_space_ship(const jbl_ht *this_,const jbl_ht *that_)$/;"	f
+jbl_ht_unset	jbl/jbl_ht.c	/^inline jbl_ht  * jbl_ht_unset		(jbl_ht *this,jbl_string *k)				{return __jbl_ht_unset(this,jbl_string_hash(k),k);}$/;"	f
+jbl_ht_unset_chars	jbl/jbl_ht.c	/^inline jbl_ht  * jbl_ht_unset_chars	(jbl_ht *this,unsigned char *kk)			{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_unset(this,k);jbl_string_free(k);return this;}$/;"	f
+jbl_ht_unset_int	jbl/jbl_ht.c	/^inline jbl_ht  * jbl_ht_unset_int	(jbl_ht *this,ht h)							{return __jbl_ht_unset(this,h,NULL);}$/;"	f
+jbl_ht_view	jbl/jbl_ht.h	74;"	d
+jbl_ht_view_put	jbl/jbl_ht.c	/^void jbl_ht_view_put(const jbl_ht* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_hth	jbl/jbl_ht.c	/^inline jbl_string_hash_type jbl_hth(jbl_ht_data *node){return node->h;}$/;"	f
+jbl_htk	jbl/jbl_ht.c	/^inline jbl_string * jbl_htk(jbl_ht_data *node){return node->k;}$/;"	f
+jbl_htv	jbl/jbl_ht.c	/^inline jbl_var * jbl_htv(jbl_ht_data *node){return node->v;}$/;"	f
+jbl_int16	jbl/jbl_ying.h	/^typedef short				jbl_int16;$/;"	t
+jbl_int32	jbl/jbl_ying.h	/^typedef int					jbl_int32;$/;"	t
+jbl_int64	jbl/jbl_ying.h	/^typedef long long			jbl_int64;$/;"	t
+jbl_int8	jbl/jbl_ying.h	/^typedef char				jbl_int8;$/;"	t
+jbl_int_operators	jbl/jbl_var.c	/^const jbl_var_operators jbl_int_operators={$/;"	v
+jbl_ll	jbl/jbl_ht.h	/^typedef struct			__jbl_ll jbl_ll;$/;"	t	typeref:struct:__jbl_ll
+jbl_ll	jbl/jbl_ll.h	/^}jbl_ll;$/;"	t	typeref:struct:__jbl_ll
+jbl_ll	jbl/jbl_string.h	/^typedef	struct		__jbl_ll									jbl_ll;$/;"	t	typeref:struct:__jbl_ll
+jbl_ll_add	jbl/jbl_ll.h	39;"	d
+jbl_ll_copy	jbl/jbl_ll.c	/^inline jbl_ll *jbl_ll_copy(jbl_ll *that)$/;"	f
+jbl_ll_delete	jbl/jbl_ll.c	/^jbl_ll * jbl_ll_delete(jbl_ll *this,jbl_ll_node *node)$/;"	f
+jbl_ll_delete_head	jbl/jbl_ll.h	41;"	d
+jbl_ll_delete_tail	jbl/jbl_ll.h	42;"	d
+jbl_ll_extend	jbl/jbl_ll.c	/^jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b)$/;"	f
+jbl_ll_foreach	jbl/jbl_ll.h	36;"	d
+jbl_ll_foreach_del	jbl/jbl_ll.h	37;"	d
+jbl_ll_free	jbl/jbl_ll.c	/^jbl_ll* jbl_ll_free(jbl_ll *this)$/;"	f
+jbl_ll_get_length	jbl/jbl_ll.h	44;"	d
+jbl_ll_if_big	jbl/jbl_ll.h	47;"	d
+jbl_ll_if_equal	jbl/jbl_ll.h	48;"	d
+jbl_ll_if_equal_big	jbl/jbl_ll.h	51;"	d
+jbl_ll_if_equal_small	jbl/jbl_ll.h	50;"	d
+jbl_ll_if_small	jbl/jbl_ll.h	49;"	d
+jbl_ll_init	jbl/jbl_ll.c	/^inline jbl_ll* jbl_ll_init(jbl_ll *this)$/;"	f
+jbl_ll_insert	jbl/jbl_ll.c	/^jbl_ll * jbl_ll_insert(jbl_ll *this,jbl_var *var,jbl_ll_node *after)$/;"	f
+jbl_ll_json_decode	jbl/jbl_ll.c	/^jbl_ll* jbl_ll_json_decode(jbl_ll *this,const jbl_string* in,jbl_string_size_type *start)$/;"	f
+jbl_ll_json_encode	jbl/jbl_ll.c	/^jbl_string* jbl_ll_json_encode(const jbl_ll* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_ll_json_put	jbl/jbl_ll.c	/^void jbl_ll_json_put(const jbl_ll* this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_ll_merge	jbl/jbl_ll.c	/^jbl_ll *jbl_ll_merge(jbl_ll *this,jbl_ll *that)$/;"	f
+jbl_ll_merge_ht	jbl/jbl_ll.c	/^jbl_ll *jbl_ll_merge_ht(jbl_ll *this,jbl_ht *that)$/;"	f
+jbl_ll_new	jbl/jbl_ll.c	/^inline jbl_ll * jbl_ll_new()$/;"	f
+jbl_ll_node	jbl/jbl_ll.h	/^}jbl_ll_node;$/;"	t	typeref:struct:__jbl_ll_node
+jbl_ll_node_delete	jbl/jbl_ll.c	/^void jbl_ll_node_delete(jbl_ll *this,jbl_ll_node *node)$/;"	f
+jbl_ll_node_delink	jbl/jbl_ll.c	/^void jbl_ll_node_delink(jbl_ll *this,jbl_ll_node *node)$/;"	f
+jbl_ll_node_free	jbl/jbl_ll.c	/^void jbl_ll_node_free(jbl_ll_node *node)$/;"	f
+jbl_ll_node_init	jbl/jbl_ll.c	/^jbl_ll_node * jbl_ll_node_init(jbl_ll_node *node)$/;"	f
+jbl_ll_node_insert	jbl/jbl_ll.c	/^void jbl_ll_node_insert(jbl_ll *this,jbl_ll_node *node,jbl_ll_node *after)$/;"	f
+jbl_ll_node_new	jbl/jbl_ll.c	/^jbl_ll_node * jbl_ll_node_new()$/;"	f
+jbl_ll_operators	jbl/jbl_ll.c	/^const jbl_var_operators jbl_ll_operators={$/;"	v
+jbl_ll_size_type	jbl/jbl_ll_config.h	/^	typedef jbl_uint32 jbl_ll_size_type;		$/;"	t
+jbl_ll_size_type	jbl/jbl_ll_config.h	/^	typedef jbl_uint64 jbl_ll_size_type;		$/;"	t
+jbl_ll_space_ship	jbl/jbl_ll.c	/^char jbl_ll_space_ship(const jbl_ll *this,const jbl_ll *that)$/;"	f
+jbl_ll_swap_node	jbl/jbl_ll.c	/^jbl_ll * jbl_ll_swap_node(jbl_ll *this,jbl_ll_node *a,jbl_ll_node *b)$/;"	f
+jbl_ll_view	jbl/jbl_ll.h	67;"	d
+jbl_ll_view_put	jbl/jbl_ll.c	/^void jbl_ll_view_put(const jbl_ll* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_llv	jbl/jbl_ll.c	/^inline jbl_var* jbl_llv(jbl_ll_node *node){return node->v;}$/;"	f
+jbl_malloc	jbl/jbl_malloc.c	/^inline void* jbl_malloc(mst size)$/;"	f
+jbl_malloc_chunk_struct	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_chunk_struct	jbl_malloc_chunk_struct;$/;"	t	typeref:struct:__jbl_malloc_chunk_struct
+jbl_malloc_chunk_struct	jbl/jbl_malloc.h	/^	}jbl_malloc_chunk_struct;$/;"	t	typeref:struct:__jbl_malloc_chunk_struct
+jbl_malloc_fmap_len	jbl/jbl_malloc.h	26;"	d
+jbl_malloc_fmap_len	jbl/jbl_malloc.h	28;"	d
+jbl_malloc_free_slot	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_free_slot		jbl_malloc_free_slot;$/;"	t	typeref:struct:__jbl_malloc_free_slot
+jbl_malloc_free_slot	jbl/jbl_malloc.h	/^	}jbl_malloc_free_slot;$/;"	t	typeref:struct:__jbl_malloc_free_slot
+jbl_malloc_heap	jbl/jbl_malloc.c	/^jbl_malloc_heap_struct jbl_malloc_heap;$/;"	v
+jbl_malloc_heap_struct	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_heap_struct		jbl_malloc_heap_struct;$/;"	t	typeref:struct:__jbl_malloc_heap_struct
+jbl_malloc_heap_struct	jbl/jbl_malloc.h	/^	}jbl_malloc_heap_struct;	$/;"	t	typeref:struct:__jbl_malloc_heap_struct
+jbl_malloc_heap_struct	jbl/jbl_malloc.h	/^	}jbl_malloc_heap_struct;$/;"	t	typeref:struct:__jbl_malloc_heap_struct
+jbl_malloc_huge_struct	jbl/jbl_malloc.h	/^	typedef struct __jbl_malloc_huge_struct		jbl_malloc_huge_struct;$/;"	t	typeref:struct:__jbl_malloc_huge_struct
+jbl_malloc_huge_struct	jbl/jbl_malloc.h	/^	}jbl_malloc_huge_struct;$/;"	t	typeref:struct:__jbl_malloc_huge_struct
+jbl_malloc_size	jbl/jbl_malloc.c	/^mst jbl_malloc_size(void* ptr)$/;"	f
+jbl_malloc_size_type	jbl/jbl_malloc_config.h	/^	typedef jbl_uint32 jbl_malloc_size_type;$/;"	t
+jbl_malloc_size_type	jbl/jbl_malloc_config.h	/^	typedef jbl_uint64 jbl_malloc_size_type;$/;"	t
+jbl_malloc_small_bins	jbl/jbl_malloc.c	/^} jbl_malloc_small_bins[30]={{ 0,1,   8,512},{ 1,1,  16,256},{ 2,1,  24,170},{ 3,1,  32,128},{ 4,1,  40,102}, $/;"	v	typeref:struct:__anon5
+jbl_malloc_start	jbl/jbl_malloc.c	/^void jbl_malloc_start()$/;"	f
+jbl_malloc_start	jbl/jbl_malloc.h	82;"	d
+jbl_malloc_stop	jbl/jbl_malloc.c	/^void jbl_malloc_stop()$/;"	f
+jbl_malloc_stop	jbl/jbl_malloc.h	83;"	d
+jbl_max	jbl/jbl_ying.h	57;"	d
+jbl_max_update	jbl/jbl_ying.h	58;"	d
+jbl_md5	jbl/jbl_md5.c	/^jbl_string* jbl_md5(const jbl_string* this,jbl_string* out)$/;"	f
+jbl_memory_copy	jbl/jbl_malloc.c	/^void jbl_memory_copy(void *to,const void * from,mst len){for(register mst i=0;i<len;((unsigned char*)to)[i]=((unsigned char*)from)[i],++i);}$/;"	f
+jbl_memory_copy_reverse	jbl/jbl_malloc.c	/^void jbl_memory_copy_reverse(void *to,const void * from,mst len,mst size){for(register mst i=0;i<len;i+=size)for(register mst j=0;j<size;++j)((char*)to)[i+j]=((char*)from)[len-i-size+j];}$/;"	f
+jbl_min	jbl/jbl_ying.h	59;"	d
+jbl_min_update	jbl/jbl_ying.h	60;"	d
+jbl_ntf_operators	jbl/jbl_var.c	/^const jbl_var_operators jbl_ntf_operators={$/;"	v
+jbl_pointer_int	jbl/jbl_ying.h	/^	typedef jbl_uint32 jbl_pointer_int;$/;"	t
+jbl_pointer_int	jbl/jbl_ying.h	/^	typedef jbl_uint64 jbl_pointer_int;$/;"	t
+jbl_print_colorful	jbl/jbl_ying.h	45;"	d
+jbl_print_colorful	jbl/jbl_ying.h	48;"	d
+jbl_rand	jbl/jbl_rand.c	/^jbl_uint32 jbl_rand()$/;"	f
+jbl_rand_between	jbl/jbl_rand.c	/^inline jbl_uint32 jbl_rand_between(jbl_uint32 a,jbl_uint32 b)$/;"	f
+jbl_rand_dict_big	jbl/jbl_rand.h	22;"	d
+jbl_rand_dict_number	jbl/jbl_rand.h	23;"	d
+jbl_rand_dict_small	jbl/jbl_rand.h	21;"	d
+jbl_rand_dict_symbol	jbl/jbl_rand.h	24;"	d
+jbl_rand_srand	jbl/jbl_rand.c	/^void jbl_rand_srand(jbl_uint32 seed)$/;"	f
+jbl_rand_srand	jbl/jbl_rand.c	/^void jbl_rand_srand(jbl_uint32 seed){__jbl_rand_next=seed;}$/;"	f
+jbl_rand_start	jbl/jbl_rand.h	14;"	d
+jbl_rand_start	jbl/jbl_rand.h	28;"	d
+jbl_rand_string	jbl/jbl_rand.c	/^jbl_string * jbl_rand_string(jbl_string *this,jbl_string_size_type len,char* s)$/;"	f
+jbl_realloc	jbl/jbl_malloc.c	/^void* jbl_realloc(void* ptr,mst size)$/;"	f
+jbl_refer	jbl/jbl_gc.h	23;"	d
+jbl_refer_as_var	jbl/jbl_gc.c	/^void * jbl_refer_as_var(void *ptr,const jbl_var_operators *ops)$/;"	f
+jbl_refer_pull	jbl/jbl_gc.h	29;"	d
+jbl_reference	jbl/jbl_gc.h	/^}jbl_reference;$/;"	t	typeref:struct:__anon4
+jbl_sha1	jbl/jbl_sha1.c	/^jbl_string* jbl_sha1(const jbl_string* this,jbl_string* out)$/;"	f
+jbl_signal_callback	jbl/jbl_ying.c	/^void jbl_signal_callback(int sign)$/;"	f
+jbl_start	jbl/jbl_ying.c	/^void jbl_start()$/;"	f
+jbl_stop	jbl/jbl_ying.c	/^void jbl_stop()$/;"	f
+jbl_stream	jbl/jbl_stream.h	/^}jbl_stream;$/;"	t	typeref:struct:__jbl_stream
+jbl_stream_aes_128_cbc_decode_new	jbl/jbl_aes.h	51;"	d
+jbl_stream_aes_128_cbc_decode_operators	jbl/jbl_aes.c	/^const jbl_stream_operater jbl_stream_aes_128_cbc_decode_operators={__jbl_aes_128_cbc_sdo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,jbl_aes_128_cbc_update_stream_buf};$/;"	v
+jbl_stream_aes_128_cbc_encode_new	jbl/jbl_aes.h	50;"	d
+jbl_stream_aes_128_cbc_encode_operators	jbl/jbl_aes.c	/^const jbl_stream_operater jbl_stream_aes_128_cbc_encode_operators={__jbl_aes_128_cbc_seo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,jbl_aes_128_cbc_update_stream_buf};$/;"	v
+jbl_stream_aes_128_ecb_decode_new	jbl/jbl_aes.h	36;"	d
+jbl_stream_aes_128_ecb_decode_operators	jbl/jbl_aes.c	/^const jbl_stream_operater jbl_stream_aes_128_ecb_decode_operators={__jbl_aes_128_ecb_sdo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,NULL};$/;"	v
+jbl_stream_aes_128_ecb_encode_new	jbl/jbl_aes.h	35;"	d
+jbl_stream_aes_128_ecb_encode_operators	jbl/jbl_aes.c	/^const jbl_stream_operater jbl_stream_aes_128_ecb_encode_operators={__jbl_aes_128_ecb_seo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,NULL};$/;"	v
+jbl_stream_base64_decode_new	jbl/jbl_base64.h	25;"	d
+jbl_stream_base64_decode_operators	jbl/jbl_base64.c	/^const jbl_stream_operater jbl_stream_base64_decode_operators={__jbl_base64_sdo,NULL,NULL,NULL};$/;"	v
+jbl_stream_base64_encode_new	jbl/jbl_base64.h	24;"	d
+jbl_stream_base64_encode_operators	jbl/jbl_base64.c	/^const jbl_stream_operater jbl_stream_base64_encode_operators={__jbl_base64_seo,NULL,NULL,NULL};$/;"	v
+jbl_stream_connect	jbl/jbl_stream.h	47;"	d
+jbl_stream_connect_ref	jbl/jbl_stream.h	48;"	d
+jbl_stream_copy	jbl/jbl_stream.c	/^jbl_stream * jbl_stream_copy(jbl_stream* this)$/;"	f
+jbl_stream_copy_from_var	jbl/jbl_stream.h	99;"	d
+jbl_stream_disconnect	jbl/jbl_stream.h	49;"	d
+jbl_stream_do	jbl/jbl_stream.c	/^void jbl_stream_do(jbl_stream* this,jbl_uint8 flag)$/;"	f
+jbl_stream_file_copy	jbl/jbl_stream.c	/^FILE* jbl_stream_file_copy(FILE* this)$/;"	f
+jbl_stream_file_operator	jbl/jbl_stream.c	/^void jbl_stream_file_operator(jbl_stream* this,jbl_uint8 flags)$/;"	f
+jbl_stream_file_operators	jbl/jbl_stream.c	/^const jbl_stream_operater jbl_stream_file_operators={jbl_stream_file_operator,NULL,(void* (*)(void *))jbl_stream_file_copy,NULL};$/;"	v
+jbl_stream_force	jbl/jbl_stream.h	52;"	d
+jbl_stream_free	jbl/jbl_stream.c	/^jbl_stream * jbl_stream_free(jbl_stream* this)$/;"	f
+jbl_stream_init	jbl/jbl_stream.c	/^jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp)$/;"	f
+jbl_stream_json_put_format	jbl/jbl_stream.c	/^inline char jbl_stream_json_put_format(const void *this,jbl_stream *out,char format,jbl_int32 *tabs)$/;"	f
+jbl_stream_new	jbl/jbl_stream.c	/^inline jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp)$/;"	f
+jbl_stream_operater	jbl/jbl_aes.h	/^typedef struct __jbl_stream_operater jbl_stream_operater;									\/\/声明流处理器结构$/;"	t	typeref:struct:__jbl_stream_operater
+jbl_stream_operater	jbl/jbl_stream.h	/^typedef struct __jbl_stream_operater jbl_stream_operater;$/;"	t	typeref:struct:__jbl_stream_operater
+jbl_stream_operater	jbl/jbl_stream.h	/^}jbl_stream_operater;$/;"	t	typeref:struct:__jbl_stream_operater
+jbl_stream_operators	jbl/jbl_stream.c	/^const jbl_var_operators jbl_stream_operators={$/;"	v
+jbl_stream_push_char	jbl/jbl_stream.c	/^inline void jbl_stream_push_char(jbl_stream* this,unsigned char c)$/;"	f
+jbl_stream_push_char_force	jbl/jbl_stream.h	55;"	d
+jbl_stream_push_chars	jbl/jbl_stream.c	/^void jbl_stream_push_chars(jbl_stream* this,unsigned char *str)$/;"	f
+jbl_stream_push_double	jbl/jbl_stream.c	/^inline void jbl_stream_push_double(jbl_stream* this,double in)$/;"	f
+jbl_stream_push_hex	jbl/jbl_stream.c	/^void jbl_stream_push_hex(jbl_stream *this,jbl_uint64 in)$/;"	f
+jbl_stream_push_hex_8bits	jbl/jbl_stream.c	/^void jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)$/;"	f
+jbl_stream_push_int	jbl/jbl_stream.c	/^inline void jbl_stream_push_int(jbl_stream* this,jbl_int64 in)$/;"	f
+jbl_stream_push_string	jbl/jbl_string.c	/^void jbl_stream_push_string(jbl_stream *out,const jbl_string* this)$/;"	f
+jbl_stream_push_uint	jbl/jbl_stream.c	/^void jbl_stream_push_uint(jbl_stream* this,jbl_uint64 in)$/;"	f
+jbl_stream_reset	jbl/jbl_stream.h	50;"	d
+jbl_stream_start	jbl/jbl_stream.h	111;"	d
+jbl_stream_start	jbl/jbl_stream.h	84;"	d
+jbl_stream_stdin	jbl/jbl_stream.c	/^jbl_stream *jbl_stream_stdin;$/;"	v
+jbl_stream_stdout	jbl/jbl_stream.c	/^jbl_stream *jbl_stream_stdout;$/;"	v
+jbl_stream_stop	jbl/jbl_stream.h	112;"	d
+jbl_stream_stop	jbl/jbl_stream.h	86;"	d
+jbl_stream_string_operators	jbl/jbl_string.c	/^const jbl_stream_operater jbl_stream_string_operators={$/;"	v
+jbl_stream_view_put_format	jbl/jbl_stream.c	/^inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,char*name,jbl_int32 format,char*str,jbl_int32 *tabs)$/;"	f
+jbl_string	jbl/jbl_string.h	/^}jbl_string;$/;"	t	typeref:struct:__jbl_string
+jbl_string	jbl/jbl_time.h	/^typedef	struct		__jbl_string					jbl_string;$/;"	t	typeref:struct:__jbl_string
+jbl_string_Vstream_new	jbl/jbl_string.c	/^jbl_var * jbl_string_Vstream_new(jbl_string *str)$/;"	f
+jbl_string_add_char	jbl/jbl_string.c	/^inline jbl_string *jbl_string_add_char(jbl_string *this,const char c)$/;"	f
+jbl_string_add_char_force	jbl/jbl_string.h	68;"	d
+jbl_string_add_chars	jbl/jbl_string.h	64;"	d
+jbl_string_add_chars_length	jbl/jbl_string.c	/^jbl_string *jbl_string_add_chars_length(jbl_string *this,unsigned char *in,jbl_string_size_type len)$/;"	f
+jbl_string_add_double	jbl/jbl_string.h	73;"	d
+jbl_string_add_double_length	jbl/jbl_string.c	/^jbl_string * jbl_string_add_double_length(jbl_string *this,double in,unsigned char len)$/;"	f
+jbl_string_add_file	jbl/jbl_string.c	/^jbl_string* jbl_string_add_file(jbl_string *this,FILE * file)$/;"	f
+jbl_string_add_hex	jbl/jbl_string.c	/^jbl_string * jbl_string_add_hex(jbl_string *this,jbl_uint64 in)$/;"	f
+jbl_string_add_hex_8bits	jbl/jbl_string.c	/^inline jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)$/;"	f
+jbl_string_add_int64	jbl/jbl_string.h	69;"	d
+jbl_string_add_int64_length	jbl/jbl_string.c	/^inline jbl_string * jbl_string_add_int64_length(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c)$/;"	f
+jbl_string_add_string	jbl/jbl_string.c	/^jbl_string *jbl_string_add_string(jbl_string *this,const jbl_string *in)$/;"	f
+jbl_string_add_uint64	jbl/jbl_string.h	71;"	d
+jbl_string_add_uint64_length	jbl/jbl_string.c	/^jbl_string * jbl_string_add_uint64_length(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c)$/;"	f
+jbl_string_add_unicode_as_utf8	jbl/jbl_string.c	/^jbl_string * jbl_string_add_unicode_as_utf8(jbl_string *this,unsigned long unicode)$/;"	f
+jbl_string_clear	jbl/jbl_string.c	/^jbl_string *jbl_string_clear(jbl_string *this)$/;"	f
+jbl_string_copy	jbl/jbl_string.c	/^inline jbl_string *jbl_string_copy(jbl_string *that)$/;"	f
+jbl_string_copy_for_stream	jbl/jbl_string.c	/^jbl_string *jbl_string_copy_for_stream(jbl_string *that)$/;"	f
+jbl_string_copy_force	jbl/jbl_string.c	/^jbl_string * jbl_string_copy_force(jbl_string *this,const jbl_string *that)$/;"	f
+jbl_string_copy_from_var	jbl/jbl_string.h	141;"	d
+jbl_string_cut	jbl/jbl_string.h	150;"	d
+jbl_string_cut_start	jbl/jbl_string.c	/^jbl_ll * jbl_string_cut_start(jbl_string *this,jbl_ll *list,char cut,jbl_string_size_type start)$/;"	f
+jbl_string_delete_1	jbl/jbl_string.h	85;"	d
+jbl_string_delete_1_force	jbl/jbl_string.h	84;"	d
+jbl_string_equal	jbl/jbl_string.c	/^jbl_string *jbl_string_equal(jbl_string *this,jbl_string *that)$/;"	f
+jbl_string_extend	jbl/jbl_string.h	29;"	d
+jbl_string_extend_to	jbl/jbl_string.c	/^jbl_string *jbl_string_extend_to(jbl_string *this,jbl_string_size_type size)$/;"	f
+jbl_string_find_char	jbl/jbl_string.h	95;"	d
+jbl_string_find_char_start	jbl/jbl_string.c	/^jbl_string_size_type	jbl_string_find_char_start(const jbl_string *this,unsigned char in,jbl_string_size_type start)$/;"	f
+jbl_string_free	jbl/jbl_string.c	/^jbl_string* jbl_string_free(jbl_string *this)$/;"	f
+jbl_string_get	jbl/jbl_string.h	47;"	d
+jbl_string_get_chars	jbl/jbl_string.h	43;"	d
+jbl_string_get_chars_force	jbl/jbl_string.h	44;"	d
+jbl_string_get_double	jbl/jbl_string.h	54;"	d
+jbl_string_get_double_start	jbl/jbl_string.c	/^double jbl_string_get_double_start(const jbl_string *this,jbl_string_size_type *start)$/;"	f
+jbl_string_get_force	jbl/jbl_string.h	48;"	d
+jbl_string_get_hex	jbl/jbl_string.h	56;"	d
+jbl_string_get_hex_start	jbl/jbl_string.c	/^jbl_uint64 jbl_string_get_hex_start(const jbl_string *this,jbl_string_size_type *start)$/;"	f
+jbl_string_get_hex_start_len	jbl/jbl_string.c	/^jbl_uint64 jbl_string_get_hex_start_len(const jbl_string *this,jbl_string_size_type *start,jbl_string_size_type len)$/;"	f
+jbl_string_get_int64	jbl/jbl_string.h	50;"	d
+jbl_string_get_int64_start	jbl/jbl_string.c	/^jbl_int64 jbl_string_get_int64_start(const jbl_string *this,jbl_string_size_type *start)$/;"	f
+jbl_string_get_length	jbl/jbl_string.h	39;"	d
+jbl_string_get_length_force	jbl/jbl_string.h	40;"	d
+jbl_string_get_number_start	jbl/jbl_string.c	/^jbl_var * jbl_string_get_number_start(const jbl_string *this,jbl_string_size_type *start)$/;"	f
+jbl_string_get_size	jbl/jbl_string.h	45;"	d
+jbl_string_get_size_force	jbl/jbl_string.h	46;"	d
+jbl_string_get_uint64	jbl/jbl_string.h	52;"	d
+jbl_string_get_uint64_start	jbl/jbl_string.c	/^jbl_uint64 jbl_string_get_uint64_start(const jbl_string *this,jbl_string_size_type *start)$/;"	f
+jbl_string_hash	jbl/jbl_string.c	/^jbl_string_hash_type jbl_string_hash(jbl_string *this)$/;"	f
+jbl_string_hash_clear	jbl/jbl_string.h	38;"	d
+jbl_string_hash_type	jbl/jbl_string_config.h	/^	typedef jbl_uint32 			jbl_string_hash_type;		\/\/字符串哈希类型$/;"	t
+jbl_string_hash_type	jbl/jbl_string_config.h	/^	typedef jbl_uint64 			jbl_string_hash_type;		\/\/字符串哈希类型$/;"	t
+jbl_string_if_big	jbl/jbl_string.h	90;"	d
+jbl_string_if_equal	jbl/jbl_string.c	/^char jbl_string_if_equal(const jbl_string *thi,const jbl_string *that_)$/;"	f
+jbl_string_if_equal_big	jbl/jbl_string.h	93;"	d
+jbl_string_if_equal_small	jbl/jbl_string.h	92;"	d
+jbl_string_if_small	jbl/jbl_string.h	91;"	d
+jbl_string_init	jbl/jbl_string.c	/^jbl_string * jbl_string_init(jbl_string *this)$/;"	f
+jbl_string_json_decode	jbl/jbl_string.c	/^jbl_string* jbl_string_json_decode(jbl_string *this,const jbl_string* in,jbl_string_size_type *start)$/;"	f
+jbl_string_json_encode	jbl/jbl_string.c	/^jbl_string* jbl_string_json_encode(const jbl_string* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_string_json_put	jbl/jbl_string.c	/^void jbl_string_json_put(const jbl_string* this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_string_json_put_format	jbl/jbl_string.c	/^jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,char format,jbl_int32 *tabs)$/;"	f
+jbl_string_move	jbl/jbl_string.c	/^jbl_string * jbl_string_move(jbl_string *this,jbl_string *that)$/;"	f
+jbl_string_new	jbl/jbl_string.c	/^inline jbl_string * jbl_string_new()$/;"	f
+jbl_string_operators	jbl/jbl_string.c	/^const jbl_var_operators jbl_string_operators={$/;"	v
+jbl_string_print	jbl/jbl_string.c	/^inline void jbl_string_print(const jbl_string *this,FILE * file)$/;"	f
+jbl_string_set	jbl/jbl_string.h	61;"	d
+jbl_string_set_force	jbl/jbl_string.h	62;"	d
+jbl_string_set_length	jbl/jbl_string.h	41;"	d
+jbl_string_set_length_force	jbl/jbl_string.h	42;"	d
+jbl_string_set_tail0	jbl/jbl_string.h	63;"	d
+jbl_string_size_type	jbl/jbl_string_config.h	/^	typedef jbl_uint32 			jbl_string_size_type;		\/\/字符串长度类型$/;"	t
+jbl_string_size_type	jbl/jbl_string_config.h	/^	typedef jbl_uint64 			jbl_string_size_type;		\/\/字符串长度类型$/;"	t
+jbl_string_space_ship	jbl/jbl_string.c	/^char jbl_string_space_ship(const jbl_string *this,const jbl_string *that)$/;"	f
+jbl_string_space_ship_chars	jbl/jbl_string.c	/^char jbl_string_space_ship_chars(const jbl_string *this,const char *that)$/;"	f
+jbl_string_stream_free	jbl/jbl_string.h	125;"	d
+jbl_string_stream_new	jbl/jbl_string.c	/^jbl_stream * jbl_string_stream_new(jbl_string *str)$/;"	f
+jbl_string_stream_operater	jbl/jbl_string.c	/^void jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)$/;"	f
+jbl_string_update_stream_buf	jbl/jbl_string.c	/^void jbl_string_update_stream_buf(jbl_stream* this)$/;"	f
+jbl_string_view	jbl/jbl_string.h	117;"	d
+jbl_string_view_put	jbl/jbl_string.c	/^void jbl_string_view_put(const jbl_string* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_strlen	jbl/jbl_string.c	/^jbl_string_size_type jbl_strlen(const char *a){jbl_string_size_type b=0;while(a[b++]);return b-1;}$/;"	f
+jbl_time	jbl/jbl_time.h	/^}jbl_time;$/;"	t	typeref:struct:__jbl_time
+jbl_time_copy	jbl/jbl_time.c	/^inline jbl_time * jbl_time_copy(jbl_time * that)$/;"	f
+jbl_time_decode	jbl/jbl_time.c	/^void jbl_time_decode(const jbl_time *this,jbl_time_decoded *tt)$/;"	f
+jbl_time_decoded	jbl/jbl_time.h	/^}jbl_time_decoded;$/;"	t	typeref:struct:__jbl_time_decoded
+jbl_time_free	jbl/jbl_time.c	/^inline jbl_time * jbl_time_free(jbl_time *this)$/;"	f
+jbl_time_get_day_of_month	jbl/jbl_time.c	/^inline jbl_uint8	jbl_time_get_day_of_month	(jbl_uint8 month,jbl_uint32 year){static const jbl_uint8 dpm[12]={31,28,31,30,31,30,31,31,30,31,30,31};return (month==2||(month==0)||(month>12))?(dpm[1]+jbl_time_if_leap_year(year)):(dpm[month-1]);}$/;"	f
+jbl_time_get_weekday	jbl/jbl_time.c	/^inline jbl_uint8	jbl_time_get_weekday		(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year){if((month==1)||(month==2))month+=12,year--;return (day+2*month+3*(month+1)\/5+year+year\/4-year\/100+year\/400)%7+1;}$/;"	f
+jbl_time_if_big	jbl/jbl_time.h	37;"	d
+jbl_time_if_dst	jbl/jbl_time.c	/^jbl_uint8 jbl_time_if_dst(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year)$/;"	f
+jbl_time_if_equal	jbl/jbl_time.h	36;"	d
+jbl_time_if_equal_big	jbl/jbl_time.h	40;"	d
+jbl_time_if_equal_small	jbl/jbl_time.h	39;"	d
+jbl_time_if_leap_year	jbl/jbl_time.c	/^inline jbl_uint8	jbl_time_if_leap_year		(jbl_uint32 year){return (((year%400)==0)?1:(((year%100)==0)?0:(((year%4)==0)?1:0)));}$/;"	f
+jbl_time_if_small	jbl/jbl_time.h	38;"	d
+jbl_time_init	jbl/jbl_time.c	/^inline jbl_time * jbl_time_init(jbl_time *this)$/;"	f
+jbl_time_json_encode	jbl/jbl_time.c	/^inline jbl_string* jbl_time_json_encode(const jbl_time* this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_time_minus	jbl/jbl_time.h	34;"	d
+jbl_time_new	jbl/jbl_time.c	/^inline jbl_time * jbl_time_new()$/;"	f
+jbl_time_now	jbl/jbl_time.c	/^inline jbl_time * jbl_time_now(jbl_time *this)$/;"	f
+jbl_time_operators	jbl/jbl_time.c	/^const jbl_var_operators jbl_time_operators={$/;"	v
+jbl_time_set	jbl/jbl_time.c	/^inline jbl_time * jbl_time_set(jbl_time * this,jbl_uint64 time)$/;"	f
+jbl_time_space_ship	jbl/jbl_time.c	/^inline char jbl_time_space_ship(jbl_time *this,jbl_time *that)$/;"	f
+jbl_time_time_zone	jbl/jbl_time.c	/^jbl_int8		jbl_time_time_zone=JBL_TIME_DEFAULT_TIME_ZONE;$/;"	v
+jbl_time_to_string	jbl/jbl_time.c	/^jbl_string * jbl_time_to_string(const jbl_time *this,jbl_string *result)$/;"	f
+jbl_time_to_unix	jbl/jbl_time.h	46;"	d
+jbl_uint16	jbl/jbl_ying.h	/^typedef unsigned short		jbl_uint16;$/;"	t
+jbl_uint32	jbl/jbl_ying.h	/^typedef unsigned int		jbl_uint32;$/;"	t
+jbl_uint64	jbl/jbl_ying.h	/^typedef unsigned long long	jbl_uint64;$/;"	t
+jbl_uint8	jbl/jbl_ying.h	/^typedef unsigned char		jbl_uint8;$/;"	t
+jbl_uint_operators	jbl/jbl_var.c	/^const jbl_var_operators jbl_uint_operators={$/;"	v
+jbl_var	jbl/jbl_stream.h	/^typedef	struct	__jbl_var 			jbl_var;$/;"	t	typeref:struct:__jbl_var
+jbl_var	jbl/jbl_string.h	/^typedef	struct		__jbl_var 									jbl_var;$/;"	t	typeref:struct:__jbl_var
+jbl_var	jbl/jbl_time.h	/^typedef	struct		__jbl_var						jbl_var;$/;"	t	typeref:struct:__jbl_var
+jbl_var	jbl/jbl_var.h	/^}jbl_var;$/;"	t	typeref:struct:__jbl_var
+jbl_var_copy	jbl/jbl_var.c	/^inline jbl_var * jbl_var_copy(jbl_var * this){if(!this)return NULL;void*(*copy)(void*)=jbl_var_get_operators(this)->copy;if(copy)return copy(this);return NULL;}$/;"	f
+jbl_var_copy_from_stream	jbl/jbl_stream.h	98;"	d
+jbl_var_copy_from_string	jbl/jbl_string.h	140;"	d
+jbl_var_data	jbl/jbl_var.h	/^}jbl_var_data;$/;"	t	typeref:struct:__jbl_var_data
+jbl_var_free	jbl/jbl_var.c	/^inline jbl_var * jbl_var_free(jbl_var * this){if(!this)return NULL;void*(*free)(void*)=jbl_var_get_operators(this)->free;if(free)return free(this);return NULL;}$/;"	f
+jbl_var_get_file	jbl/jbl_file.h	59;"	d
+jbl_var_get_operators	jbl/jbl_var.c	/^inline const jbl_var_operators * jbl_var_get_operators(const jbl_var * this)$/;"	f
+jbl_var_json_decode	jbl/jbl_var.c	/^jbl_var* jbl_var_json_decode(jbl_var *this,const jbl_string* in,jbl_string_size_type *start)$/;"	f
+jbl_var_json_encode	jbl/jbl_var.c	/^jbl_string * jbl_var_json_encode(const jbl_var * this,jbl_string *out,char format,jbl_int32 tabs)$/;"	f
+jbl_var_json_put	jbl/jbl_var.c	/^void jbl_var_json_put(const jbl_var * this,jbl_stream *out,char format,jbl_int32 tabs)$/;"	f
+jbl_var_move_from_string	jbl/jbl_string.h	143;"	d
+jbl_var_operators	jbl/jbl_gc.h	/^typedef struct __jbl_var_operators jbl_var_operators;$/;"	t	typeref:struct:__jbl_var_operators
+jbl_var_operators	jbl/jbl_stream.h	/^typedef	struct	__jbl_var_operators	jbl_var_operators;$/;"	t	typeref:struct:__jbl_var_operators
+jbl_var_operators	jbl/jbl_string.h	/^typedef	struct		__jbl_var_operators							jbl_var_operators;$/;"	t	typeref:struct:__jbl_var_operators
+jbl_var_operators	jbl/jbl_time.h	/^typedef	struct		__jbl_var_operators				jbl_var_operators;$/;"	t	typeref:struct:__jbl_var_operators
+jbl_var_operators	jbl/jbl_var.h	/^}jbl_var_operators;$/;"	t	typeref:struct:__jbl_var_operators
+jbl_var_set_operators	jbl/jbl_var.c	/^inline jbl_var * jbl_var_set_operators(jbl_var * this,const jbl_var_operators *ops)$/;"	f
+jbl_var_space_ship	jbl/jbl_var.c	/^inline char      jbl_var_space_ship(const jbl_var * this,const jbl_var * that){if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}char(*space_ship)(const void*,const void*)=jbl_var_get_operators(this)->space_ship;if(space_ship)return space_ship(this,that);return -1;}$/;"	f
+jbl_var_view	jbl/jbl_var.h	62;"	d
+jbl_var_view_put	jbl/jbl_var.c	/^void jbl_var_view_put(const jbl_var * this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)$/;"	f
+jbl_vstream_aes_128_cbc_decode_new	jbl/jbl_aes.h	54;"	d
+jbl_vstream_aes_128_cbc_encode_new	jbl/jbl_aes.h	53;"	d
+jbl_vstream_aes_128_ecb_decode_new	jbl/jbl_aes.h	39;"	d
+jbl_vstream_aes_128_ecb_encode_new	jbl/jbl_aes.h	38;"	d
+json_encode	jbl/jbl_var.h	/^	jbl_string*	(*json_encode)(const void*,jbl_string *,char,jbl_int32);$/;"	m	struct:__jbl_var_operators
+json_put	jbl/jbl_var.h	/^	void	(*json_put)(const void*,jbl_stream *,char,jbl_int32);$/;"	m	struct:__jbl_var_operators
+jwl_get_binary_ip	jwl/jwl_ying.c	/^jbl_uint64 jwl_get_binary_ip(const jbl_string *this)$/;"	f
+jwl_get_string_ip	jwl/jwl_ying.c	/^jbl_string * jwl_get_string_ip(jbl_uint64 ip,jbl_string *this)$/;"	f
+jwl_http_reqh	jwl/jwl_http.h	/^}jwl_http_reqh;$/;"	t	typeref:struct:__jwl_http_reqh
+jwl_http_reqh_free	jwl/jwl_http.c	/^jwl_http_reqh *jwl_http_reqh_free(jwl_http_reqh * this)$/;"	f
+jwl_http_reqh_init	jwl/jwl_http.c	/^jwl_http_reqh *jwl_http_reqh_init(jwl_http_reqh * this)$/;"	f
+jwl_http_reqh_new	jwl/jwl_http.c	/^jwl_http_reqh *jwl_http_reqh_new()$/;"	f
+jwl_http_resh	jwl/jwl_http.h	/^}jwl_http_resh;$/;"	t	typeref:struct:__jwl_http_resh
+jwl_http_resh_copy	jwl/jwl_http.c	/^inline jwl_http_resh *jwl_http_resh_copy(jwl_http_resh * this)$/;"	f
+jwl_http_resh_encode	jwl/jwl_http.c	/^jbl_string* jwl_http_resh_encode(jbl_string *buf,jwl_http_resh *head,jbl_string_size_type size)$/;"	f
+jwl_http_resh_extend	jwl/jwl_http.c	/^inline jwl_http_resh *jwl_http_resh_extend(jwl_http_resh * this)$/;"	f
+jwl_http_resh_free	jwl/jwl_http.c	/^jwl_http_resh *jwl_http_resh_free(jwl_http_resh * this)$/;"	f
+jwl_http_resh_init	jwl/jwl_http.c	/^jwl_http_resh *jwl_http_resh_init(jwl_http_resh * this)$/;"	f
+jwl_http_resh_new	jwl/jwl_http.c	/^jwl_http_resh *jwl_http_resh_new()$/;"	f
+jwl_http_send_res	jwl/jwl_http.c	/^jwl_socket* jwl_http_send_res(jwl_socket *sock,jwl_http_resh *head,jbl_string *data)$/;"	f
+jwl_socket	jwl/jwl_socket.h	/^}jwl_socket;$/;"	t	typeref:struct:__jwl_socket
+jwl_socket_accept	jwl/jwl_socket.c	/^inline jwl_socket * jwl_socket_accept(jwl_socket *this,jbl_uint64 *ip,jbl_uint32 *port)$/;"	f
+jwl_socket_bind	jwl/jwl_socket.c	/^jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)$/;"	f
+jwl_socket_close	jwl/jwl_socket.c	/^inline jwl_socket * jwl_socket_close(jwl_socket *this)$/;"	f
+jwl_socket_connect	jwl/jwl_socket.c	/^jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)$/;"	f
+jwl_socket_free	jwl/jwl_socket.c	/^jwl_socket * jwl_socket_free(jwl_socket *this)$/;"	f
+jwl_socket_init	jwl/jwl_socket.c	/^jwl_socket * jwl_socket_init(jwl_socket *this)$/;"	f
+jwl_socket_new	jwl/jwl_socket.c	/^inline jwl_socket * jwl_socket_new()$/;"	f
+jwl_socket_receive	jwl/jwl_socket.c	/^jbl_string * jwl_socket_receive(jwl_socket *this,jbl_string *data)$/;"	f
+jwl_socket_receive_safe	jwl/jwl_socket.c	/^jbl_string * jwl_socket_receive_safe(jwl_socket *this,jbl_string *data)$/;"	f
+jwl_socket_send	jwl/jwl_socket.c	/^inline jwl_socket * jwl_socket_send(jwl_socket *this,jbl_string *data)$/;"	f
+jwl_socket_send_safe	jwl/jwl_socket.c	/^jwl_socket * jwl_socket_send_safe(jwl_socket *this,jbl_string *data)$/;"	f
+jwl_socket_start	jwl/jwl_socket.c	/^void jwl_socket_start()$/;"	f
+jwl_socket_start	jwl/jwl_socket.h	63;"	d
+jwl_socket_stream_operater	jwl/jwl_socket.c	/^void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)$/;"	f
+jwl_start	jwl/jwl_ying.c	/^void jwl_start()$/;"	f
+jwl_stop	jwl/jwl_ying.c	/^void jwl_stop()$/;"	f
+jwl_stream_socket_new	jwl/jwl_socket.h	51;"	d
+jwl_stream_socket_operators	jwl/jwl_socket.c	/^const jbl_stream_operater jwl_stream_socket_operators={$/;"	v
+k	jbl/jbl_ht.h	/^	jbl_string *			k;$/;"	m	struct:__jbl_ht_data
+key	jbl/jbl_aes.h	/^	__jbl_aes_128_ex_key key;$/;"	m	struct:__jbl_aes_128_key
+last_modify	jbl/jbl_file.h	/^			jbl_time last_modify;$/;"	m	struct:__jbl_file::__anon1::__anon2
+len	jbl/jbl_ht.h	/^	jbl_ht_size_type len;$/;"	m	struct:__jbl_ht
+len	jbl/jbl_ll.h	/^	jbl_ll_size_type len;$/;"	m	struct:__jbl_ll
+len	jbl/jbl_string.h	/^	jbl_string_size_type	len;$/;"	m	struct:__jbl_string
+light_copy	jbl/jbl_file.h	/^	jbl_uint8 light_copy:1;$/;"	m	struct:__jbl_file
+logo_ico	examples/main.h	10;"	d
+logo_ico	examples/main.h	7;"	d
+main	examples/request.c	/^int main()$/;"	f
+main	examples/socket_client.c	/^int main(int argc,char** argv)$/;"	f
+main	examples/socket_server.c	/^int main(int argc,char** argv)$/;"	f
+main	examples/test.c	/^int main(int argc,char** argv)$/;"	f
+main	examples/test2.c	/^int main()$/;"	f
+main	examples/webserver.c	/^int main(int argc,char** argv)$/;"	f
+main_chunk	jbl/jbl_malloc.h	/^		jbl_malloc_chunk_struct	*main_chunk;$/;"	m	struct:__jbl_malloc_heap_struct
+map	jbl/jbl_malloc.h	/^		jbl_uint32						map[512];		\/\/2KB=512*4$/;"	m	struct:__jbl_malloc_chunk_struct
+method	jwl/jwl_http.h	/^	jbl_uint32		method:3;$/;"	m	struct:__jwl_http_reqh
+minute	jbl/jbl_time.h	/^	int year,month,day,hour,minute,second,ms;$/;"	m	struct:__jbl_time_decoded
+month	jbl/jbl_time.h	/^	int year,month,day,hour,minute,second,ms;$/;"	m	struct:__jbl_time_decoded
+ms	jbl/jbl_time.h	/^	int year,month,day,hour,minute,second,ms;$/;"	m	struct:__jbl_time_decoded
+mst	jbl/jbl_malloc.c	13;"	d
+mst	jbl/jbl_malloc.c	598;"	d
+name	jbl/jbl_file.h	/^	jbl_string name;$/;"	m	struct:__jbl_file
+next	jbl/jbl_malloc.h	/^		struct __jbl_malloc_chunk_struct	*next;$/;"	m	struct:__jbl_malloc_chunk_struct	typeref:struct:__jbl_malloc_chunk_struct::__jbl_malloc_chunk_struct
+next	jbl/jbl_malloc.h	/^		struct __jbl_malloc_free_slot	*next;$/;"	m	struct:__jbl_malloc_free_slot	typeref:struct:__jbl_malloc_free_slot::__jbl_malloc_free_slot
+next	jbl/jbl_malloc.h	/^		struct __jbl_malloc_huge_struct *next;$/;"	m	struct:__jbl_malloc_huge_struct	typeref:struct:__jbl_malloc_huge_struct::__jbl_malloc_huge_struct
+num	jbl/jbl_malloc.c	/^	jbl_uint8 num;$/;"	m	struct:__anon5
+nxt	jbl/jbl_ht.h	/^	jbl_ht_size_type		nxt;	$/;"	m	struct:__jbl_ht_data
+nxt	jbl/jbl_ht.h	/^	jbl_ht_size_type nxt;$/;"	m	struct:__jbl_ht
+nxt	jbl/jbl_ll.h	/^	struct __jbl_ll_node *pre,*nxt;$/;"	m	struct:__jbl_ll_node	typeref:struct:__jbl_ll_node::
+nxt	jbl/jbl_stream.h	/^	struct __jbl_stream *nxt;$/;"	m	struct:__jbl_stream	typeref:struct:__jbl_stream::__jbl_stream
+op	jbl/jbl_stream.h	/^	const jbl_stream_operater *op;$/;"	m	struct:__jbl_stream
+op	jbl/jbl_stream.h	/^	void  (*op)(jbl_stream*,jbl_uint8);$/;"	m	struct:__jbl_stream_operater
+ops	jbl/jbl_var.h	/^	const jbl_var_operators *ops;$/;"	m	struct:__jbl_var
+pages	jbl/jbl_malloc.c	/^	jbl_uint8 pages;$/;"	m	struct:__anon5
+pchar	jbl/jbl_stream.h	65;"	d
+pchars	jbl/jbl_stream.h	62;"	d
+pdouble	jbl/jbl_stream.h	66;"	d
+peak	jbl/jbl_malloc.h	/^		jbl_malloc_size_type peak;$/;"	m	struct:__jbl_malloc_heap_struct
+peak	jbl/jbl_malloc.h	/^		jbl_malloc_size_type peak;\/\/峰值$/;"	m	struct:__jbl_malloc_heap_struct
+pf	jbl/jbl_stream.h	71;"	d
+phex	jbl/jbl_stream.h	67;"	d
+phex8	jbl/jbl_stream.h	68;"	d
+pint	jbl/jbl_stream.h	63;"	d
+pl	jbl/jbl_stream.h	72;"	d
+pn	jbl/jbl_stream.h	69;"	d
+pre	jbl/jbl_ll.h	/^	struct __jbl_ll_node *pre,*nxt;$/;"	m	struct:__jbl_ll_node	typeref:struct:__jbl_ll_node::__jbl_ll_node
+pre	jbl/jbl_malloc.h	/^		struct __jbl_malloc_chunk_struct	*pre;$/;"	m	struct:__jbl_malloc_chunk_struct	typeref:struct:__jbl_malloc_chunk_struct::__jbl_malloc_chunk_struct
+protocol	jwl/jwl_http.h	/^	jbl_uint32		protocol:2;$/;"	m	struct:__jwl_http_reqh
+pt	jbl/jbl_stream.h	70;"	d
+ptr	jbl/jbl_gc.h	/^	void * ptr;$/;"	m	struct:__anon4
+ptr	jbl/jbl_malloc.h	/^		void *ptr;$/;"	m	struct:__jbl_malloc_huge_struct
+puint	jbl/jbl_stream.h	64;"	d
+referer	jwl/jwl_http.h	/^	jbl_string *	referer;$/;"	m	struct:__jwl_http_reqh
+rm	examples/makefile	/^	rm = del$/;"	m
+rm	examples/makefile	/^	rm = rm -f$/;"	m
+rm	makefile	/^	rm = del$/;"	m
+rm	makefile	/^	rm = rm -f$/;"	m
+rn	jwl/jwl_http.c	105;"	d
+rn	jwl/jwl_http.c	68;"	d
+s	jbl/jbl_string.h	/^	unsigned char 			*s;$/;"	m	struct:__jbl_string
+scp	jbl/jbl_stream.h	/^	void* (*scp)(void*);\/\/stream copy$/;"	m	struct:__jbl_stream_operater
+second	jbl/jbl_time.h	/^	int year,month,day,hour,minute,second,ms;$/;"	m	struct:__jbl_time_decoded
+sin	jbl/jbl_stream.h	83;"	d
+size	jbl/jbl_file.h	/^			jbl_uint64 size;$/;"	m	struct:__jbl_file::__anon1::__anon2
+size	jbl/jbl_ht.h	/^	jbl_ht_size_type size;$/;"	m	struct:__jbl_ht
+size	jbl/jbl_malloc.c	/^	jbl_uint16 size;$/;"	m	struct:__anon5
+size	jbl/jbl_malloc.h	/^		jbl_malloc_size_type size;$/;"	m	struct:__jbl_malloc_heap_struct
+size	jbl/jbl_malloc.h	/^		jbl_malloc_size_type size;$/;"	m	struct:__jbl_malloc_huge_struct
+size	jbl/jbl_malloc.h	/^		jbl_malloc_size_type size;\/\/实际使用$/;"	m	struct:__jbl_malloc_heap_struct
+size	jbl/jbl_stream.h	/^	jbl_uint16	size;$/;"	m	struct:__jbl_stream
+size	jbl/jbl_string.h	/^	jbl_string_size_type	size;$/;"	m	struct:__jbl_string
+slm	jbl/jbl_bitset.c	130;"	d
+slm	jbl/jbl_bitset.c	61;"	d
+slot	jbl/jbl_malloc.h	/^		jbl_malloc_free_slot		slot[30];$/;"	m	struct:__jbl_malloc_heap_struct
+sock	examples/socket_client.c	/^jwl_socket *sock=NULL;$/;"	v
+sock	examples/socket_server.c	/^jwl_socket *sock=NULL;$/;"	v
+sock	examples/webserver.c	/^jwl_socket *sock=NULL;$/;"	v
+sout	jbl/jbl_stream.h	82;"	d
+space_ship	jbl/jbl_var.h	/^	char	(*space_ship)(const void*,const void*);$/;"	m	struct:__jbl_var_operators
+st	jbl/jbl_ht.c	20;"	d
+st	jbl/jbl_ht.c	431;"	d
+status	jwl/jwl_http.h	/^	jbl_uint32 		status:9;$/;"	m	struct:__jwl_http_resh
+stop	examples/socket_client.c	/^void stop()$/;"	f
+stop	examples/socket_server.c	/^void stop()$/;"	f
+stop	examples/webserver.c	/^void stop()$/;"	f
+t	jbl/jbl_time.h	/^	jbl_uint64 t;$/;"	m	struct:__jbl_time
+tail	jbl/jbl_ll.h	/^	struct __jbl_ll_node *head,*tail;$/;"	m	struct:__jbl_ll	typeref:struct:__jbl_ll::
+tmp	examples/makefile	/^	tmp = tmp-linux$/;"	m
+tmp	examples/makefile	/^	tmp = tmp-win$/;"	m
+tmp	makefile	/^	tmp = tmp-linux$/;"	m
+tmp	makefile	/^	tmp = tmp-win$/;"	m
+tmpp	jbl/jbl_stream.h	/^		void const*	tmpp;$/;"	m	union:__jbl_stream::__anon6
+tmpv	jbl/jbl_stream.h	/^		jbl_uint64 tmpv;$/;"	m	union:__jbl_stream::__anon6
+true	jbl/jbl_ying.h	21;"	d
+type	jbl/jbl_file.h	/^	jbl_uint8 type:2;$/;"	m	struct:__jbl_file
+u	jbl/jbl_var.h	/^		jbl_uint64 u;$/;"	m	union:__jbl_var_data::__anon7
+ua	jwl/jwl_http.h	/^	jbl_string *	ua;$/;"	m	struct:__jwl_http_reqh
+url	jwl/jwl_http.h	/^	jbl_string *	url;$/;"	m	struct:__jwl_http_reqh
+usb	jbl/jbl_stream.h	/^	void  (*usb)(jbl_stream*);\/\/ update stream buf$/;"	m	struct:__jbl_stream_operater
+v	jbl/jbl_ht.h	/^	jbl_var *				v;$/;"	m	struct:__jbl_ht_data
+v	jbl/jbl_ll.h	/^	jbl_var *v;$/;"	m	struct:__jbl_ll_node
+v	jwl/jwl_http.h	/^	jbl_ht *		v;$/;"	m	struct:__jwl_http_reqh
+v	jwl/jwl_http.h	/^	jbl_ht *		v;$/;"	m	struct:__jwl_http_resh
+view_put	jbl/jbl_var.h	/^	void	(*view_put)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32);$/;"	m	struct:__jbl_var_operators
+year	jbl/jbl_time.h	/^	int year,month,day,hour,minute,second,ms;$/;"	m	struct:__jbl_time_decoded

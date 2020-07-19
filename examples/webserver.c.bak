@@ -1,0 +1,76 @@
+#include "main.h"
+#include <time.h>
+jbl_socket_handle sock,client;
+#ifdef __linux__
+#include <signal.h>
+void jry_wb_signal_callback(int sign)
+{
+	jwl_socket_close(&sock);	
+	fputs("Bye juruoyun webserve! \nSAFE EXIT\n",stdout);
+	exit(0);
+}
+
+
+#endif
+int main(int argc,char** argv)
+{
+	printf("--------------------------------" __FILE__ "--------------------------------\n");
+	jbl_start();
+	jwl_start();	
+	jbl_string 				data,data2		;jbl_string_inits(2,&data,&data2);
+	jbl_string 				et				=jbl_string_const("435434"		,6);
+	const jbl_string 		ip				=jbl_string_const("0.0.0.0"		,7);
+	const jbl_string 		fa				=jbl_string_const("/favicon.ico"	,12);
+	jbl_var					v1				;jbl_var_inits	(1,&v1);
+	jwl_http_request_head	request_head	;jwl_http_request_head_init(&request_head);	
+	jwl_http_response_head	response_head	;jwl_http_response_head_init(&response_head);	
+	FILE 						*fp;
+	jwl_socket_init(&sock,jwl_get_binary_ip(&ip),1217,JRY_BL_SOCKET_MODE_SERVER);
+#ifdef __linux__
+	signal(SIGINT,jry_wb_signal_callback);
+	signal(SIGTERM,jry_wb_signal_callback);	
+#endif
+	int count=0;
+	clock_t __start;	
+	while(1)
+	{
+		jwl_socket_accept(&sock,&client);
+		printf("%d\n",++count);
+		jwl_http_request_head_clear(&request_head);
+		__start=clock();
+		if(jwl_http_get_request_head(&client,&request_head,&data))
+			jwl_socket_receive(&client,&data);
+		fprintf(stderr,"Accept used time:%fs\n",((double)(clock()-__start)/CLOCKS_PER_SEC));		
+		jwl_request_head_view(&request_head,stderr);
+		jbl_string_view(&data,stderr);
+		jbl_string_clear(&data);
+		
+		jwl_http_response_head_set_max_age(&response_head,31536000);
+		jwl_http_response_head_set_etag(&response_head,&et,JRY_BL_COPY_LIGHT);
+		if(jbl_string_if_equal(jwl_http_request_head_get_etag(&request_head),&et))
+			jwl_http_response_head_set_status(&response_head,304),jbl_string_clears(2,&data,&data2);
+		else
+		{
+			__start=clock();
+			jwl_http_response_head_set_status(&response_head,200);
+			if(jbl_string_if_equal(jwl_http_request_head_get_url(&request_head),&fa))
+				fp=fopen(logo_ico,"rb"),jwl_http_response_head_set_content_type(&response_head,JRY_WL_HTTP_CONTENT_TYPE_ICO);
+			else
+				fp=fopen(filename,"rb"),jwl_http_response_head_set_content_type(&response_head,JRY_WL_HTTP_CONTENT_TYPE_MP4);		
+			jbl_string_equal_file(&data2,fp);
+			fclose(fp);
+			fprintf(stderr,"Read %lld Byte data used time:%fs\n",jbl_string_get_length(&data2),((double)(clock()-__start)/CLOCKS_PER_SEC));		
+		}
+		__start=clock();
+		jwl_http_send_response(&client,&response_head,&data2);
+		fprintf(stderr,"Send %lld Byte data used time:%fs\n",jbl_string_get_length(&data2),((double)(clock()-__start)/CLOCKS_PER_SEC));
+		jbl_string_clears(2,&data,&data2);
+		jwl_socket_close(&client);		
+	}	
+	jwl_socket_close(&sock);	
+	jbl_string_frees(3,&data,&data2,&et);
+	jbl_var_frees(1,&v1);
+	jwl_http_response_head_free(&response_head);
+	jwl_http_request_head_free(&request_head);
+	jbl_stop();	
+}

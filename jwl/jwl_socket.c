@@ -9,7 +9,6 @@
    See the Mulan PSL v1 for more details.*/
 #include "jwl_socket.h"
 #if JWL_SOCKET_ENABLE==1
-
 #ifdef __linux__
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -39,6 +38,8 @@ jwl_socket * jwl_socket_init(jwl_socket *this)
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	this->handle=-1;
+	this->ip=0;
+	this->port=0;
 	return this;
 }
 jwl_socket * jwl_socket_free(jwl_socket *this)
@@ -71,6 +72,9 @@ jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)
 		this=jwl_socket_close(this),jbl_exception("BIND FAILED");
 	if(listen(this->handle,1024)==-1)
 		this=jwl_socket_close(this),jbl_exception("LISTEN FAILED");
+	jwl_socket_set_host(this);
+	this->port=port;
+	this->ip=ip;
 	return this;
 }
 jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)
@@ -85,6 +89,8 @@ jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)
 	skaddr.sin_addr.s_addr=ip;
 	if(connect(this->handle,(struct sockaddr*)&skaddr,sizeof(skaddr))==-1)
 		this=jwl_socket_close(this),jbl_log("CONNECT FAILED");
+	this->port=port;
+	this->ip=ip;
 	return this;
 }
 inline jwl_socket * jwl_socket_close(jwl_socket *this)
@@ -93,12 +99,16 @@ inline jwl_socket * jwl_socket_close(jwl_socket *this)
 	if(this)(this->handle==-1?0:close(this->handle));
 #else
 	if(this)(this->handle==-1?0:closesocket(this->handle));
-#endif	
+#endif
+	jwl_socket_reset_host(this);
+	this->port=0;
+	this->ip=0;
 	return this;
 }
-inline jwl_socket * jwl_socket_accept(jwl_socket *this,jbl_uint64 *ip,jbl_uint32 *port)
+inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 {
-	if(!this)return NULL;	
+	if(!this)return NULL;
+	if(!jwl_socket_is_host(this))jbl_exception("ACCEPT FROM UNHOST SOCKET");
 	struct sockaddr_in claddr;
 #ifdef __linux__
 	unsigned int length=sizeof(claddr);
@@ -112,15 +122,16 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this,jbl_uint64 *ip,jbl_uint32
 		jbl_log("ACCEPT FAILED");
 		return NULL;
 	}
-	if(ip)*ip=claddr.sin_addr.s_addr;
-	if(port)*port=ntohs(claddr.sin_port);
 	jwl_socket *client=jwl_socket_new();
 	client->handle=handle;
+	client->port=ntohs(claddr.sin_port);
+	client->ip=claddr.sin_addr.s_addr;	
 	return client;
 }
 inline jwl_socket * jwl_socket_send(jwl_socket *this,jbl_string *data)
 {
-	if(!this)jbl_exception("NULL POINTER");	
+	if(!this)jbl_exception("NULL POINTER");
+	if(jwl_socket_is_host(this))jbl_exception("SEND FROM HOST SOCKET");	
 	if(data)
 		if(send(this->handle,(char*)jbl_string_get_chars(data),jbl_string_get_length(data),0)==-1)
 			jbl_log("SEND FAILED"),jbl_logstr(jbl_string_copy(data));
@@ -129,6 +140,7 @@ inline jwl_socket * jwl_socket_send(jwl_socket *this,jbl_string *data)
 jbl_string * jwl_socket_receive(jwl_socket *this,jbl_string *data)
 {
 	if(!this)jbl_exception("NULL POINTER");	
+	if(jwl_socket_is_host(this))jbl_exception("RECEIVE FROM HOST SOCKET");		
     int ret=0;
 	do
 	{
@@ -140,7 +152,8 @@ jbl_string * jwl_socket_receive(jwl_socket *this,jbl_string *data)
 }
 jwl_socket * jwl_socket_send_safe(jwl_socket *this,jbl_string *data)
 {
-	if(!this)jbl_exception("NULL POINTER");	
+	if(!this)jbl_exception("NULL POINTER");
+	if(jwl_socket_is_host(this))jbl_exception("SEND FROM HOST SOCKET");	
 	if(!data)return this;
 	char buf[16];
 	unsigned long long n=jbl_string_get_length(data);
@@ -152,7 +165,8 @@ jwl_socket * jwl_socket_send_safe(jwl_socket *this,jbl_string *data)
 }
 jbl_string * jwl_socket_receive_safe(jwl_socket *this,jbl_string *data)
 {
-	if(!this)jbl_exception("NULL POINTER");	
+	if(!this)jbl_exception("NULL POINTER");
+	if(jwl_socket_is_host(this))jbl_exception("RECEIVE FROM HOST SOCKET");	
     char buf[16];int ret;
 	unsigned long long n=0,i=0;
 	recv(this->handle,buf,16,0);
@@ -182,6 +196,25 @@ void jwl_socket_receive_length(jbl_socket_handle *this,jbl_string *data,jbl_stri
 }
 */
 #if JBL_STREAM_ENABLE==1
+void jwl_socket_view_put(const jwl_socket* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+{
+	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jwl_socket    ",format,str,&tabs))return;
+	if(this->handle==-1)
+		jbl_stream_push_chars(out,UC" disconnected");
+	else
+	{
+		if(jwl_socket_is_host(this))
+			jbl_stream_push_chars(out,UC" listen  on ");
+		else
+			jbl_stream_push_chars(out,UC" connect to ");
+		jbl_stream_push_chars(out,UC"ip:");
+		jbl_string* tmp=jwl_get_string_ip(this->ip,NULL);
+		jbl_stream_push_string(jbl_stream_stdout,tmp);
+		tmp=jbl_string_free(tmp);
+		jbl_stream_push_chars(out,UC" port:");
+		jbl_stream_push_uint(out,this->port);
+	}
+}
 void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 {
 /*

@@ -15,17 +15,17 @@ int main(int argc,char** argv)
 	sock=jwl_socket_bind(sock,jwl_get_binary_ip(ip),jbl_string_get_uint64(port));
 	ip=jbl_string_free(ip);
 	port=jbl_string_free(port);	
+	jwl_socket_view(sock);pf();
 
 
 	jbl_uint32 count=0;
 	while(1)
 	{
 		jbl_string *get=NULL;
-		jbl_uint32 rport=0;jbl_uint64 rip=0;
 		jbl_time *t1=NULL,*t2=NULL;	
-		jwl_socket *client=jwl_socket_accept(sock,&rip,&rport);
-		get=jwl_get_string_ip(rip,NULL);
-		puint(++count);pchars(" from ip:");jbl_stream_push_string(jbl_stream_stdout,get);pchars(" port:");puint(rport);pn();get=jbl_string_free(get);
+		jwl_socket *client=jwl_socket_accept(sock);
+		jwl_socket_view(client);
+		puint(++count);
 		t1=jbl_time_now(t1);
 		get=jwl_socket_receive_safe(client,NULL);
 		pchars("\nreceive used time:");puint(jbl_time_minus((t2=jbl_time_now(t2)),t1));pchars("ms\n");

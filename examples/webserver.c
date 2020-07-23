@@ -15,30 +15,30 @@ int main(int argc,char** argv)
 	sock=jwl_socket_bind(sock,jwl_get_binary_ip(ip),jbl_string_get_uint64(port));
 	ip=jbl_string_free(ip);
 	port=jbl_string_free(port);	
+	jwl_socket_view(sock);pf();
 
 	jbl_uint32 count=0;
 	while(1)
 	{
-		jbl_string *get=NULL,*res=NULL;
-		jbl_uint32 rport=0;jbl_uint64 rip=0;
-		jbl_time *t1=NULL,*t2=NULL;	
-		jwl_http_resh *resh=NULL;
-		jwl_socket *client=jwl_socket_accept(sock,&rip,&rport);
+		jwl_socket *client=jwl_socket_accept(sock);
 		if(!client)continue;
-		get=jwl_get_string_ip(rip,NULL);
-		puint(++count);pchars(" from ip:");jbl_stream_push_string(jbl_stream_stdout,get);pchars(" port:");puint(rport);pn();get=jbl_string_free(get);
-		t1=jbl_time_now(t1);
-		get=jwl_socket_receive(client,NULL);
-		pchars("\nreceive used time:");puint(jbl_time_minus((t2=jbl_time_now(t2)),t1));pchars("ms\n");
+		puint(++count);pn();
+		jwl_socket_view(client);
+pl();
+///////////////////////////////////////////////////////////////////////
+//windows环境下，会卡在这里，导致ctrl+c关闭的时候，无法释放所有内存
+///////////////////////////////////////////////////////////////////////
+		jbl_string *get=jwl_socket_receive(client,NULL);
+pl();
 //		jbl_string_view(get);
 		jwl_http_reqh * reqh=jwl_http_reqh_decode(get,NULL);
-		jwl_http_reqh_view(reqh);		
-		
-		resh=jwl_http_resh_new();
-		
+		get=jbl_string_free(get);
+		jwl_http_reqh_view(reqh);	
 		
 		
 		
+		jbl_string *	res	=NULL;							//输出缓冲
+		jwl_http_resh *	resh=jwl_http_resh_new();			//响应头
 		if(jbl_string_space_ship_chars(reqh->url,"/favicon.ico")==0)
 		{
 			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO));
@@ -72,14 +72,14 @@ int main(int argc,char** argv)
 			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_MP4));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
 			resh=jwl_http_resh_set_cache_max_age(resh,3600);
-			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"video"));
-			if(jbl_string_space_ship_chars(reqh->etag,"video")==0)
+			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"135"));
+			if(jbl_string_space_ship_chars(reqh->etag,"135")==0)
 				resh=jwl_http_resh_set_status		(resh,304);
 			else
 			{
 				resh=jwl_http_resh_set_status		(resh,200);
 				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.mp4","rb"));fclose(fp);
-			}
+			}			
 		}		
 		else
 		{
@@ -100,9 +100,6 @@ int main(int argc,char** argv)
 		reqh=jwl_http_reqh_free(reqh);
 		resh=jwl_http_resh_free(resh);
 		client=jwl_socket_free(client);
-		t1=jbl_time_free(t1);
-		t2=jbl_time_free(t2);
-		get=jbl_string_free(get);
 		res=jbl_string_free(res);
 		pf();
 		

@@ -67,6 +67,20 @@ int main(int argc,char** argv)
 				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.png","rb"));fclose(fp);
 			}
 		}
+		else if(jbl_string_space_ship_chars(reqh->url,"/video")==0)
+		{
+			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_MP4));
+			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
+			resh=jwl_http_resh_set_cache_max_age(resh,3600);
+			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"video"));
+			if(jbl_string_space_ship_chars(reqh->etag,"video")==0)
+				resh=jwl_http_resh_set_status		(resh,304);
+			else
+			{
+				resh=jwl_http_resh_set_status		(resh,200);
+				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.mp4","rb"));fclose(fp);
+			}
+		}		
 		else
 		{
 			resh=jwl_http_resh_set_status		(resh,200);

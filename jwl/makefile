@@ -21,4 +21,7 @@ jwl/jwl_ying		:
 jwl/jwl_socket		:
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jwl_socket.o  jwl$(H)jwl_socket.c $(JWL_EXLIB)
 jwl/jwl_http		:
+ifeq ($(shell uname),Linux)
+	re2c -o jwl$(H)jwl_http.c jwl$(H)jwl_http.l
+endif
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jwl_http.o    jwl$(H)jwl_http.c   $(JWL_EXLIB)

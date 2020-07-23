@@ -1,32 +1,25 @@
 #include "main.h"
-#define ip "192.168.1.2"
 int main()
 {
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
 	jwl_start();
-	jbl_string a;jbl_string_inits(1,&a);
-	jbl_var v;jbl_var_inits(1,&v);
-	jwl_http_request_head	request_head	;jwl_http_request_head_init(&request_head);	
-	jwl_http_request_head_set_method(&request_head,JRY_WL_HTTP_METHOD_GET);
-	jwl_http_request_head_set_protocol(&request_head,JRY_WL_HTTP_PROTOCOL_HTTP);
-	jwl_http_request_head_set_connection(&request_head,JRY_WL_HTTP_CONNECTION_CLOSE);
-	jwl_http_request_head_set_cache(&request_head,JRY_WL_HTTP_CACHE_NO);
-	jbl_string_equal_chars(&a,"/jry_wb/jry_wb_tools/jry_wb_get_ip_address.php?ip=112.224.67.110");jwl_http_request_head_set_url(&request_head,&a,move);
-	jbl_string_equal_chars(&a,"www.juruoyun.top");jwl_http_request_head_set_host(&request_head,&a,move);
-	jbl_string_equal_chars_light(&a,"60.205.219.36");
-	jbl_socket_handle sock;jwl_socket_init(&sock,jwl_get_binary_ip(&a),80,JRY_BL_SOCKET_MODE_CLIENT);
-	jwl_http_send_request_head(&sock,&request_head);
-	jbl_string_clear(&a);
-	jwl_socket_receive(&sock,&a);
-	jbl_string_view(&a,stderr);	
-	jbl_var_from_json(&v,&a);
-	jbl_var_view(&v,stderr);
-
-
-	jwl_socket_close(&sock);
-	jwl_http_request_head_free(&request_head);
-	jbl_string_frees(1,&a);
-	jbl_var_frees(1,&v);
-	jbl_stop();		
+	jbl_string *s1=jbl_string_add_chars(NULL,
+		"GET / HTTP/1.1\r\n"
+		"Host: test0.juruoyun.top:1217\r\n"
+		"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36\r\n"
+		"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n"
+		"Accept-Encoding: gzip, deflate\r\n"
+		"Accept-Language: zh-CN,zh;q=0.9\r\n"
+		"Cache-Control: max-age=0\r\n"
+		"Referer: http://test0.juruoyun.top/\r\n"
+		"Cookie: id=1; code=7FRWuMuuKnotkD2S4qqydnMwQrEJV4HykR0bmmjpfx41ChsWdw4540709f5c6c74b70576c38cf7f7608d55b974d6625187f24fe780700e42bd57\r\n"
+		"Upgrade-Insecure-Requests: 1\r\n");
+	jwl_http_reqh * reqh=jwl_http_reqh_decode(s1,NULL);
+	s1=jbl_string_free(s1);
+	jwl_http_reqh_view(reqh);
+	reqh=jwl_http_reqh_free(reqh);
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
+	jwl_stop();
+	jbl_stop(); 	
 }

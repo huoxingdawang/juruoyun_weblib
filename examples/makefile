@@ -19,7 +19,7 @@ else
 	rm = del
 	pre = win_
 endif
-all:jbl jwl test socket_client socket_server
+all:jbl jwl socket_client socket_server test2 webserver
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
@@ -37,9 +37,9 @@ run:
 	exes$(H)socket  &&pause
 
 #examples
-test:
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)test.o examples$(H)test.c	
-	$(CC) $(BITS) -o exes$(H)test tmp$(H)$(pre)test.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+test2:
+	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)test2.o examples$(H)test2.c	
+	$(CC) $(BITS) -o exes$(H)test2 tmp$(H)$(pre)test2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 socket_server:
 	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)socket_server.o examples$(H)socket_server.c	
 	$(CC) $(BITS) -o exes$(H)socket_server tmp$(H)$(pre)socket_server.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

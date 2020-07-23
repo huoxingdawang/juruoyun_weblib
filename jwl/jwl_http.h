@@ -14,12 +14,6 @@
 #include "jwl_ying.h"
 #include "jwl_socket.h"
 #include "jwl_http_content.h"
-#define JWL_HTTP_METHOD_UNKNOW			0
-#define JWL_HTTP_METHOD_GET				1
-#define JWL_HTTP_METHOD_POST			2
-#define JWL_HTTP_PROTOCOL_UNKNOW		0
-#define JWL_HTTP_PROTOCOL_HTTP			1
-#define JWL_HTTP_PROTOCOL_HTTPS			2
 #define JWL_HTTP_CONNECTION_UNKNOW		0
 #define JWL_HTTP_CONNECTION_KEEP_ALIVE	1
 #define JWL_HTTP_CONNECTION_CLOSE		2
@@ -67,6 +61,32 @@ typedef struct __jwl_http_reqh//request head 请求头
 	jbl_ht *		cookie;
 	jbl_ht *		v;
 }jwl_http_reqh;
+typedef enum
+{
+	JRY_WB_HTTP_KEY_UNDEFINED,
+	JRY_WB_HTTP_KEY_FINISH,
+	JRY_WB_HTTP_KEY_UA,
+	JRY_WB_HTTP_KEY_HOST,
+	JRY_WB_HTTP_KEY_REFERER,
+	JRY_WB_HTTP_KEY_ETAG,
+	JRY_WB_HTTP_KEY_COOKIE,
+	JRY_WB_HTTP_KEY_ACCEPT,
+	JRY_WB_HTTP_KEY_ACCEPT_ENCODING,
+	JRY_WB_HTTP_KEY_ACCEPT_LANGUAGE,
+	JRY_WB_HTTP_KEY_CACHE_CONTROL,
+}jry_wb_http_key;
+typedef enum
+{
+	JWL_HTTP_METHOD_UNKNOW,
+	JWL_HTTP_METHOD_GET,
+	JWL_HTTP_METHOD_POST,
+}jry_wb_http_method;
+typedef enum
+{
+	JWL_HTTP_PROTOCOL_UNKNOW,
+	JWL_HTTP_PROTOCOL_HTTP,
+	JWL_HTTP_PROTOCOL_HTTPS,
+}jry_wb_http_protocol;
 jwl_http_resh *	jwl_http_resh_new			();
 jwl_http_resh *	jwl_http_resh_init			(jwl_http_resh * this);
 jwl_http_resh *	jwl_http_resh_free			(jwl_http_resh * this);
@@ -97,6 +117,13 @@ void					jwl_http_resh_view_put				(const jwl_http_resh* this,jbl_stream *out,jb
 jwl_http_reqh *	jwl_http_reqh_new		();
 jwl_http_reqh *	jwl_http_reqh_init		(jwl_http_reqh * this);
 jwl_http_reqh *	jwl_http_reqh_free		(jwl_http_reqh * this);
+jwl_http_reqh *	jwl_http_reqh_extend	(jwl_http_reqh * this,jwl_http_reqh **pthi);
+jwl_http_reqh *	jwl_http_reqh_decode	(jbl_string *buf,jbl_string_size_type *start);
+
+#if JBL_STREAM_ENABLE==1
+void					jwl_http_reqh_view_put				(const jwl_http_reqh* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个hash table
+#define					jwl_http_reqh_view(x)				jwl_http_reqh_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')//浏览一个hash table
+#endif
 
 
 

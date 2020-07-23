@@ -30,26 +30,41 @@ int main(int argc,char** argv)
 		t1=jbl_time_now(t1);
 		get=jwl_socket_receive(client,NULL);
 		pchars("\nreceive used time:");puint(jbl_time_minus((t2=jbl_time_now(t2)),t1));pchars("ms\n");
-		jbl_string_view(get);
-
-
+//		jbl_string_view(get);
+		jwl_http_reqh * reqh=jwl_http_reqh_decode(get,NULL);
+		jwl_http_reqh_view(reqh);		
 		
-
-		res=jbl_string_add_uint64(res,count);
-		res=jbl_string_add_chars(res,UC"Hello world,Juruoyun!<br>蒟蒻云");
+		
+		
+		
 		
 		resh=jwl_http_resh_new();
-		
-		resh=jwl_http_resh_set_status(resh,200);
-		resh=jwl_http_resh_set_cache(resh,JWL_HTTP_CACHE_NO);
-		resh=jwl_http_resh_set_content_type(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_HTML));
-		resh=jwl_http_resh_set_charset(resh,JWL_HTTP_CHARSET_UTF8);
+		if(jbl_string_space_ship_chars(reqh->url,"/favicon.ico")==0)
+		{
+			resh=jwl_http_resh_set_status		(resh,200);
+			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_NO);
+			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO));
+			resh=jwl_http_resh_set_charset		(resh,JWL_HTTP_CHARSET_UTF8);
+			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"456"));
+			FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//logo.ico","rb"));fclose(fp);
+		}
+		else
+		{
+			resh=jwl_http_resh_set_status		(resh,200);
+			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_NO);
+			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_HTML));
+			resh=jwl_http_resh_set_charset		(resh,JWL_HTTP_CHARSET_UTF8);
+			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"123123"));			
+			res=jbl_string_add_uint64(res,count);
+			res=jbl_string_add_chars(res,UC"Hello world,Juruoyun!<br>蒟蒻云");
+		}
 		
 		jwl_http_resh_view(resh);
 		
 		
 		jwl_http_send_res(client,resh,res);
 
+		reqh=jwl_http_reqh_free(reqh);
 		resh=jwl_http_resh_free(resh);
 		client=jwl_socket_free(client);
 		t1=jbl_time_free(t1);

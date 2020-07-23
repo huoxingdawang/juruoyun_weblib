@@ -140,6 +140,13 @@ jbl_string_size_type	jbl_string_find_char_start				(const jbl_string *this,unsig
 /*******************************************************************************************/
 jbl_string_hash_type	jbl_string_hash							(jbl_string *this);														//hash一个字符串
 #define					jbl_string_hash_clear(x)				((((jbl_string*)jbl_refer_pull(x))->h=0))								//清楚hash缓存
+/*******************************************************************************************/
+/*                            以下函数实现字符串的修改操作                               */
+/*******************************************************************************************/
+jbl_string *			jbl_string_to_upper_case				(jbl_string *this);														//转成大写字母
+jbl_string *			jbl_string_to_lower_case				(jbl_string *this);														//转成小写字母
+
+
 #if JBL_JSON_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现字符串的JSON操作                               */

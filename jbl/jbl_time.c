@@ -16,7 +16,7 @@
 #include "jbl_gc.h"
 #include "jbl_malloc.h"
 #include "jbl_ying.h"
-#include <sys/timeb.h>
+#include <sys/time.h>
 /*******************************************************************************************/
 /*                            联动jbl_string jbl_var                                       */
 /*******************************************************************************************/
@@ -77,10 +77,9 @@ inline jbl_time * jbl_time_copy(jbl_time * that)
 /*******************************************************************************************/
 inline jbl_time * jbl_time_now(jbl_time *this)
 {
-	struct timeb t;
-	ftime(&t);
-	return jbl_time_set(this,(((jbl_int64)t.time)*1000)+(t.millitm));
-	return this;
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	return jbl_time_set(this,(((jbl_int64)tv.tv_sec)*1000)+(tv.tv_usec/1000));
 }
 void jbl_time_decode(const jbl_time *this,jbl_time_decoded *tt)
 {

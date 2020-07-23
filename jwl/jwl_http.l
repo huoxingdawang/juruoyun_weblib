@@ -21,6 +21,7 @@ jwl_http_resh *jwl_http_resh_init(jwl_http_resh * this)
 	this->status		=0;
 	this->cache			=0;
 	this->cache_max_age	=0;	
+	this->charset	=0;	
 	this->content_type	=NULL;
 	this->etag			=NULL;
 	this->v				=NULL;
@@ -68,8 +69,9 @@ inline jwl_http_resh *jwl_http_resh_extend(jwl_http_resh * this,jwl_http_resh **
 	if((jbl_gc_refcnt(thi)<=1)){if(pthi)*pthi=thi;return this;}
 
 	jwl_http_resh * tmp=jwl_http_resh_new();
-	tmp->status		=this->status;
+	tmp->status			=this->status;
 	tmp->cache			=this->cache;
+	tmp->charset		=this->charset;
 	tmp->cache_max_age	=this->cache_max_age;
 	tmp->content_type	=jbl_string_copy(this->content_type);
 	tmp->etag			=jbl_string_copy(this->etag);
@@ -99,31 +101,26 @@ jbl_string* jwl_http_resh_encode(jbl_string *buf,jwl_http_resh *head,jbl_string_
 			break;
 	}
 	rn();
-	buf=jbl_string_add_chars(buf,UC"Server: "JWL_HTTP_RESPONSE_SERVER_NAME)														,rn();
-	buf=jbl_string_add_chars(buf,UC"Content-Length: ")						,buf=jbl_string_add_uint64(buf,size)				,rn();
-	buf=jbl_string_add_chars(buf,UC"Accept-Ranges: bytes")																		,rn();
+	buf=jbl_string_add_chars(buf,UC"Server: "JWL_HTTP_RESPONSE_SERVER_NAME)															,rn();
+	buf=jbl_string_add_chars(buf,UC"Content-Length: ")						,buf=jbl_string_add_uint64(buf,size)					,rn();
+	buf=jbl_string_add_chars(buf,UC"Accept-Ranges: bytes")																			,rn();
 	if(head->cache==JWL_HTTP_CACHE_MAX_AGE)
-		buf=jbl_string_add_chars(buf,UC"Cache-Control: max-age=")			,buf=jbl_string_add_uint64(buf,head->cache_max_age)	,rn();
+		buf=jbl_string_add_chars(buf,UC"Cache-Control:public, max-age=")	,buf=jbl_string_add_uint64(buf,head->cache_max_age)		,rn();
 	else
 	{
-		buf=jbl_string_add_chars(buf,UC"Pragma: no-cache")																		,rn();
-		buf=jbl_string_add_chars(buf,UC"Cache-Control: no-cache")																,rn();
+		buf=jbl_string_add_chars(buf,UC"Pragma: no-cache")																			,rn();
+		buf=jbl_string_add_chars(buf,UC"Cache-Control: no-cache")																	,rn();
 	}
 	if(head->content_type)
 	{
 		buf=jbl_string_add_chars(buf,UC"Content-Type: ")					,buf=jbl_string_add_string(buf,head->content_type);
+		char *charset[]={"","UTF-8"};
 		if(head->charset)
-		{
-			buf=jbl_string_add_chars(buf,UC"; charset=");
-			switch(head->charset)
-			{
-				case JWL_HTTP_CHARSET_UTF8:buf=jbl_string_add_chars(buf,UC"UTF-8");break;
-			}
-			rn();
-		}
+			buf=jbl_string_add_chars(buf,UC"; charset=")					,buf=jbl_string_add_chars(buf,UC charset[head->charset]);
+		rn();
 	}
 	if(head->etag)
-		buf=jbl_string_add_chars(buf,UC"ETag: ")							,buf=jbl_string_add_string(buf,head->etag)			,rn();
+		buf=jbl_string_add_chars(buf,UC"ETag: ")							,buf=jbl_string_add_string(buf,head->etag)				,rn();
 	if(head->v)
 		jbl_ht_foreach(head->v,i)
 		{
@@ -134,11 +131,11 @@ jbl_string* jwl_http_resh_encode(jbl_string *buf,jwl_http_resh *head,jbl_string_
 		}
 	
 	
-	buf=jbl_string_add_chars(buf,UC"Connection: keep-alive");rn();
-	buf=jbl_string_add_chars(buf,UC"Keep-Alive: timeout=4");rn();
-	buf=jbl_string_add_chars(buf,UC"Date: Thu, 11 Jun 2020 15:10:18 GMT");rn();
-	buf=jbl_string_add_chars(buf,UC"Expires: Thu, 11 Jun 2020 15:10:18 GMT");rn();
-	buf=jbl_string_add_chars(buf,UC"Proxy-Connection: keep-alive");rn();
+//	buf=jbl_string_add_chars(buf,UC"Connection: keep-alive");rn();
+//	buf=jbl_string_add_chars(buf,UC"Keep-Alive: timeout=4");rn();
+//	buf=jbl_string_add_chars(buf,UC"Date: Thu, 11 Jun 2020 15:10:18 GMT");rn();
+//	buf=jbl_string_add_chars(buf,UC"Expires: Thu, 11 Jun 2020 15:10:18 GMT");rn();
+//	buf=jbl_string_add_chars(buf,UC"Proxy-Connection: keep-alive");rn();
 	
 	rn();
 #undef rn
@@ -165,22 +162,18 @@ void jwl_http_resh_view_put(const jwl_http_resh* this,jbl_stream *out,jbl_int32 
 {
 	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jwl_http_resh ",format,str,&tabs))return;
 	if(format){jbl_stream_push_char(out,'\n');for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}
-	jbl_stream_push_chars(out,UC"status       :"),jbl_stream_push_uint(out,this->status),jbl_stream_push_char(out,'\n');
+	jbl_stream_push_chars(out,UC"status       :"),jbl_stream_push_uint(out,this->status)				,jbl_stream_push_char(out,'\n');
 	if(format){for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}
-	jbl_stream_push_chars(out,UC"cache        :"),jbl_stream_push_uint(out,this->cache),jbl_stream_push_char(out,'\t');
+	jbl_stream_push_chars(out,UC"cache        :"),jbl_stream_push_uint(out,this->cache)					,jbl_stream_push_char(out,'\t');
 	if(this->cache==JWL_HTTP_CACHE_MAX_AGE)
-		jbl_stream_push_chars(out,UC"(max-age,"),jbl_stream_push_uint(out,this->cache_max_age),jbl_stream_push_chars(out,UC")\n");
+		jbl_stream_push_chars(out,UC"(max-age,"),jbl_stream_push_uint(out,this->cache_max_age)			,jbl_stream_push_chars(out,UC")\n");
 	else
 		jbl_stream_push_chars(out,UC"(no-cache)\n");
 	if(format){for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}
-	jbl_stream_push_chars(out,UC"content type :"),jbl_stream_push_string(out,this->content_type),jbl_stream_push_char(out,'\n');
+	jbl_stream_push_chars(out,UC"content type :"),jbl_stream_push_string(out,this->content_type)		,jbl_stream_push_char(out,'\n');
 	if(format){for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}
-	jbl_stream_push_chars(out,UC"charset      :");
-	switch(this->charset)
-	{
-		case JWL_HTTP_CHARSET_UTF8:jbl_stream_push_chars(out,UC"UTF-8");break;
-	}	
-	jbl_stream_push_char(out,'\n');
+	char *charset[]={"","UTF-8"};
+	jbl_stream_push_chars(out,UC"charset      :"),jbl_stream_push_chars(out,UC charset[this->charset])	,jbl_stream_push_char(out,'\n');
 	if(format){for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}//格式化的\t和\n
 	jbl_stream_push_chars(out,UC"etag         :"),jbl_stream_push_string(out,this->etag);
 	if(this->v)jbl_ht_foreach(this->v,i)
@@ -371,10 +364,10 @@ jwl_http_reqh* jwl_http_reqh_decode(jbl_string *buf,jbl_string_size_type *start)
 		switch(key)
 		{
 			case JRY_WB_HTTP_KEY_FINISH				:goto finish;																															;break;
-			case JRY_WB_HTTP_KEY_UA					:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;break;
-			case JRY_WB_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->host	=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;break;
-			case JRY_WB_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;break;
-			case JRY_WB_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->etag	=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;break;
+			case JRY_WB_HTTP_KEY_UA					:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;--reqh->ua->len		;break;
+			case JRY_WB_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->host	=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len		;break;
+			case JRY_WB_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len	;break;
+			case JRY_WB_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->etag	=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len		;break;
 			
 			case JRY_WB_HTTP_KEY_COOKIE				:break;
 			case JRY_WB_HTTP_KEY_ACCEPT				:break;

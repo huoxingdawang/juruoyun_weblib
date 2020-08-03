@@ -4,7 +4,7 @@ int main()
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
 	jwl_start();
-	jbl_string *s1=jbl_string_add_chars(NULL,
+	jbl_string *s1=jbl_string_add_chars(NULL,UC
 		"GET / HTTP/1.1\r\n"
 		"Host: test0.juruoyun.top:1217\r\n"
 		"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36\r\n"

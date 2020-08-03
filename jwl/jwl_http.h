@@ -63,30 +63,30 @@ typedef struct __jwl_http_reqh//request head 请求头
 }jwl_http_reqh;
 typedef enum
 {
-	JRY_WB_HTTP_KEY_UNDEFINED,
-	JRY_WB_HTTP_KEY_FINISH,
-	JRY_WB_HTTP_KEY_UA,
-	JRY_WB_HTTP_KEY_HOST,
-	JRY_WB_HTTP_KEY_REFERER,
-	JRY_WB_HTTP_KEY_ETAG,
-	JRY_WB_HTTP_KEY_COOKIE,
-	JRY_WB_HTTP_KEY_ACCEPT,
-	JRY_WB_HTTP_KEY_ACCEPT_ENCODING,
-	JRY_WB_HTTP_KEY_ACCEPT_LANGUAGE,
-	JRY_WB_HTTP_KEY_CACHE_CONTROL,
-}jry_wb_http_key;
+	JWL_HTTP_KEY_UNDEFINED,
+	JWL_HTTP_KEY_END,
+	JWL_HTTP_KEY_UA,
+	JWL_HTTP_KEY_HOST,
+	JWL_HTTP_KEY_REFERER,
+	JWL_HTTP_KEY_ETAG,
+	JWL_HTTP_KEY_COOKIE,
+	JWL_HTTP_KEY_ACCEPT,
+	JWL_HTTP_KEY_ACCEPT_ENCODING,
+	JWL_HTTP_KEY_ACCEPT_LANGUAGE,
+	JWL_HTTP_KEY_CACHE_CONTROL,
+}jwl_http_key;
 typedef enum
 {
 	JWL_HTTP_METHOD_UNKNOW,
 	JWL_HTTP_METHOD_GET,
 	JWL_HTTP_METHOD_POST,
-}jry_wb_http_method;
+}jwl_http_method;
 typedef enum
 {
 	JWL_HTTP_PROTOCOL_UNKNOW,
 	JWL_HTTP_PROTOCOL_HTTP,
 	JWL_HTTP_PROTOCOL_HTTPS,
-}jry_wb_http_protocol;
+}jwl_http_protocol;
 jwl_http_resh *	jwl_http_resh_new			();
 jwl_http_resh *	jwl_http_resh_init			(jwl_http_resh * this);
 jwl_http_resh *	jwl_http_resh_free			(jwl_http_resh * this);

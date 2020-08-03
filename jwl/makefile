@@ -8,20 +8,26 @@
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
 #jwl
-ifeq ($(shell uname),Linux)
+ifeq ($(system),linux)
 JWL_EXLIB =
-else
+endif
+ifeq ($(system),macos)
+JWL_EXLIB =
+endif
+ifeq ($(system),windows)
 JWL_EXLIB = -lwsock32
 endif
 
 jwl					:jwl/jwl_ying jwl/jwl_socket jwl/jwl_http
 	ar rc tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jwl_*.o
 jwl/jwl_ying		:
-	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jwl_ying.o    jwl$(H)jwl_ying.c   $(JWL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ying.o    jwl$(H)jwl_ying.c   $(JWL_EXLIB)
 jwl/jwl_socket		:
-	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jwl_socket.o  jwl$(H)jwl_socket.c $(JWL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket.o  jwl$(H)jwl_socket.c $(JWL_EXLIB)
 jwl/jwl_http		:
-ifeq ($(shell uname),Linux)
+ifeq ($(system),linux)
+ifeq ($(findstring jwl,$(complain_re2c)),jwl)
 	re2c -o jwl$(H)jwl_http.c jwl$(H)jwl_http.l
 endif
-	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jwl_http.o    jwl$(H)jwl_http.c   $(JWL_EXLIB)
+endif
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_http.o    jwl$(H)jwl_http.c   $(JWL_EXLIB)

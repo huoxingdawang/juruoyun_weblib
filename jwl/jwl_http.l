@@ -105,7 +105,13 @@ jbl_string* jwl_http_resh_encode(jbl_string *buf,jwl_http_resh *head,jbl_string_
 	buf=jbl_string_add_chars(buf,UC"Content-Length: ")						,buf=jbl_string_add_uint64(buf,size)					,rn();
 	buf=jbl_string_add_chars(buf,UC"Accept-Ranges: bytes")																			,rn();
 	if(head->cache==JWL_HTTP_CACHE_MAX_AGE)
-		buf=jbl_string_add_chars(buf,UC"Cache-Control:public, max-age=")	,buf=jbl_string_add_uint64(buf,head->cache_max_age)		,rn();
+	{
+		buf=jbl_string_add_chars(buf,UC"Cache-Control: max-age=")	,buf=jbl_string_add_uint64(buf,head->cache_max_age)			,rn();
+		jbl_time * t=jbl_time_add_second(jbl_time_now(NULL),head->cache_max_age);
+//		buf=jbl_string_add_chars(buf,UC"Date: ")	,buf=jbl_time_to_string_format(t,buf,UC JBL_TIME_FORMAT_RFC1123)				,rn();
+//		buf=jbl_string_add_chars(buf,UC"Expires: ")	,buf=jbl_time_to_string_format(t,buf,UC JBL_TIME_FORMAT_RFC1123)				,rn();
+		t=jbl_time_free(t);
+	}
 	else
 	{
 		buf=jbl_string_add_chars(buf,UC"Pragma: no-cache")																			,rn();
@@ -131,10 +137,9 @@ jbl_string* jwl_http_resh_encode(jbl_string *buf,jwl_http_resh *head,jbl_string_
 		}
 	
 	
+	
 //	buf=jbl_string_add_chars(buf,UC"Connection: keep-alive");rn();
 //	buf=jbl_string_add_chars(buf,UC"Keep-Alive: timeout=4");rn();
-//	buf=jbl_string_add_chars(buf,UC"Date: Thu, 11 Jun 2020 15:10:18 GMT");rn();
-//	buf=jbl_string_add_chars(buf,UC"Expires: Thu, 11 Jun 2020 15:10:18 GMT");rn();
 //	buf=jbl_string_add_chars(buf,UC"Proxy-Connection: keep-alive");rn();
 	
 	rn();
@@ -302,27 +307,29 @@ inline jwl_http_reqh *jwl_http_reqh_extend(jwl_http_reqh * this,jwl_http_reqh **
 	if(pthi)	*pthi=tmp;	
 	return this;
 }
-jry_wb_http_key __jry_wb_http_rqhd_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
+jwl_http_key __jwl_http_rqhd_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
 {
 	unsigned char *		YYMARKER;
 	#define YYCTYPE		unsigned char
-	#define YYFILL(n)	return 0;
+	#define YYFILL(n)	return JWL_HTTP_KEY_END;
     /*!re2c
-		[^]								{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_UNDEFINED;}	
-		"\r\n\r\n"						{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_FINISH;}
-		"Host: "						{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_HOST;}
-		"User-Agent: "					{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_UA;}
-		"Accept: "						{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_ACCEPT;}
-		"Accept-Encoding: "				{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_ACCEPT_ENCODING;}
-		"Accept-Language: "				{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_ACCEPT_LANGUAGE;}
-		"Cache-Control: "				{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_CACHE_CONTROL;}
-		"Cookie: "						{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_CACHE_CONTROL;}
-		"Referer: "						{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_REFERER;}
-		"Etag: "						{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_ETAG;}
-		"If-None-Match: "				{if(addr)*addr=YYCURSOR;return JRY_WB_HTTP_KEY_ETAG;}
+		[^]								{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_UNDEFINED;}	
+		"\r\n\r\n"						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_END;}
+		"Host: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_HOST;}
+		"User-Agent: "					{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_UA;}
+		"Accept: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ACCEPT;}
+		"Accept-Encoding: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ACCEPT_ENCODING;}
+		"Accept-Language: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ACCEPT_LANGUAGE;}
+		"Cache-Control: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_CACHE_CONTROL;}
+		"Cookie: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_CACHE_CONTROL;}
+		"Referer: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_REFERER;}
+		"Etag: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ETAG;}
+		"If-None-Match: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ETAG;}
      */
+	#undef YYCTYPE
+	#undef YYFILL
 }
-jry_wb_http_method __jry_wb_http_method_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
+jwl_http_method __jwl_http_method_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
 {
 	unsigned char *		YYMARKER;
 	#define YYCTYPE		unsigned char
@@ -332,8 +339,10 @@ jry_wb_http_method __jry_wb_http_method_scanner(unsigned char * YYCURSOR,unsigne
 		"POST"	{if(addr)*addr=YYCURSOR;return JWL_HTTP_METHOD_POST;}
 		"GET"	{if(addr)*addr=YYCURSOR;return JWL_HTTP_METHOD_GET;}
      */
+	#undef YYCTYPE
+	#undef YYFILL
 }
-jry_wb_http_method __jry_wb_http_protocol_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
+jwl_http_protocol __jwl_http_protocol_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
 {
 	unsigned char *		YYMARKER;
 	#define YYCTYPE		unsigned char
@@ -342,6 +351,8 @@ jry_wb_http_method __jry_wb_http_protocol_scanner(unsigned char * YYCURSOR,unsig
 		[^]			{if(addr)*addr=YYCURSOR;return JWL_HTTP_PROTOCOL_UNKNOW;}	
 		"HTTP/1.1"	{if(addr)*addr=YYCURSOR;return JWL_HTTP_PROTOCOL_HTTP;}
      */
+	#undef YYCTYPE
+	#undef YYFILL
 }
 
 jwl_http_reqh* jwl_http_reqh_decode(jbl_string *buf,jbl_string_size_type *start)
@@ -352,28 +363,28 @@ jwl_http_reqh* jwl_http_reqh_decode(jbl_string *buf,jbl_string_size_type *start)
 	unsigned char *addr;
 	jwl_http_reqh * reqh=jwl_http_reqh_new();
 	
-	reqh->method=__jry_wb_http_method_scanner(buf->s+i,buf->s+buf->len,&addr);i=addr-buf->s;
+	reqh->method=__jwl_http_method_scanner(buf->s+i,buf->s+buf->len,&addr);i=addr-buf->s;
 	
 	for(++i;buf->s[i]!=' ';reqh->url=jbl_string_add_char(reqh->url,buf->s[i]),++i);++i;
 	
-	reqh->protocol=__jry_wb_http_protocol_scanner(buf->s+i,buf->s+buf->len,&addr);i=addr-buf->s;
+	reqh->protocol=__jwl_http_protocol_scanner(buf->s+i,buf->s+buf->len,&addr);i=addr-buf->s;
 
 	for(;i<buf->len;++i)
 	{
-		jry_wb_http_key key=__jry_wb_http_rqhd_scanner(buf->s+i,buf->s+buf->len,&addr);
+		jwl_http_key key=__jwl_http_rqhd_scanner(buf->s+i,buf->s+buf->len,&addr);
 		switch(key)
 		{
-			case JRY_WB_HTTP_KEY_FINISH				:goto finish;																															;break;
-			case JRY_WB_HTTP_KEY_UA					:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;--reqh->ua->len		;break;
-			case JRY_WB_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->host	=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len		;break;
-			case JRY_WB_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len	;break;
-			case JRY_WB_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->etag	=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len		;break;
+			case JWL_HTTP_KEY_END				:goto finish;																															;break;
+			case JWL_HTTP_KEY_UA				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;--reqh->ua->len		;break;
+			case JWL_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->host	=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len		;break;
+			case JWL_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len	;break;
+			case JWL_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->etag	=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len		;break;
 			
-			case JRY_WB_HTTP_KEY_COOKIE				:break;
-			case JRY_WB_HTTP_KEY_ACCEPT				:break;
-			case JRY_WB_HTTP_KEY_ACCEPT_ENCODING	:break;
-			case JRY_WB_HTTP_KEY_ACCEPT_LANGUAGE	:break;
-			case JRY_WB_HTTP_KEY_CACHE_CONTROL		:break;
+			case JWL_HTTP_KEY_COOKIE			:break;
+			case JWL_HTTP_KEY_ACCEPT			:break;
+			case JWL_HTTP_KEY_ACCEPT_ENCODING	:break;
+			case JWL_HTTP_KEY_ACCEPT_LANGUAGE	:break;
+			case JWL_HTTP_KEY_CACHE_CONTROL		:break;
 			
 			
 			
@@ -388,12 +399,12 @@ jwl_http_reqh* jwl_http_reqh_decode(jbl_string *buf,jbl_string_size_type *start)
 
 
 		{
-			case JRY_WB_HTTP_KEY_HOST			:	printf("host            matched:   %s\n",tmp);break;
-			case JRY_WB_HTTP_KEY_COOKIE			:	printf("cookie          matched:   %s\n",tmp);break;
-			case JRY_WB_HTTP_KEY_ACCEPT			:	printf("accept          matched:   %s\n",tmp);break;
-			case JRY_WB_HTTP_KEY_ACCEPT_ENCODING:	printf("accept encoding matched:   %s\n",tmp);break;
-			case JRY_WB_HTTP_KEY_ACCEPT_LANGUAGE:	printf("accept language matched:   %s\n",tmp);break;
-			case JRY_WB_HTTP_KEY_CACHE_CONTROL	:	printf("cache control   matched:   %s\n",tmp);break;
+			case JWL_HTTP_KEY_HOST			:	printf("host            matched:   %s\n",tmp);break;
+			case JWL_HTTP_KEY_COOKIE			:	printf("cookie          matched:   %s\n",tmp);break;
+			case JWL_HTTP_KEY_ACCEPT			:	printf("accept          matched:   %s\n",tmp);break;
+			case JWL_HTTP_KEY_ACCEPT_ENCODING:	printf("accept encoding matched:   %s\n",tmp);break;
+			case JWL_HTTP_KEY_ACCEPT_LANGUAGE:	printf("accept language matched:   %s\n",tmp);break;
+			case JWL_HTTP_KEY_CACHE_CONTROL	:	printf("cache control   matched:   %s\n",tmp);break;
 		}
 */
 		

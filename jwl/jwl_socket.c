@@ -9,20 +9,18 @@
    See the Mulan PSL v1 for more details.*/
 #include "jwl_socket.h"
 #if JWL_SOCKET_ENABLE==1
-#ifdef __linux__
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <unistd.h>
-#else
-#include <winsock2.h>
+#ifdef _WIN32
+	#include <winsock2.h>
+#elif defined(__APPLE__) || defined(__linux__)
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#include <unistd.h>
 #endif
 //undefined reference to `__imp_WSAStartup'
 void jwl_socket_start()
 {
-#ifdef __linux__
-#else	
+#ifdef _WIN32
 	WSADATA wsd;
 	if(WSAStartup(MAKEWORD(2,2),&wsd)!=0)
 		jbl_exception("DLL LOADING FAILED");
@@ -95,10 +93,10 @@ jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)
 }
 inline jwl_socket * jwl_socket_close(jwl_socket *this)
 {
-#ifdef __linux__
-	if(this)(this->handle==-1?0:close(this->handle));
-#else
+#ifdef _WIN32
 	if(this)(this->handle==-1?0:closesocket(this->handle));
+#elif defined(__APPLE__) || defined(__linux__)
+	if(this)(this->handle==-1?0:close(this->handle));
 #endif
 	jwl_socket_reset_host(this);
 	this->port=0;
@@ -110,12 +108,12 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 	if(!this)return NULL;
 	if(!jwl_socket_is_host(this))jbl_exception("ACCEPT FROM UNHOST SOCKET");
 	struct sockaddr_in claddr;
-#ifdef __linux__
-	unsigned int length=sizeof(claddr);
-	int handle;
-#else
+#ifdef _WIN32
 	int length=sizeof(claddr);
 	SOCKET handle;
+#elif defined(__APPLE__) || defined(__linux__)
+	unsigned int length=sizeof(claddr);
+	int handle;
 #endif	
 	if((handle=accept(this->handle,(struct sockaddr*)&claddr,&length))==-1)
 	{

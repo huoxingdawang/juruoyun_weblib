@@ -13,22 +13,16 @@
 #if JWL_SOCKET_ENABLE==1
 #include "../jbl/jbl_include.h"
 #include "jwl_ying.h"
-#ifdef __linux__
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <unistd.h>
-#else
-#include <winsock2.h>
+#ifdef _WIN32
+	#include <winsock2.h>
 #endif
 typedef struct __jwl_socket
 {
 	jbl_gc gc;
-#ifdef __linux__
-	int handle;
-#else
+#ifdef _WIN32
 	SOCKET handle;
+#elif defined(__APPLE__) || defined(__linux__)
+	int handle;
 #endif
 	jbl_uint64 ip;
 	jbl_uint32 port;

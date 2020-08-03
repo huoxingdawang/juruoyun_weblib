@@ -43,8 +43,8 @@ pl();
 		{
 			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
-			resh=jwl_http_resh_set_cache_max_age(resh,3600);
-			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"456"));\
+			resh=jwl_http_resh_set_cache_max_age(resh,36000);
+			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"456"));
 			if(jbl_string_space_ship_chars(reqh->etag,"456")==0)
 				resh=jwl_http_resh_set_status		(resh,304);				
 			else
@@ -57,7 +57,7 @@ pl();
 		{
 			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_PNG));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
-			resh=jwl_http_resh_set_cache_max_age(resh,3600);
+			resh=jwl_http_resh_set_cache_max_age(resh,36000);
 			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"789"));
 			if(jbl_string_space_ship_chars(reqh->etag,"789")==0)
 				resh=jwl_http_resh_set_status		(resh,304);
@@ -71,7 +71,7 @@ pl();
 		{
 			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_MP4));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
-			resh=jwl_http_resh_set_cache_max_age(resh,3600);
+			resh=jwl_http_resh_set_cache_max_age(resh,36000);
 			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"135"));
 			if(jbl_string_space_ship_chars(reqh->etag,"135")==0)
 				resh=jwl_http_resh_set_status		(resh,304);
@@ -81,7 +81,7 @@ pl();
 				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.mp4","rb"));fclose(fp);
 			}			
 		}		
-		else
+		else /*if(jbl_string_space_ship_chars(reqh->url,"/")==0)*/
 		{
 			resh=jwl_http_resh_set_status		(resh,200);
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_NO);
@@ -89,7 +89,12 @@ pl();
 			resh=jwl_http_resh_set_charset		(resh,JWL_HTTP_CHARSET_UTF8);
 			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"123123"));			
 			res=jbl_string_add_uint64(res,count);
-			res=jbl_string_add_chars(res,UC"Hello world,Juruoyun!<br>蒟蒻云");
+			res=jbl_string_add_chars(res,UC
+				"Hello world,Juruoyun!<br>蒟蒻云<br>"
+				"<a href=\"pic\">pic</a><br>"
+				"<a href=\"video\">video</a><br>"
+				"注意F5或刷新按钮会导致缓存失败，退化为304<br>"
+			);
 		}
 		
 		jwl_http_resh_view(resh);

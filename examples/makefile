@@ -10,14 +10,31 @@
 CC = gcc
 BITS =
 EXLIB = $(JBL_EXLIB) $(JWL_EXLIB)
+complain_re2c = jwl
 ifeq ($(shell uname),Linux)
+	system = linux
+else
+ifeq ($(shell uname),Darwin)
+	system = macos
+else	
+	system = windows
+endif
+endif
+
+ifeq ($(system),linux)
 	H = /
 	rm = rm -f
 	pre = linux_
-else
+endif
+ifeq ($(system),windows)
 	H = \\
 	rm = del
 	pre = win_
+endif
+ifeq ($(system),macos)
+	H = /
+	rm = rm -f
+	pre = macos_
 endif
 all:jbl jwl socket_client socket_server test2 webserver
 clean:
@@ -29,7 +46,7 @@ clean:
 init:
 	mkdir tmp
 	mkdir exes
-ifeq ($(shell uname),Linux)
+ifeq ($(system),linux)
 	sudo gcc tools/pause.c -o /bin/pause
 endif
 run:
@@ -38,17 +55,17 @@ run:
 
 #examples
 test2:
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)test2.o examples$(H)test2.c	
+	$(CC) $(BITS) -c -o tmp$(H)$(pre)test2.o examples$(H)test2.c	
 	$(CC) $(BITS) -o exes$(H)test2 tmp$(H)$(pre)test2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 socket_server:
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)socket_server.o examples$(H)socket_server.c	
+	$(CC) $(BITS) -c -o tmp$(H)$(pre)socket_server.o examples$(H)socket_server.c	
 	$(CC) $(BITS) -o exes$(H)socket_server tmp$(H)$(pre)socket_server.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 socket_client:
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)socket_client.o examples$(H)socket_client.c	
+	$(CC) $(BITS) -c -o tmp$(H)$(pre)socket_client.o examples$(H)socket_client.c	
 	$(CC) $(BITS) -o exes$(H)socket_client tmp$(H)$(pre)socket_client.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 webserver:
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
+	$(CC) $(BITS) -c -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
 	$(CC) $(BITS) -o exes$(H)webserver tmp$(H)$(pre)webserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 request:
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)request.o examples$(H)request.c	
+	$(CC) $(BITS) -c -o tmp$(H)$(pre)request.o examples$(H)request.c	
 	$(CC) $(BITS) -o exes$(H)request tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

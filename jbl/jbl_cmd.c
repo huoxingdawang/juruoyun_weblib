@@ -14,15 +14,15 @@
 jbl_string * jbl_execute_cmd(const jbl_string *cmd,jbl_string *result)
 {
 	if(cmd==NULL)jbl_exception("NULL POINTER");
-	char *buf=jbl_malloc(1024);
 	FILE *ptr;
 	if((ptr=popen((char*)jbl_string_get_chars(cmd),"r"))!=NULL)
 	{
-		while(fgets(buf,1024,ptr)!=NULL)
-			result=jbl_string_add_chars_length(result,(jbl_uint8*)buf,jbl_strlen(buf));
+		jbl_string *thi;result=jbl_string_extend_to(result,1024,1,&thi);
+		while(fgets((char *)thi->s+thi->len,1024,ptr)!=NULL)
+			thi->len+=jbl_strlen(thi->s+thi->len),
+			result=jbl_string_extend_to(result,1024,1,&thi);
 		pclose(ptr);
 	}
-	jbl_free(buf);
 	return result;
 }
 #endif

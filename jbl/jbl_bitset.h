@@ -23,10 +23,14 @@ typedef jbl_uint32 jbl_bitset_type;
 typedef jbl_uint64 jbl_bitset_type;
 #endif
 
-#ifdef __linux__
+
+#ifdef _WIN32
+#define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*I64X ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
+#elif __APPLE__
+#define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*llX ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
+#elif __linux__
 #define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*llX ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
 #else
-#define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*I64X ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
 #endif
 jbl_uint8	jbl_highbit				(jbl_uint64 a);											//获取一个64位无符号整数最高的1的位置
 jbl_uint8	jbl_highbit0			(jbl_uint64 a);											//获取一个64位无符号整数最高的0的位置

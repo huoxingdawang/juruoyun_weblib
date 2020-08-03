@@ -129,16 +129,17 @@ jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi
 {
 	if(!this){this=jbl_ll_new();if(pthi)*pthi=this;return this;}
 	jbl_reference *ref=NULL;jbl_ll *thi=jbl_refer_pull_keep_father(this,&ref);
+	jbl_uint8 is_var=jbl_gc_is_var(this);
 	if(jbl_gc_is_pvar(thi))
 	{
 		jbl_ll *ttt=((jbl_reference*)thi)->ptr;
 		if(jbl_gc_refcnt(thi)==1)
-			((jbl_reference*)thi)->ptr=NULL,pl();
+			((jbl_reference*)thi)->ptr=NULL;
 		jbl_ll_free(thi);
 		thi=ttt;
 	}
 	if((jbl_gc_refcnt(thi)<=1)){if(pthi)*pthi=thi;return this;}
-	jbl_ll *tmp=(jbl_gc_is_var(this))?jbl_Vll(jbl_Vll_new()):jbl_ll_new();
+	jbl_ll *tmp=(is_var)?jbl_Vll(jbl_Vll_new()):jbl_ll_new();
 	jbl_ll_foreach(thi,i)
 	{
 		jbl_ll_node *node=jbl_ll_node_new();

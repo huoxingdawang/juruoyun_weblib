@@ -36,8 +36,8 @@ jbl_ht *__jbl_string_cache=NULL;
 /*******************************************************************************************/
 /*                            以下函数处理传统字符串                                     */
 /*******************************************************************************************/
-jbl_string_size_type jbl_strlen(const char *a){if(!a)return 0;register jbl_string_size_type b=0;while(a[b++]);return b-1;}
-jbl_string_hash_type jbl_strhash(const char *s,jbl_string_size_type len)
+jbl_string_size_type jbl_strlen(const unsigned char *a){if(!a)return 0;register jbl_string_size_type b=0;while(a[b])++b;return b;}
+jbl_string_hash_type jbl_strhash(const unsigned char *s,jbl_string_size_type len)
 {
 	if(!s)return 0;
 	register jbl_string_hash_type h=0;
@@ -330,7 +330,7 @@ inline jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
 jbl_string* jbl_string_add_file(jbl_string *this,FILE * file)
 {
 	if(!file)jbl_exception("NULL POINTER");
-#if __SIZEOF_POINTER__ == 8 && !defined __linux__
+#ifdef _WIN64
 	_fseeki64(file,0L,SEEK_END);
 	jbl_string_size_type size=_ftelli64(file);	
 	_fseeki64(file,0L,SEEK_SET);
@@ -730,13 +730,13 @@ jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
 	jbl_stream_push_chars(jbl_stream_stdout,c);
 	jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	if(!this)this=jbl_string_new();
-	jbl_stream *tmp=jbl_string_stream_new(jbl_refer(&this));
+	this=jbl_string_extend(this,0);
+	jbl_stream *tmp=jbl_string_stream_new(this);
 	jbl_stream_connect(jbl_stream_stdin_link,tmp);
 	jbl_stream_do(jbl_stream_stdin,jbl_stream_force);
-	jbl_string * that=(jbl_string*)jbl_derefer(this);
-	this=jbl_string_free(this);
+	tmp->data=NULL;
 	tmp=jbl_stream_free(tmp);
-	return that;
+	return this;
 }
 #endif
 #if JBL_VAR_ENABLE==1

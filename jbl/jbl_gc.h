@@ -58,10 +58,10 @@ void *			jbl_refer_pull_keep_father	(const void *ptr,jbl_reference** ref);						
 
 #if JBL_STREAM_ENABLE==1
 #include "jbl_stream.h"
-#define jbl_gc_view(x)		jbl_stream_push_chars(jbl_stream_stdout,#x " @ "__FILE__" "),\
+#define jbl_gc_view(x)		jbl_stream_push_chars(jbl_stream_stdout,UC #x " @ "__FILE__" "),\
 							jbl_stream_push_uint(jbl_stream_stdout,__LINE__),\
 							jbl_stream_push_chars(jbl_stream_stdout,UC"\tref_cnt:"),\
-							jbl_stream_push_uint(jbl_stream_stdout,jbl_gc_refcnt(x)),\
+							jbl_stream_push_uint(jbl_stream_stdout,jbl_gc_refcnt((jbl_reference*)x)),\
 							jbl_stream_push_char(jbl_stream_stdout,'\n'),jbl_stream_do(jbl_stream_stdout,1)
 #endif
 

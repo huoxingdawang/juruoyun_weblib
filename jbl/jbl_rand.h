@@ -27,18 +27,18 @@
 /*******************************************************************************************/
 /*                            以下函数实现随机数                                         */
 /*******************************************************************************************/
-void			jbl_rand_srand			(jbl_uint32 seed);										//设置随机种子
-jbl_uint32		jbl_rand				();														//产生一个随机数
-jbl_uint32 		jbl_rand_between		(jbl_uint32 a,jbl_uint32 b);							//产生一个属于[a,b]的随机数
+void			jbl_rand_srand			(jbl_uint32 seed);												//设置随机种子
+jbl_uint32		jbl_rand				();																//产生一个随机数
+jbl_uint32 		jbl_rand_between		(jbl_uint32 a,jbl_uint32 b);									//产生一个属于[a,b]的随机数
 #if JBL_STRING_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现随机字符串                                     */
 /*******************************************************************************************/
-jbl_string *	jbl_rand_string			(jbl_string *this,jbl_string_size_type len,char* s);	//产生一个以s为字典,长度为len的随机字符串
-#define			jbl_rand_dict_small		"abcdefghijklmnopqrstuvwxyz"							//小写字母字典
-#define			jbl_rand_dict_big		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"							//大写字母字典
-#define			jbl_rand_dict_number	"0123456789"											//数字字典
-#define			jbl_rand_dict_symbol	"~!@#$%^&*()_+=-`{}|[]\\:\";'<>?,./"					//特殊字符字典
+jbl_string *	jbl_rand_string			(jbl_string *this,jbl_string_size_type len,unsigned char* s);	//产生一个以s为字典,长度为len的随机字符串
+#define			jbl_rand_dict_small		"abcdefghijklmnopqrstuvwxyz"									//小写字母字典
+#define			jbl_rand_dict_big		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"									//大写字母字典
+#define			jbl_rand_dict_number	"0123456789"													//数字字典
+#define			jbl_rand_dict_symbol	"~!@#$%^&*()_+=-`{}|[]\\:\";'<>?,./"							//特殊字符字典
 #endif
 
 #else

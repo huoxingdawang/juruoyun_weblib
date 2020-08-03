@@ -334,7 +334,7 @@ jbl_ht_data * jbl_ht_get_ht_data(const jbl_ht *this,jbl_string *k)
 jbl_ht_data * jbl_ht_get_ht_data_chars(const jbl_ht *this,const jbl_uint8 *chars)
 {
 	this=jbl_refer_pull(this);
-	jbl_string_hash_type h=jbl_strhash((const char*)chars,0);
+	jbl_string_hash_type h=jbl_strhash(chars,0);
 	if(this->size!=0&&chars)
 	{
 		jbl_ht_size_type_signed	h2=gh2(this,h);

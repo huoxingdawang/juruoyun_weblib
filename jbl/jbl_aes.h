@@ -38,7 +38,7 @@ typedef struct __jbl_aes_128_key
 /*******************************************************************************************/
 jbl_aes_128_key*	jbl_aes_128_key_new						();																				//新建一个aes128加密密钥
 jbl_aes_128_key*	jbl_aes_128_key_init					(jbl_aes_128_key *this);														//初始化一个aes128加密密钥
-jbl_aes_128_key*	jbl_aes_128_key_set					(jbl_aes_128_key *this,unsigned char* key);										//生成一个aes128加密密钥
+jbl_aes_128_key*	jbl_aes_128_key_set						(jbl_aes_128_key *this,unsigned char* key);										//生成一个aes128加密密钥
 jbl_aes_128_key*	jbl_aes_128_key_copy					(jbl_aes_128_key *that);														//复制一个aes128加密密钥
 jbl_aes_128_key*	jbl_aes_128_key_free					(jbl_aes_128_key* this);														//释放一个aes128加密密钥
 /*******************************************************************************************/

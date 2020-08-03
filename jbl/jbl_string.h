@@ -44,8 +44,8 @@ typedef struct __jbl_string
 /*******************************************************************************************/
 /*                            以下函数处理传统字符串                                     */
 /*******************************************************************************************/
-jbl_string_size_type	jbl_strlen								(const char *a);														//获取一个传统char*字符串第一个'\0'所在的位置(即字符串长度)
-jbl_string_hash_type	jbl_strhash								(const char *s,jbl_string_size_type len);								//获取一个char*字符串的hash值，当len是0时将自动使用字符串长度
+jbl_string_size_type	jbl_strlen								(const unsigned char *a);												//获取一个传统char*字符串第一个'\0'所在的位置(即字符串长度)
+jbl_string_hash_type	jbl_strhash								(const unsigned char *s,jbl_string_size_type len);						//获取一个char*字符串的hash值，当len是0时将自动使用字符串长度
 /*******************************************************************************************/
 /*                            以下函数完成字符串组件启动和停止                           */
 /*******************************************************************************************/
@@ -74,9 +74,9 @@ jbl_string *			jbl_string_cache_replace				(jbl_string *str);
 /*******************************************************************************************/
 /*                            以下函数实现字符串的增添类操作                             */
 /*******************************************************************************************/
-#define					jbl_string_add_const(x,y)				jbl_string_add_const_length(x,y,jbl_strlen((const char*)y))				//添加一个常量char*字符串
+#define					jbl_string_add_const(x,y)				jbl_string_add_const_length(x,y,jbl_strlen(y))							//添加一个常量char*字符串
 jbl_string *			jbl_string_add_const_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知常量char*字符串
-#define					jbl_string_add_chars(x,y)				jbl_string_add_chars_length(x,y,jbl_strlen((const char*)y))				//添加一个char*字符串
+#define					jbl_string_add_chars(x,y)				jbl_string_add_chars_length(x,y,jbl_strlen(y))							//添加一个char*字符串
 jbl_string *			jbl_string_add_chars_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知的char*字符串
 jbl_string *			jbl_string_add_string					(jbl_string *this,const jbl_string *in);								//添加一个string
 jbl_string *			jbl_string_add_char						(jbl_string *this,const char c);										//添加一个char

@@ -84,7 +84,7 @@ inline jbl_uint32 jbl_rand_between(jbl_uint32 a,jbl_uint32 b)
 /*******************************************************************************************/
 /*                            以下函数实现随机字符串                                     */
 /*******************************************************************************************/
-jbl_string * jbl_rand_string(jbl_string *this,jbl_string_size_type len,char* s)
+jbl_string * jbl_rand_string(jbl_string *this,jbl_string_size_type len,unsigned char* s)
 {
 	this=jbl_string_extend(this,len);
 	jbl_string * thi=jbl_refer_pull(this);

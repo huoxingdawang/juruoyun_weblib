@@ -19,7 +19,7 @@ void jwl_stop()
 {
 	
 }
-jbl_uint64 jwl_get_binary_ip(const jbl_string *this)
+jbl_uint64 jwl_get_binary_ip(jbl_string *this)
 {
 	jbl_string_size_type i=0;
 	return (jbl_string_get_uint64_start(this,&i))+(jbl_string_get_uint64_start(this,&i)<<8)+(jbl_string_get_uint64_start(this,&i)<<16)+(jbl_string_get_uint64_start(this,&i)<<24);

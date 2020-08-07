@@ -194,24 +194,26 @@ void jwl_socket_receive_length(jbl_socket_handle *this,jbl_string *data,jbl_stri
 }
 */
 #if JBL_STREAM_ENABLE==1
-void jwl_socket_view_put(const jwl_socket* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jwl_socket    ",format,str,&tabs))return;
-	if(this->handle==-1)
+	jwl_socket* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jwl_socket",line,varname,func,file))return this;
+	if(thi->handle==-1)
 		jbl_stream_push_chars(out,UC" disconnected");
 	else
 	{
-		if(jwl_socket_is_host(this))
+		if(jwl_socket_is_host(thi))
 			jbl_stream_push_chars(out,UC" listen  on ");
 		else
 			jbl_stream_push_chars(out,UC" connect to ");
 		jbl_stream_push_chars(out,UC"ip:");
-		jbl_string* tmp=jwl_get_string_ip(this->ip,NULL);
+		jbl_string* tmp=jwl_get_string_ip(thi->ip,NULL);
 		jbl_stream_push_string(jbl_stream_stdout,tmp);
 		tmp=jbl_string_free(tmp);
 		jbl_stream_push_chars(out,UC" port:");
-		jbl_stream_push_uint(out,this->port);
+		jbl_stream_push_uint(out,thi->port);
 	}
+	jbl_stream_push_char(out,'\n');
+	return this;
 }
 void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 {
@@ -251,7 +253,7 @@ void jbl_string_update_stream_buf(jbl_stream* this)
 	jbl_string *str_=jbl_refer_pull(((jbl_string*)this->data));	
 	this->buf=str_->s+str_->len;
 }
-void jbl_string_view_put(const jbl_string* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+void jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
 {
 	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jbl_string    ",format,str,&tabs))return;
 	jbl_stream_push_chars(out,UC":size:");
@@ -261,7 +263,7 @@ void jbl_string_view_put(const jbl_string* this,jbl_stream *out,jbl_int32 format
 	jbl_stream_push_chars(out,UC"\ts:");
 	for(jbl_string_size_type i=0;i<this->len;jbl_stream_push_char(out,this->s[i]),++i);
 }
-void jbl_stream_push_string(jbl_stream *out,const jbl_string* this)
+void jbl_stream_push_string(jbl_stream *out,jbl_string* this)
 {
 	if(out==NULL)jbl_exception("NULL POINTER");
 	out=jbl_refer_pull(out);
@@ -270,7 +272,7 @@ void jbl_stream_push_string(jbl_stream *out,const jbl_string* this)
 		jbl_stream_push_char_force(out,this->s[i]);
 }
 #if JBL_JSON_ENABLE==1
-void jbl_string_json_put(const jbl_string* this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_string_json_put(jbl_string* this,jbl_stream *out,char format,jbl_int32 tabs)
 {
 	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
 	jbl_stream_push_char(out,'"');

@@ -108,8 +108,8 @@ jwl_http_resh *	jwl_http_resh_set_etag				(jwl_http_resh * this,jbl_string * eta
 /*                            以下函实现响应头浏览操作                                   */
 /*******************************************************************************************/
 #if JBL_STREAM_ENABLE==1
-void					jwl_http_resh_view_put				(const jwl_http_resh* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个hash table
-#define					jwl_http_resh_view(x)				jwl_http_resh_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')//浏览一个hash table
+jwl_http_resh*			jwl_http_resh_view_put				(jwl_http_resh* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
+#define					jwl_http_resh_view(x)				jwl_http_resh_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
 #endif
 
 
@@ -121,8 +121,8 @@ jwl_http_reqh *	jwl_http_reqh_extend	(jwl_http_reqh * this,jwl_http_reqh **pthi)
 jwl_http_reqh *	jwl_http_reqh_decode	(jbl_string *buf,jbl_string_size_type *start);
 
 #if JBL_STREAM_ENABLE==1
-void					jwl_http_reqh_view_put				(const jwl_http_reqh* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个hash table
-#define					jwl_http_reqh_view(x)				jwl_http_reqh_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')//浏览一个hash table
+jwl_http_reqh*			jwl_http_reqh_view_put				(jwl_http_reqh* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
+#define					jwl_http_reqh_view(x)				jwl_http_reqh_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
 #endif
 
 

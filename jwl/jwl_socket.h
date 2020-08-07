@@ -46,12 +46,12 @@ jbl_string *	jwl_socket_receive_safe	(jwl_socket *this,jbl_string *data);				//�
 
 
 #if JBL_STREAM_ENABLE==1
-void			jwl_socket_view_put				(const jwl_socket* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个hash table
-#define			jwl_socket_view(x)				jwl_socket_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')//浏览一个hash table
+jwl_socket*		jwl_socket_view_put				(jwl_socket* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个socket
+#define			jwl_socket_view(x)				jwl_socket_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个socket
 
 
 extern			const jbl_stream_operater	jwl_stream_socket_operators;
-#define			jwl_stream_socket_new(x)	jbl_stream_new(&jwl_stream_socket_operators,x,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,0,NULL)	//新建base64加密流
+#define			jwl_stream_socket_new(x)	jbl_stream_new(&jwl_stream_socket_operators,x,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,0,NULL)	//新建sock加密流
 
 #endif
 

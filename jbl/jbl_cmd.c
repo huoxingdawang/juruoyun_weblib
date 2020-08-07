@@ -11,7 +11,7 @@
 #if JBL_CMD_ENABLE==1
 #include <stdio.h>
 #include "jbl_string.h"
-jbl_string * jbl_execute_cmd(const jbl_string *cmd,jbl_string *result)
+jbl_string * jbl_execute_cmd(jbl_string *cmd,jbl_string *result)
 {
 	if(cmd==NULL)jbl_exception("NULL POINTER");
 	FILE *ptr;

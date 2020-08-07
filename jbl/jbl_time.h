@@ -108,7 +108,7 @@ jbl_time *			jbl_time_copy					(jbl_time *that);														//复制一个时�
 /*******************************************************************************************/
 jbl_time *			jbl_time_now					(jbl_time *this);														//把this设置为当前时间
 #define				jbl_time_to_unix(x)				(((jbl_time *)(jbl_refer_pull(x)))->t)									//转换为unix实践出
-void				jbl_time_decode					(const jbl_time *this,jbl_time_decoded *tt);							//格式化一个时间戳
+void				jbl_time_decode					(jbl_time *this,jbl_time_decoded *tt);									//格式化一个时间戳
 
 /*******************************************************************************************/
 /*                            以下函实现时间差操作                                        */
@@ -136,25 +136,25 @@ jbl_uint8			jbl_time_if_dst					(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year);
 /*******************************************************************************************/
 /*                            以下函实现时间对字符串操作                                */
 /*******************************************************************************************/
-jbl_string *		jbl_time_to_string				(const jbl_time *this,jbl_string *result);								//把time格式化成字符串时间戳
-jbl_string *		jbl_time_to_string_format		(const jbl_time *this,jbl_string *result,const unsigned char * format);		//把time格式化成字符串时间戳
+jbl_string *		jbl_time_to_string				(jbl_time *this,jbl_string *result);									//把time格式化成字符串时间戳
+jbl_string *		jbl_time_to_string_format		(jbl_time *this,jbl_string *result,const unsigned char * format);		//把time格式化成字符串时间戳
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现时间的浏览操作                                 */
 /*******************************************************************************************/
-void				jbl_time_view_put				(const jbl_time* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);
-#define				jbl_time_view(x)				jbl_time_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')	//浏览一个字符串
+jbl_time*				jbl_time_view_put			(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个时间
+#define					jbl_time_view(x)			jbl_time_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个时间
 #endif
 #if JBL_JSON_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函实现时间JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-jbl_string *		jbl_time_json_encode			(const jbl_time* this,jbl_string *out,char format,jbl_int32 tabs);		//把time格式化成JSON
+jbl_string *		jbl_time_json_encode			(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);		//把time格式化成JSON
 #endif
 #if JBL_STREAM_ENABLE==1
-void				jbl_time_json_put				(const jbl_time* this,jbl_stream *out,char format,jbl_int32 tabs);
+void				jbl_time_json_put				(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
 #endif
 #endif
 #if JBL_VAR_ENABLE==1

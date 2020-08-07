@@ -492,32 +492,34 @@ jbl_ht *jbl_ht_merge_ll(jbl_ht *this,jbl_ll *that)
 /*                            以下函实现哈希表JSON操作                                   */
 /*******************************************************************************************/
 #if JBL_JSON_ENABLE==1
-jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,char format,jbl_int32 tabs)
+jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 #if JBL_HT_SYS_ENABLE==1
 	if(this&&jbl_ht_is_sys_force(this))this=NULL;
 #endif
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
 	out=jbl_string_add_char(out,'{');
-	char flag=0;
+	if((format&1)||(format&4))out=jbl_string_add_char(out,'\n');
+	++tabs;
+	jbl_uint8 format2=(format&4)|((format&1)<<2);
+	jbl_ht_data * tail=this->data+this->nxt-1;
 	jbl_ht_foreach(this,i)
 	{
 		if(i->k==NULL)continue;
-		if(flag)out=jbl_string_add_char(out,',');else flag=1;
-		if(format){out=jbl_string_add_char(out,'\n');for(jbl_int32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);}//格式化的\t和\n
+		if((format&1)||(format&4))for(jbl_int32 j=0;j<tabs;out=jbl_string_add_char(out,'\t'),++j);
 		if(i->k==NULL)
 			out=jbl_string_add_uint64(out,i->h);
 		else
 			out=jbl_string_json_encode(i->k,out,0,0);
 		out=jbl_string_add_char(out,':');
-		out=jbl_var_json_encode(i->v,out,format,-tabs);
+		out=jbl_var_json_encode(i->v,out,format2|((i!=tail)<<1),tabs);
 	}	
-
-	if(format){out=jbl_string_add_char(out,'\n');for(jbl_int32 i=0;i<tabs-1;out=jbl_string_add_char(out,'\t'),++i);}
+	--tabs;if((format&1)||(format&4))for(jbl_int32 j=0;j<tabs;out=jbl_string_add_char(out,'\t'),++j);//格式化的\t
 	out=jbl_string_add_char(out,'}');
+	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;
 }
-jbl_ht* jbl_ht_json_decode(jbl_ht *this,const jbl_string* in,jbl_string_size_type *start)
+jbl_ht* jbl_ht_json_decode(jbl_ht *this,jbl_string* in,jbl_string_size_type *start)
 {
 #if JBL_HT_SYS_ENABLE==1
 	if(this&&jbl_ht_is_sys_force(this))return this;
@@ -559,28 +561,31 @@ fail:;
 	return NULL;
 }
 #if JBL_STREAM_ENABLE==1
-void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 #if JBL_HT_SYS_ENABLE==1
 	if(this&&jbl_ht_is_sys_force(this))this=NULL;
 #endif	
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
+	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
 	jbl_stream_push_char(out,'{');
-	char flag=0;
+	if((format&1)||(format&4))jbl_stream_push_char(out,'\n');
+	++tabs;
+	jbl_uint8 format2=(format&4)|((format&1)<<2);
+	jbl_ht_data * tail=this->data+this->nxt-1;
 	jbl_ht_foreach(this,i)
 	{
 		if(i->k==NULL)continue;
-		if(flag)jbl_stream_push_char(out,',');else flag=1;
-		if(format){jbl_stream_push_char(out,'\n');for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}//格式化的\t和\n
+		if((format&1)||(format&4))for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);//格式化的\t
 		if(i->k==NULL)
 			jbl_stream_push_uint(out,i->h);
 		else
 			jbl_string_json_put(i->k,out,0,0);
 		jbl_stream_push_char(out,':');
-		jbl_var_json_put(i->v,out,format,-tabs);
+		jbl_var_json_put(i->v,out,format2|((i!=tail)<<1),tabs);
 	}	
-	if(format){jbl_stream_push_char(out,'\n');for(jbl_int32 i=0;i<tabs-1;jbl_stream_push_char(out,'\t'),++i);}//格式化的\t和\n
+	--tabs;if((format&1)||(format&4))for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);//格式化的\t
 	jbl_stream_push_char(out,'}');
+	if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
 }
 #endif
 #endif
@@ -588,29 +593,32 @@ void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,char format,jbl_int32 ta
 /*******************************************************************************************/
 /*                            以下函实现哈希表浏览操作                                   */
 /*******************************************************************************************/
-void jbl_ht_view_put(const jbl_ht* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jbl_ht* jbl_ht_view_put(jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jbl_ht        ",format,str,&tabs))return;
+	jbl_ht* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_ht",line,varname,func,file))return this;
 	jbl_stream_push_chars(out,UC"\tlen:");
-	jbl_stream_push_uint(out,this->len);
+	jbl_stream_push_uint(out,thi->len);
 	jbl_stream_push_chars(out,UC"\tnxt:");
-	jbl_stream_push_uint(out,this->nxt);
+	jbl_stream_push_uint(out,thi->nxt);
 	jbl_stream_push_chars(out,UC"\tsize:");
-	jbl_stream_push_uint(out,this->size);
-	jbl_ht_foreach(this,i)
+	jbl_stream_push_uint(out,thi->size);
+	jbl_stream_push_char(out,'\n');
+	++tabs;
+	jbl_ht_foreach(thi,i)
 	{
-		if(format){jbl_stream_push_char(out,'\n');for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}//格式化的\t和\n
+		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);//格式化的\t
 		if(i->k==NULL)
 			jbl_stream_push_uint(out,i->h);
 		else
 			jbl_stream_push_char(out,'"'),jbl_stream_push_string(out,i->k),jbl_stream_push_char(out,'"');
 		jbl_stream_push_char(out,':');
 #if JBL_HT_SYS_ENABLE==1
-		if(jbl_ht_is_sys_force(this))jbl_stream_push_uint(out,i->u);
+		if(jbl_ht_is_sys_force(thi))jbl_stream_push_uint(out,i->u),jbl_stream_push_char(out,'\n');
 		else
 #endif
-		jbl_var_view_put(i->v,out,(format?(-1):0),NULL,-tabs);
-	}	
+		jbl_var_view_put(i->v,out,0,tabs,0,NULL,NULL,NULL);
+	}
+	return this;
 }
 #endif
 

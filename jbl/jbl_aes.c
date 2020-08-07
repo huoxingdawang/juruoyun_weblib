@@ -271,11 +271,11 @@ inline void __jbl_aes_128_decode_16(__jbl_aes_128_ex_key *w,jbl_uint8* a,jbl_uin
 /*******************************************************************************************/
 /*                            以下函数实现字符串的aes128ecb加解密操作                   */
 /*******************************************************************************************/
-jbl_string * jbl_aes_128_ecb_encode(jbl_aes_128_key *w,const jbl_string *this,jbl_string *result)
+jbl_string * jbl_aes_128_ecb_encode(jbl_aes_128_key *w,jbl_string *this,jbl_string *result)
 {
 	if(!w)jbl_exception("NULL POINTER");
 	if(!this)return result;
-	const jbl_string *thi=jbl_refer_pull(this);														//this脱离引用
+	jbl_string *thi=jbl_refer_pull(this);														//this脱离引用
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(w))->key);
 	jbl_string_size_type i=0,len=jbl_string_get_length_force(thi);
 	jbl_string *res;result=jbl_string_extend_to(result,len+16,1,&res);jbl_string_hash_clear(res);
@@ -287,11 +287,11 @@ jbl_string * jbl_aes_128_ecb_encode(jbl_aes_128_key *w,const jbl_string *this,jb
 	__jbl_aes_128_encode_16(key,tmp,sres+jbl_string_get_length_force(res)),jbl_string_set_length_force(res,jbl_string_get_length_force(res)+16);
 	return result;
 }
-jbl_string * jbl_aes_128_ecb_decode(jbl_aes_128_key *w,const jbl_string *this,jbl_string *result)
+jbl_string * jbl_aes_128_ecb_decode(jbl_aes_128_key *w,jbl_string *this,jbl_string *result)
 {
 	if(!w)jbl_exception("NULL POINTER");
 	if(!this)return result;
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(w))->key);	
 	jbl_string_size_type len=jbl_string_get_length_force(thi);
 	jbl_string *res;result=jbl_string_extend_to(result,len,1,&res);jbl_string_hash_clear(res);
@@ -367,11 +367,11 @@ jbl_stream_operators_new(jbl_stream_aes_128_ecb_decode_operators,__jbl_aes_128_e
 /*******************************************************************************************/
 /*                            以下函数实现字符串的aes128cbc加解密操作                   */
 /*******************************************************************************************/
-jbl_string * jbl_aes_128_cbc_encode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_string *this,jbl_string *result)
+jbl_string * jbl_aes_128_cbc_encode(jbl_aes_128_key *w,jbl_uint8 * vi,jbl_string *this,jbl_string *result)
 {
 	if(!w||!vi)jbl_exception("NULL POINTER");
 	if(!this)return result;
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(w))->key);	
 	jbl_string_size_type len=jbl_string_get_length_force(thi);
 	jbl_string *res;result=jbl_string_extend_to(result,len+16,1,&res);jbl_string_hash_clear(res);
@@ -391,11 +391,11 @@ jbl_string * jbl_aes_128_cbc_encode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_
 	jbl_string_hash_clear(result);
 	return result;	
 }
-jbl_string * jbl_aes_128_cbc_decode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_string *this,jbl_string *result)
+jbl_string * jbl_aes_128_cbc_decode(jbl_aes_128_key *w,jbl_uint8 * vi,jbl_string *this,jbl_string *result)
 {
 	if(!w||!vi)jbl_exception("NULL POINTER");
 	if(!this)return result;
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(w))->key);		
 	jbl_string_size_type len=jbl_string_get_length_force(thi);
 	jbl_string *res;result=jbl_string_extend_to(result,len+16,1,&res);jbl_string_hash_clear(res);

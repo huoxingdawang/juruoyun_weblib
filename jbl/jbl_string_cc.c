@@ -167,19 +167,19 @@ jbl_string * jbl_string_add_utf8_from_unicode(jbl_string *this,jbl_uint32 unicod
 	thi->len+=__jbl_string_utu8(thi->s+thi->len,unicode);
 	return this;
 }
-jbl_uint32  jbl_string_get_unicode_from_utf8_start(const jbl_string *this,jbl_string_size_type *start)
+jbl_uint32  jbl_string_get_unicode_from_utf8_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	const jbl_string *thi=jbl_refer_pull(this);
+	jbl_string *thi=jbl_refer_pull(this);
 	jbl_uint8 i=0;
 	jbl_uint32 uni=__jbl_string_u8tu(thi->s+(start?(*start):0),&i,jbl_min(6,thi->len));
 	start?(*start+=i):0;
 	return uni;
 }
-jbl_string* jbl_string_to_gb2312_from_utf8(jbl_string* this,const jbl_string* that)
+jbl_string* jbl_string_to_gb2312_from_utf8(jbl_string* this,jbl_string* that)
 {
 	if(!that)jbl_exception("NULL POINTER");
-	const jbl_string*tha=jbl_refer_pull(that);
+	jbl_string*tha=jbl_refer_pull(that);
 	this=jbl_string_extend(this,tha->len);
 	for(jbl_string_size_type i=0,j=0;i<tha->len;)
 	{
@@ -191,10 +191,10 @@ jbl_string* jbl_string_to_gb2312_from_utf8(jbl_string* this,const jbl_string* th
 	}
 	return this;
 }
-jbl_string* jbl_string_to_utf8_from_gb2312(jbl_string* this,const jbl_string* that)
+jbl_string* jbl_string_to_utf8_from_gb2312(jbl_string* this,jbl_string* that)
 {
 	if(!that)jbl_exception("NULL POINTER");
-	const jbl_string*tha=jbl_refer_pull(that);
+	jbl_string*tha=jbl_refer_pull(that);
 	this=jbl_string_extend(this,tha->len);
 	for(jbl_string_size_type i=0;i<tha->len;)
 	{

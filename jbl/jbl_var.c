@@ -30,7 +30,7 @@ inline jbl_var * jbl_var_set_operators(jbl_var * this,const jbl_var_operators *o
 	((jbl_var*)(((char*)this)-(sizeof(jbl_var))))->ops=ops;
 	return this;
 }
-inline const jbl_var_operators * jbl_var_get_operators(const jbl_var * this)
+inline const jbl_var_operators * jbl_var_get_operators(jbl_var * this)
 {
 	if(!this)return NULL;
 	if(!jbl_gc_is_var((jbl_var_data*)this))
@@ -41,7 +41,7 @@ inline const jbl_var_operators * jbl_var_get_operators(const jbl_var * this)
 
 inline jbl_var * jbl_var_free(jbl_var * this){if(!this)return NULL;void*(*free)(void*)=jbl_var_get_operators(this)->free;if(free)return free(this);return NULL;}
 inline jbl_var * jbl_var_copy(jbl_var * this){if(!this)return NULL;void*(*copy)(void*)=jbl_var_get_operators(this)->copy;if(copy)return copy(this);return NULL;}
-inline char      jbl_var_space_ship(const jbl_var * this,const jbl_var * that){if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}char(*space_ship)(const void*,const void*)=jbl_var_get_operators(this)->space_ship;if(space_ship)return space_ship(this,that);return -1;}
+inline char      jbl_var_space_ship(jbl_var * this,jbl_var * that){if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}char(*space_ship)(const void*,const void*)=jbl_var_get_operators(this)->space_ship;if(space_ship)return space_ship(this,that);return -1;}
 jbl_var *jbl_var_copy_as(void * that,const jbl_var_operators *ops)
 {
 	if(that==NULL)return NULL;
@@ -68,7 +68,7 @@ jbl_var *jbl_var_copy_as(void * that,const jbl_var_operators *ops)
 
 #if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
-jbl_string * jbl_var_json_encode(const jbl_var * this,jbl_string *out,char format,jbl_int32 tabs)
+jbl_string * jbl_var_json_encode(jbl_var * this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	if(!this)
 	{
@@ -77,11 +77,11 @@ jbl_string * jbl_var_json_encode(const jbl_var * this,jbl_string *out,char forma
 		if(format&&tabs>=0)for(jbl_int16 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);	
 		return jbl_string_add_chars_length(out,(unsigned char *)"null",4);
 	}
-	jbl_string*(*json_encode)(const void*,jbl_string *,char,jbl_int32)=jbl_var_get_operators(this)->json_encode;
+	jbl_string*(*json_encode)(const void*,jbl_string *,jbl_uint8,jbl_uint32)=jbl_var_get_operators(this)->json_encode;
 	if(json_encode)return json_encode(this,out,format,tabs);
 	return out;
 }
-jbl_var* jbl_var_json_decode(jbl_var *this,const jbl_string* in,jbl_string_size_type *start)
+jbl_var* jbl_var_json_decode(jbl_var *this,jbl_string* in,jbl_string_size_type *start)
 {
 	in=jbl_refer_pull(in);
 	jbl_string_size_type i=start?(*start):0,n=in->len;
@@ -164,35 +164,23 @@ jbl_var* jbl_var_json_decode(jbl_var *this,const jbl_string* in,jbl_string_size_
 #endif
 #endif
 #if JBL_STREAM_ENABLE==1
-void jbl_var_view_put(const jbl_var * this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jbl_var* jbl_var_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_uint8 pt=0;
-	if(this==NULL)
-	{
-		pt=1;
-		goto print;
-	}
-	void(*view_put)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32)=jbl_var_get_operators(this)->view_put;
-	if(view_put)view_put(this,out,format,str,tabs);
+	if(!this)goto print;
+	void *	(*view_put)(void*,jbl_stream *,jbl_uint8,jbl_uint32,jbl_uint32 line,unsigned char*,unsigned char *,unsigned char *)=jbl_var_get_operators(this)->view_put;
+	if(view_put)view_put(this,out,format,tabs,line,varname,func,file);
 	else goto print;
-	return;
+	return this;
 print:;
-	out=jbl_refer_pull(out);
-	this=jbl_refer_pull(this);
-	if(format&&tabs>=0)for(jbl_int16 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);	
-	switch(pt)
-	{
-		case 1	:jbl_stream_push_chars(out,UC"null          ")	;break;
-		default	:jbl_stream_push_chars(out,UC"unprintable   ")	;break;
-	}		
-	if(format&&str)jbl_stream_push_chars(out,UC(str)),jbl_stream_push_char(out,' '),(format!=-1?jbl_stream_push_uint(out,format):0);
+	jbl_stream_view_put_format(this,out,format,tabs,UC"unprintable var",line,varname,func,file);
+	return this;
 }
 #if JBL_JSON_ENABLE==1
-void jbl_var_json_put(const jbl_var * this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_var_json_put(jbl_var * this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	if(out==NULL)jbl_exception("NULL POINTER");
 	if(!this){out=jbl_refer_pull(out);if(format&&tabs>=0)for(jbl_int16 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);jbl_stream_push_chars(out,UC"null");return;}
-	void(*json_put)(const void*,jbl_stream *,char,jbl_int32)=jbl_var_get_operators(this)->json_put;
+	void(*json_put)(const void*,jbl_stream *,jbl_uint8,jbl_uint32)=jbl_var_get_operators(this)->json_put;
 	if(json_put)json_put(this,out,format,tabs);
 }
 #endif
@@ -235,25 +223,29 @@ inline char jbl_Vuint_space_ship(jbl_var * this,jbl_var * that)
 }
 #if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
-jbl_string* jbl_Vuint_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)
+jbl_string* jbl_Vuint_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
-	return jbl_string_add_uint64(out,((jbl_var_data*)this)->u);
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
+	out=jbl_string_add_uint64(out,((jbl_var_data*)this)->u);
+	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+	return out;
 }
 #endif 
 #endif 
 #if JBL_STREAM_ENABLE==1
-void jbl_Vuint_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jbl_var* jbl_Vuint_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"uint64        ",format,str,&tabs))return;
-	jbl_stream_push_char(out,':');
-	jbl_stream_push_uint(out,((jbl_var_data*)this)->u);
+	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"uint64",line,varname,func,file))return this;
+	jbl_stream_push_uint(out,((jbl_var_data*)thi)->u);
+	jbl_stream_push_char(out,'\n');
+	return this;
 }
 #if JBL_JSON_ENABLE==1
-void jbl_Vuint_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_Vuint_json_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
+	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
 	jbl_stream_push_uint(out,((jbl_var_data*)this)->u);
+	if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
 }
 #endif
 #endif
@@ -276,25 +268,29 @@ inline char jbl_Vint_space_ship(jbl_var * this,jbl_var * that)
 }
 #if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
-jbl_string* jbl_Vint_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)
+jbl_string* jbl_Vint_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
-	return jbl_string_add_int64(out,((jbl_var_data*)this)->i);
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
+	out=jbl_string_add_int64(out,((jbl_var_data*)this)->i);
+	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+	return out;	
 }
 #endif 
 #endif 
 #if JBL_STREAM_ENABLE==1
-void jbl_Vint_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jbl_var* jbl_Vint_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"int64         ",format,str,&tabs))return;
-	jbl_stream_push_char(out,':');
-	jbl_stream_push_int(out,((jbl_var_data*)this)->i);
+	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"int64",line,varname,func,file))return this;
+	jbl_stream_push_int(out,((jbl_var_data*)thi)->i);
+	jbl_stream_push_char(out,'\n');
+	return this;
 }
 #if JBL_JSON_ENABLE==1
-void jbl_Vint_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_Vint_json_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
+	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
 	jbl_stream_push_int(out,((jbl_var_data*)this)->i);
+	if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
 }
 #endif
 #endif
@@ -317,25 +313,29 @@ inline char jbl_Vdouble_space_ship(jbl_var * this,jbl_var * that)
 }
 #if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
-jbl_string* jbl_Vdouble_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)
+jbl_string* jbl_Vdouble_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
-	return jbl_string_add_double(out,((jbl_var_data*)this)->d);
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
+	out=jbl_string_add_double(out,((jbl_var_data*)this)->d);
+	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+	return out;	
 }
 #endif 
 #endif 
 #if JBL_STREAM_ENABLE==1
-void jbl_Vdouble_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jbl_var* jbl_Vdouble_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"double        ",format,str,&tabs))return;
-	jbl_stream_push_char(out,':');
-	jbl_stream_push_double(out,((jbl_var_data*)this)->d);	
+	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"double",line,varname,func,file))return this;
+	jbl_stream_push_double(out,((jbl_var_data*)thi)->d);
+	jbl_stream_push_char(out,'\n');
+	return this;
 }
 #if JBL_JSON_ENABLE==1
-void jbl_Vdouble_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_Vdouble_json_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
+	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
 	jbl_stream_push_double(out,((jbl_var_data*)this)->d);
+	if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
 }
 #endif
 #endif
@@ -358,39 +358,44 @@ inline char jbl_Vntf_space_ship(jbl_var * this,jbl_var * that)
 }
 #if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
-jbl_string* jbl_Vntf_json_encode(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs)
+jbl_string* jbl_Vntf_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
 	switch(((jbl_var_data*)jbl_refer_pull(this))->u)
 	{
-		case 0:	return jbl_string_add_chars(out,UC"null")	;break;
-		case 2:	return jbl_string_add_chars(out,UC"true")	;break;
-		case 1:	return jbl_string_add_chars(out,UC"false")	;break;
+		case 0:	out=jbl_string_add_chars(out,UC"null")	;break;
+		case 2:	out=jbl_string_add_chars(out,UC"true")	;break;
+		case 1:	out=jbl_string_add_chars(out,UC"false")	;break;
+		default:out=jbl_string_add_chars(out,UC"null")	;break;
 	}
-	return NULL;
+	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+	return out;		
 }
 #endif 
 #endif 
 #if JBL_STREAM_ENABLE==1
-void jbl_Vntf_view_put(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jbl_var* jbl_Vntf_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
 	switch(((jbl_var_data*)jbl_refer_pull(this))->u)
 	{
-		case 0:	jbl_stream_view_put_format(this,out,"null          ",format,str,&tabs);break;
-		case 2:	jbl_stream_view_put_format(this,out,"true          ",format,str,&tabs);break;
-		case 1:	jbl_stream_view_put_format(this,out,"false         ",format,str,&tabs);break;
+		case 0: jbl_stream_view_put_format(this,out,format,tabs,UC"null",line,varname,func,file)	;break;
+		case 2: jbl_stream_view_put_format(this,out,format,tabs,UC"true",line,varname,func,file)	;break;
+		case 1: jbl_stream_view_put_format(this,out,format,tabs,UC"false",line,varname,func,file)	;break;
 	}
+	jbl_stream_push_char(out,'\n');
+	return this;
 }
 #if JBL_JSON_ENABLE==1
-void jbl_Vntf_json_put(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_Vntf_json_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
+	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
 	switch(((jbl_var_data*)jbl_refer_pull(this))->u)
 	{
 		case 0:	jbl_stream_push_chars(out,UC"null")	;break;
 		case 2:	jbl_stream_push_chars(out,UC"true")	;break;
 		case 1:	jbl_stream_push_chars(out,UC"false");break;
 	}
+	if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
 }
 #endif
 #endif

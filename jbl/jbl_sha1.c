@@ -32,10 +32,10 @@ void __jbl_sha1_process(jbl_uint32 hb[5],jbl_uint32 *mbc,jbl_uint8 mb[64])
 	hb[0]+=A,hb[1]+=B,hb[2]+=C,hb[3]+=D,hb[4]+=E;
 	(*mbc)=0;
 }
-jbl_string* jbl_sha1(const jbl_string* this,jbl_string* out)
+jbl_string* jbl_sha1(jbl_string* this,jbl_string* out)
 {
 	if(this==NULL)jbl_exception("NULL POINTER");
-	const jbl_string *		thi=jbl_refer_pull(this);	
+	jbl_string *		thi=jbl_refer_pull(this);	
 	jbl_string_size_type	len=jbl_string_get_length(thi);
 	jbl_uint8 *				input=jbl_string_get_chars(thi),mb[64];
 	jbl_uint32				hb[5]={0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0},mbc=0,ll=0,lh=0;

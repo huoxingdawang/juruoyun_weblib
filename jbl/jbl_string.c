@@ -250,7 +250,7 @@ jbl_string *jbl_string_add_chars_length(jbl_string *this,const unsigned char *in
 	thi->len=(thi->len+len);
 	return this;
 }
-jbl_string *jbl_string_add_string(jbl_string *this,const jbl_string *in)
+jbl_string *jbl_string_add_string(jbl_string *this,jbl_string *in)
 {
 	if(!in)return this;
 	in=jbl_refer_pull(in);
@@ -343,7 +343,7 @@ jbl_string* jbl_string_add_file(jbl_string *this,FILE * file)
 	thi->len+=fread(thi->s+thi->len,1,size,file);
 	return this;
 }
-inline void jbl_string_print(const jbl_string *this,FILE * file)
+inline void jbl_string_print(jbl_string *this,FILE * file)
 {
 	if(!this)return;
 	if(!file)jbl_exception("NULL POINTER");
@@ -354,13 +354,13 @@ inline void jbl_string_print(const jbl_string *this,FILE * file)
 /*******************************************************************************************/
 /*                            以下函数实现字符串的获取类操作                             */
 /*******************************************************************************************/
-inline unsigned char jbl_string_get(const jbl_string *this,jbl_string_size_type i)
+inline unsigned char jbl_string_get(jbl_string *this,jbl_string_size_type i)
 {
 	if(!this)return 0;
 	this=jbl_refer_pull(this);		
 	return (i<this->len)?this->s[i]:0;
 }
-jbl_int64 jbl_string_get_int64_start(const jbl_string *this,jbl_string_size_type *start)
+jbl_int64 jbl_string_get_int64_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);		
@@ -372,10 +372,10 @@ jbl_int64 jbl_string_get_int64_start(const jbl_string *this,jbl_string_size_type
 	start?(*start=i):0;
 	return f?-x:x;	
 }
-jbl_uint64 jbl_string_get_uint64_start(const jbl_string *this,jbl_string_size_type *start)
+jbl_uint64 jbl_string_get_uint64_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	jbl_string_size_type i=start?(*start):0; 	
 	if(i>=thi->len)
 		return 0;
@@ -385,10 +385,10 @@ jbl_uint64 jbl_string_get_uint64_start(const jbl_string *this,jbl_string_size_ty
 	start?(*start=i):0;
 	return x;	
 }
-double jbl_string_get_double_start(const jbl_string *this,jbl_string_size_type *start)
+double jbl_string_get_double_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	jbl_string_size_type i=start?(*start):0; 	
 	if(i>=thi->len)
 		return 0;
@@ -403,10 +403,10 @@ double jbl_string_get_double_start(const jbl_string *this,jbl_string_size_type *
 	start?(*start=i):0;
 	return f?(-(((double)y/ji)+x)):(((double)y/ji)+x);
 }
-jbl_uint64 jbl_string_get_hex_start(const jbl_string *this,jbl_string_size_type *start)
+jbl_uint64 jbl_string_get_hex_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);			
+	jbl_string *thi=jbl_refer_pull(this);			
 	jbl_string_size_type i=start?(*start):0; 	
 	if(i>=thi->len)
 		return 0;
@@ -416,10 +416,10 @@ jbl_uint64 jbl_string_get_hex_start(const jbl_string *this,jbl_string_size_type 
 	start?(*start=i):0;
 	return x;
 }
-jbl_uint64 jbl_string_get_hex_start_len(const jbl_string *this,jbl_string_size_type *start,jbl_string_size_type len)
+jbl_uint64 jbl_string_get_hex_start_len(jbl_string *this,jbl_string_size_type *start,jbl_string_size_type len)
 {
 	if(!this)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);			
+	jbl_string *thi=jbl_refer_pull(this);			
 	jbl_string_size_type i=start?(*start):0; 	
 	if(i>=thi->len)
 		return 0;
@@ -432,11 +432,11 @@ jbl_uint64 jbl_string_get_hex_start_len(const jbl_string *this,jbl_string_size_t
 /*******************************************************************************************/
 /*                            以下函数实现字符串的比较类操作                             */
 /*******************************************************************************************/
-char jbl_string_space_ship(const jbl_string *this,const jbl_string *that)
+char jbl_string_space_ship(jbl_string *this,jbl_string *that)
 {
 	if(this==that){return 0;}if(!this){return -1;}if(that==NULL){return 1;}
-	const jbl_string *thi=jbl_refer_pull(this);	
-	const jbl_string *tha=jbl_refer_pull(that);	
+	jbl_string *thi=jbl_refer_pull(this);	
+	jbl_string *tha=jbl_refer_pull(that);	
 	if(thi==tha){return 0;}if(thi==NULL){return -1;}if(tha==NULL){return 1;}
 	if(thi->len!=tha->len)
 		return (thi->len<tha->len)?-1:1;
@@ -447,10 +447,10 @@ char jbl_string_space_ship(const jbl_string *this,const jbl_string *that)
 			return 1;
 	return 0;
 }
-char jbl_string_space_ship_chars(const jbl_string *this,const char *that)
+char jbl_string_space_ship_chars(jbl_string *this,const char *that)
 {
-	if(this==(const jbl_string *)that){return 0;}if(!this){return -1;}if(!that){return 1;}
-	const jbl_string *thi=jbl_refer_pull(this);
+	if(this==(jbl_string *)that){return 0;}if(!this){return -1;}if(!that){return 1;}
+	jbl_string *thi=jbl_refer_pull(this);
 	register jbl_string_size_type i=0;
 	for(;i<thi->len;++i)
 	{
@@ -463,11 +463,11 @@ char jbl_string_space_ship_chars(const jbl_string *this,const char *that)
 		return -1;
 	return 0;
 }
-char jbl_string_if_equal(const jbl_string *thi,const jbl_string *that_)
+char jbl_string_if_equal(jbl_string *thi,jbl_string *that_)
 {	
 	if(thi==that_){return 1;}if(thi==NULL||that_==NULL){return 0;}
-	const jbl_string *this=jbl_refer_pull(thi);	
-	const jbl_string *that=jbl_refer_pull(that_);	
+	jbl_string *this=jbl_refer_pull(thi);	
+	jbl_string *that=jbl_refer_pull(that_);	
 	if(this==that){return 1;}if(this==NULL||that==NULL){return 0;}
 	if(this->h!=0&&this->h!=that->h)return 0;
 	if(this->len!=that->len)return 0;
@@ -479,10 +479,10 @@ char jbl_string_if_equal(const jbl_string *thi,const jbl_string *that_)
 /*******************************************************************************************/
 /*                            以下函数实现字符串的查找类操作                             */
 /*******************************************************************************************/
-jbl_string_size_type jbl_string_find_char_start(const jbl_string *this,unsigned char in,jbl_string_size_type start)
+jbl_string_size_type jbl_string_find_char_start(jbl_string *this,unsigned char in,jbl_string_size_type start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);			
+	jbl_string *thi=jbl_refer_pull(this);			
 	for(;start<thi->len&&thi->s[start]!=in;++start);
 	return (start);
 }
@@ -521,9 +521,9 @@ jbl_string * jbl_string_to_lower_case(jbl_string *this)
 /*******************************************************************************************/
 /*                            以下函数实现字符串的JSON操作                               */
 /*******************************************************************************************/
-jbl_string* jbl_string_json_encode(const jbl_string* this,jbl_string *out,char format,jbl_int32 tabs)
+jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
 	out=jbl_string_add_char(out,'"');
 	for(jbl_string_size_type i=0;i<this->len;++i)
 	{
@@ -547,17 +547,17 @@ jbl_string* jbl_string_json_encode(const jbl_string* this,jbl_string *out,char f
 		}				
 	}
 	out=jbl_string_add_char(out,'"');
+	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;
 }
-jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,char format,jbl_int32 *tabs)
+jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	if(!out)out=jbl_string_new();
-	if(format&&*tabs>=0)for(jbl_int16 i=0;i<*tabs;out=jbl_string_add_char(out,'\t'),++i);else *tabs=-*tabs;	
-	++*tabs;
-	if(!this)out=jbl_string_add_chars_length(out,(unsigned char *)"null",4);
+	if(format&1)for(jbl_uint32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);
+	if(!this)out=jbl_string_add_chars_length(out,UC"null",4);
 	return out;
 }
-jbl_string* jbl_string_json_decode(jbl_string *this,const jbl_string* in,jbl_string_size_type *start)
+jbl_string* jbl_string_json_decode(jbl_string *this,jbl_string* in,jbl_string_size_type *start)
 {
 	in=jbl_refer_pull(in);
 	if(!in)jbl_exception("NULL POINTER");
@@ -621,9 +621,9 @@ fail:;
 	return NULL;
 }
 #if JBL_STREAM_ENABLE==1
-void jbl_string_json_put(const jbl_string* this,jbl_stream *out,char format,jbl_int32 tabs)
+void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
+	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
 	jbl_stream_push_char(out,'"');
 	for(jbl_string_size_type i=0;i<this->len;++i)
 	{
@@ -647,6 +647,7 @@ void jbl_string_json_put(const jbl_string* this,jbl_stream *out,char format,jbl_
 		}		
 	}
 	jbl_stream_push_char(out,'"');
+	if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
 }
 #endif
 #endif
@@ -654,15 +655,17 @@ void jbl_string_json_put(const jbl_string* this,jbl_stream *out,char format,jbl_
 /*******************************************************************************************/
 /*                            以下函数实现字符串的浏览操作                               */
 /*******************************************************************************************/
-void jbl_string_view_put(const jbl_string* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
+jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jbl_string    ",format,str,&tabs))return;
-	jbl_stream_push_chars(out,UC"\tsize:");
+	jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file))return this;
+	jbl_stream_push_chars(out,UC" size:");
 	jbl_stream_push_uint(out,this->size);
 	jbl_stream_push_chars(out,UC"\tlen:");
 	jbl_stream_push_uint(out,this->len);
 	jbl_stream_push_chars(out,UC"\ts:");
-	for(jbl_string_size_type i=0;i<this->len;jbl_stream_push_char(out,this->s[i]),++i);
+	for(jbl_string_size_type i=0;i<thi->len;jbl_stream_push_char(out,thi->s[i]),++i);
+	jbl_stream_push_char(out,'\n');
+	return this;
 }
 #endif
 #if JBL_STREAM_ENABLE==1
@@ -716,7 +719,7 @@ void jbl_string_update_stream_buf(jbl_stream* this)
 	this->buf=st->s+st->len;
 }
 jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operater,jbl_string_free,jbl_string_update_stream_buf);
-void jbl_stream_push_string(jbl_stream *out,const jbl_string* this)
+void jbl_stream_push_string(jbl_stream *out,jbl_string* this)
 {
 	if(!out)jbl_exception("NULL POINTER");
 	if(!this)return;
@@ -754,10 +757,10 @@ jbl_var * jbl_Vstring_new()
 	return this;
 }
 inline jbl_string * jbl_Vstring(jbl_var * this){if(this&&!Vis_jbl_string(this))jbl_exception("VAR TYPE ERROR");return((jbl_string*)this);}
-jbl_var * jbl_string_get_number_start(const jbl_string *this,jbl_string_size_type *start)
+jbl_var * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this||!start)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	jbl_string_size_type i=*start;
 	if(i>=thi->len)
 		return NULL;

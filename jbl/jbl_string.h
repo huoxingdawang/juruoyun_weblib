@@ -78,7 +78,7 @@ jbl_string *			jbl_string_cache_replace				(jbl_string *str);
 jbl_string *			jbl_string_add_const_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知常量char*字符串
 #define					jbl_string_add_chars(x,y)				jbl_string_add_chars_length(x,y,jbl_strlen(y))							//添加一个char*字符串
 jbl_string *			jbl_string_add_chars_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知的char*字符串
-jbl_string *			jbl_string_add_string					(jbl_string *this,const jbl_string *in);								//添加一个string
+jbl_string *			jbl_string_add_string					(jbl_string *this,jbl_string *in);								//添加一个string
 jbl_string *			jbl_string_add_char						(jbl_string *this,const char c);										//添加一个char
 #define					jbl_string_add_char_force(this,in)		(this->s[this->len++]=(in))												//强制添加一个char，当字符串为NULL或引用类型时将直接导致RE
 #define					jbl_string_add_int64(this,in)			jbl_string_add_int64_length(this,in,0,0)								//添加一个64位整数
@@ -92,7 +92,7 @@ jbl_string *			jbl_string_add_hex_8bits				(jbl_string *this,jbl_uint8 in);					
 //TOOD START 实现jbl_file后移除这两个函数
 #include <stdio.h>
 jbl_string *			jbl_string_add_file						(jbl_string *this,FILE * file);
-void					jbl_string_print						(const jbl_string *this,FILE * file);
+void					jbl_string_print						(jbl_string *this,FILE * file);
 //TODO END
 /*******************************************************************************************/
 /*                            以下函数实现字符串的设置类操作                             */
@@ -108,24 +108,24 @@ void					jbl_string_print						(const jbl_string *this,FILE * file);
 #define					jbl_string_get_chars_force(a)			((a)->s)																//强制获取一个字符串的传统字符串部分，当字符串为NULL或引用类型时将直接导致RE
 #define					jbl_string_get_size(a)					(((jbl_string*)jbl_refer_pull(a))->size)								//获取一个字符串大小
 #define					jbl_string_get_size_force(a)			((a)->size)																//强制获取一个字符串大小，当字符串为NULL或引用类型时将直接导致RE
-unsigned char			jbl_string_get							(const jbl_string *this,jbl_string_size_type i);						//获取字符串a的第i位的内容(当越界时返回0)
+unsigned char			jbl_string_get							(jbl_string *this,jbl_string_size_type i);						//获取字符串a的第i位的内容(当越界时返回0)
 #define					jbl_string_get_force(a,i)				((a)->s[(i)])															//强制获取字符串a的第i位的内容，当字符串为NULL或引用类型或越界时将直接导致RE
 
 #define					jbl_string_get_int64(this)				jbl_string_get_int64_start(this,0)										//获取一个64位整数
-jbl_int64				jbl_string_get_int64_start				(const jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个64位整数
+jbl_int64				jbl_string_get_int64_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个64位整数
 #define					jbl_string_get_uint64(this)				jbl_string_get_uint64_start(this,0)										//获取一个64位无符号整数
-jbl_uint64				jbl_string_get_uint64_start				(const jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个64位无符号整数
+jbl_uint64				jbl_string_get_uint64_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个64位无符号整数
 #define					jbl_string_get_double(this)				jbl_string_get_double_start(this,0)										//获取一个浮点数
-double					jbl_string_get_double_start				(const jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个浮点数
+double					jbl_string_get_double_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个浮点数
 #define					jbl_string_get_hex(this)				jbl_string_get_hex_start(this,0)										//获取一个16进制表示的64位无符号整数
-jbl_uint64				jbl_string_get_hex_start				(const jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个16进制表示的64位无符号整数						
-jbl_uint64				jbl_string_get_hex_start_len			(const jbl_string *this,jbl_string_size_type *start,jbl_string_size_type len);	//从start位置开始获取一个16进制表示的,长度为len的64位无符号整数
+jbl_uint64				jbl_string_get_hex_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个16进制表示的64位无符号整数						
+jbl_uint64				jbl_string_get_hex_start_len			(jbl_string *this,jbl_string_size_type *start,jbl_string_size_type len);	//从start位置开始获取一个16进制表示的,长度为len的64位无符号整数
 /*******************************************************************************************/
 /*                            以下函数实现字符串的比较类操作                             */
 /*******************************************************************************************/
-char					jbl_string_space_ship					(const jbl_string *this_,const jbl_string *that_);						//太空船操作符，参见php的太空船操作符
-char					jbl_string_space_ship_chars				(const jbl_string *this,const char *that);								//和char*字符串的太空船操作符，参见php的太空船操作符
-char					jbl_string_if_equal						(const jbl_string *this_,const jbl_string *that_);						//判断两个字符串是否相等，这里使用了hash进行判断(如果存在)
+char					jbl_string_space_ship					(jbl_string *this_,jbl_string *that_);						//太空船操作符，参见php的太空船操作符
+char					jbl_string_space_ship_chars				(jbl_string *this,const char *that);								//和char*字符串的太空船操作符，参见php的太空船操作符
+char					jbl_string_if_equal						(jbl_string *this_,jbl_string *that_);						//判断两个字符串是否相等，这里使用了hash进行判断(如果存在)
 #define					jbl_string_if_big(x,y)					(jbl_string_space_ship(x,y)>0)											//判断this是否>that
 #define					jbl_string_if_small(x,y)				(jbl_string_space_ship(x,y)<0)											//判断this是否<that
 #define					jbl_string_if_equal_small(x,y)			(jbl_string_space_ship(x,y)<=0)											//判断this是否>=that
@@ -134,7 +134,7 @@ char					jbl_string_if_equal						(const jbl_string *this_,const jbl_string *tha
 /*                            以下函数实现字符串的查找类操作                             */
 /*******************************************************************************************/
 #define					jbl_string_find_char(this,in)			jbl_string_find_char_start(this,in,0)									//寻找第一个in
-jbl_string_size_type	jbl_string_find_char_start				(const jbl_string *this,unsigned char in,jbl_string_size_type start);	//从start位开始寻找第一个in
+jbl_string_size_type	jbl_string_find_char_start				(jbl_string *this,unsigned char in,jbl_string_size_type start);	//从start位开始寻找第一个in
 /*******************************************************************************************/
 /*                            以下函数实现字符串的hash操作                               */
 /*******************************************************************************************/
@@ -151,19 +151,19 @@ jbl_string *			jbl_string_to_lower_case				(jbl_string *this);														//�
 /*******************************************************************************************/
 /*                            以下函数实现字符串的JSON操作                               */
 /*******************************************************************************************/
-jbl_string*				jbl_string_json_encode					(const jbl_string* this,jbl_string *out,char format,jbl_int32 tabs);	//JSON编码
-jbl_string*				jbl_string_json_put_format				(const void* this,jbl_string *out,char format,jbl_int32 *tabs);			//输出JSON格式头
-jbl_string*				jbl_string_json_decode					(jbl_string *this,const jbl_string* in,jbl_string_size_type *start);	//JSON解码
+jbl_string*				jbl_string_json_encode					(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);			//JSON编码
+jbl_string*				jbl_string_json_put_format				(const void* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);			//输出JSON格式头
+jbl_string*				jbl_string_json_decode					(jbl_string *this,jbl_string* in,jbl_string_size_type *start);				//JSON解码
 #if JBL_STREAM_ENABLE==1
-void					jbl_string_json_put						(const jbl_string* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个字符串
+void					jbl_string_json_put						(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);			//从从out JSON格式化一个字符串
 #endif
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现字符串的浏览操作                               */
 /*******************************************************************************************/
-void					jbl_string_view_put						(const jbl_string* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个字符串
-#define					jbl_string_view(x)						jbl_string_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')	//浏览一个字符串
+jbl_string*				jbl_string_view_put						(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个字符串
+#define					jbl_string_view(x)						jbl_string_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个字符串
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
@@ -175,7 +175,7 @@ jbl_stream *			jbl_string_stream_new					(jbl_string *str);														//新�
 #if JBL_VAR_ENABLE==1
 jbl_var * 				jbl_string_Vstream_new					(jbl_string *str);														//新建一个var格式的字符串流(不进行复制操作)
 #endif
-void					jbl_stream_push_string					(jbl_stream *out,const jbl_string* this);								//向out推出一个字符串
+void					jbl_stream_push_string					(jbl_stream *out,jbl_string* this);										//向out推出一个字符串
 jbl_string *			jbl_string_read							(jbl_string *this,const unsigned char *c);
 
 #endif
@@ -187,7 +187,7 @@ extern	const		jbl_var_operators							jbl_string_operators;													//string
 jbl_string *		jbl_Vstring									(jbl_var * this);														//以string的格式使用var
 #define				Vis_jbl_string(x)							(jbl_var_get_operators(x)==&jbl_string_operators)						//判断一个var是不是string
 jbl_var *			jbl_Vstring_new								();																		//新建一个字符串类型的var
-jbl_var *			jbl_string_get_number_start					(const jbl_string *this,jbl_string_size_type *start);					//获取一个数字，支持无符号整数，有符号整数，浮点数，e表示的浮点数
+jbl_var *			jbl_string_get_number_start					(jbl_string *this,jbl_string_size_type *start);					//获取一个数字，支持无符号整数，有符号整数，浮点数，e表示的浮点数
 #define				jbl_string_copy_as_var(x)					jbl_var_copy_as(x,&jbl_string_operators)								//复制为一个var
 #endif
 /*******************************************************************************************/

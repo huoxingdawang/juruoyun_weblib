@@ -22,6 +22,11 @@
 /*******************************************************************************************/
 #include "jbl_stream.h"
 /*******************************************************************************************/
+/*                            以下函数完成内存复制操作                           */
+/*******************************************************************************************/
+void					jbl_memory_copy			(void *to,const void * from,jbl_malloc_size_type len);								//复制
+void					jbl_memory_copy_reverse	(void *to,const void * from,jbl_malloc_size_type len,jbl_malloc_size_type size);	//倒序复制
+/*******************************************************************************************/
 /*                            以下函数完成内存管理组件启动和停止                           */
 /*******************************************************************************************/
 void					jbl_malloc_start		();										//启动内存管理
@@ -33,11 +38,6 @@ void*					jbl_malloc				(jbl_malloc_size_type size);			//申请一段内存
 void*					jbl_realloc				(void* ptr,jbl_malloc_size_type size);	//重新申请一段内存
 void					jbl_free				(void* p);								//释放一段内存
 jbl_malloc_size_type	jbl_malloc_size			(void* ptr);							//获取一段内存的大小
-/*******************************************************************************************/
-/*                            以下函数完成内存复制操作                           */
-/*******************************************************************************************/
-void					jbl_memory_copy			(void *to,const void * from,jbl_malloc_size_type len);								//复制
-void					jbl_memory_copy_reverse	(void *to,const void * from,jbl_malloc_size_type len,jbl_malloc_size_type size);	//倒序复制
 #else
 #define jbl_malloc_start()	1
 #define jbl_malloc_stop()	1

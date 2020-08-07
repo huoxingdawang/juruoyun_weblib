@@ -15,6 +15,12 @@
 
 #define JBL_STREAM_EXCEED_LENGTH	64
 #define JBL_VIEW_DEFAULT_TABS		1
+#define JBL_VIEW_NAME_LENGTH		16
+#define JBL_VIEW_DISPLAY_VARNAME	0
+#define JBL_VIEW_DISPLAY_FUNC		1
+#define JBL_VIEW_DISPLAY_FILE		1
+#define JBL_VIEW_DISPLAY_LINE		1
+
 
 //#define JBL_STREAM_STDOUT	fopen("tmp/out.tmp","wb")
 #define JBL_STREAM_STDIN	stdin

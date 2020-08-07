@@ -27,8 +27,8 @@
 /*******************************************************************************************/
 /*                            以下函数实现字符串的base64编解码操作                      */
 /*******************************************************************************************/
-jbl_string *	jbl_base64_encode					(const jbl_string *this,jbl_string *result);	//base64加密
-jbl_string *	jbl_base64_decode					(const jbl_string *this,jbl_string *result);	//base64解密
+jbl_string *	jbl_base64_encode					(jbl_string *this,jbl_string *result);	//base64加密
+jbl_string *	jbl_base64_decode					(jbl_string *this,jbl_string *result);	//base64解密
 #endif
 
 #if JBL_STREAM_ENABLE==1

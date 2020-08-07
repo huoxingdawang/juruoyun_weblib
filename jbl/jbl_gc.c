@@ -12,6 +12,12 @@
 #if JBL_VAR_ENABLE==1
 #include "jbl_var.h"
 #endif
+
+
+inline void* jbl_gc_plus	(void *this){((jbl_reference*)this)->gc+=16;return this;};
+inline void* jbl_gc_minus	(void *this){((jbl_reference*)this)->gc-=16;return this;};
+
+
 #if JBL_VAR_ENABLE==1
 void * jbl_refer_as_var(void *ptr,const jbl_var_operators *ops)
 #else

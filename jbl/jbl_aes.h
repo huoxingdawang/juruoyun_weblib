@@ -58,8 +58,8 @@ jbl_var *			jbl_Vaes_128_key_new						();																			//新建一个aes_12
 /*******************************************************************************************/
 /*                            以下函数实现字符串的aes128ecb加解密操作                   */
 /*******************************************************************************************/
-jbl_string *	jbl_aes_128_ecb_encode					(jbl_aes_128_key *w,const jbl_string *this,jbl_string *result);						//进行AES128ECB加密
-jbl_string *	jbl_aes_128_ecb_decode					(jbl_aes_128_key *w,const jbl_string *this,jbl_string *result);						//进行AES128ECB解密
+jbl_string *	jbl_aes_128_ecb_encode					(jbl_aes_128_key *w,jbl_string *this,jbl_string *result);						//进行AES128ECB加密
+jbl_string *	jbl_aes_128_ecb_decode					(jbl_aes_128_key *w,jbl_string *this,jbl_string *result);						//进行AES128ECB解密
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
@@ -80,8 +80,8 @@ extern const jbl_stream_operater jbl_stream_aes_128_ecb_decode_operators;							
 /*******************************************************************************************/
 /*                            以下函数实现字符串的aes128cbc加解密操作                   */
 /*******************************************************************************************/
-jbl_string *	jbl_aes_128_cbc_encode					(jbl_aes_128_key *w,unsigned char *vi,const jbl_string *this,jbl_string *result);	//进行AES128CBC加密
-jbl_string *	jbl_aes_128_cbc_decode					(jbl_aes_128_key *w,unsigned char *vi,const jbl_string *this,jbl_string *result);	//进行AES128CBC解密
+jbl_string *	jbl_aes_128_cbc_encode					(jbl_aes_128_key *w,unsigned char *vi,jbl_string *this,jbl_string *result);	//进行AES128CBC加密
+jbl_string *	jbl_aes_128_cbc_decode					(jbl_aes_128_key *w,unsigned char *vi,jbl_string *this,jbl_string *result);	//进行AES128CBC解密
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现stream的aes128cbc加解密操作                    */

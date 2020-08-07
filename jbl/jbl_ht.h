@@ -124,18 +124,18 @@ jbl_ht *				jbl_ht_merge_ll				(jbl_ht *this,jbl_ll *that);						//合并一个l
 /*                            以下函实现哈希表JSON操作                                   */
 /*******************************************************************************************/
 #if JBL_JSON_ENABLE==1
-jbl_string *			jbl_ht_json_encode			(const jbl_ht* this,jbl_string *out,char format,jbl_int32 tabs);	//JSON 编码
-jbl_ht*					jbl_ht_json_decode			(jbl_ht *this,const jbl_string* in,jbl_string_size_type *start);	//JSON 解码
+jbl_string *			jbl_ht_json_encode			(const jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON 编码
+jbl_ht*					jbl_ht_json_decode			(jbl_ht *this,jbl_string* in,jbl_string_size_type *start);	//JSON 解码
 #if JBL_STREAM_ENABLE==1
-void					jbl_ht_json_put				(const jbl_ht* this,jbl_stream *out,char format,jbl_int32 tabs);	//从out JSON输出一个hash table
+void					jbl_ht_json_put				(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个hash table
 #endif
 #endif
 /*******************************************************************************************/
 /*                            以下函实现哈希表浏览操作                                   */
 /*******************************************************************************************/
 #if JBL_STREAM_ENABLE==1
-void					jbl_ht_view_put				(const jbl_ht* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个hash table
-#define					jbl_ht_view(x)				jbl_ht_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')//浏览一个hash table
+jbl_ht*					jbl_ht_view_put						(jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
+#define					jbl_ht_view(x)						jbl_ht_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
 #endif
 
 #endif

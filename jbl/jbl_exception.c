@@ -21,6 +21,19 @@ void jbl_exception_add_exit_function(void (*func)(void))
 {
 	jbl_exception_exit_functions[jbl_exception_exit_functions_cnt++]=func;
 }
+void jbl_exit(int x)
+{
+#if JBL_STREAM_ENABLE ==1
+	if(jbl_stream_stdout)
+	{
+		jbl_stream_push_chars(jbl_stream_stdout,UC"\n\n-------------------------------------------------------\n");
+		jbl_stream_push_chars(jbl_stream_stdout,UC"EXIT!\n");
+		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
+	}
+#endif
+	while(jbl_exception_exit_functions_cnt--)jbl_exception_exit_functions[jbl_exception_exit_functions_cnt]();
+	exit(x);
+}
 void __jbl_exception(const char * function,const char * file,int line,char * x)
 {
 	if(jbl_exception_on_error)

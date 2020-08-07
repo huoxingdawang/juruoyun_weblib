@@ -181,22 +181,34 @@ jbl_stream* jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)
 	jbl_stream_push_char(this,hex[(in>>4)&15]),jbl_stream_push_char(this,hex[in&15]);	
 	return this;
 }
-inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,char*name,jbl_int32 format,char*str,jbl_int32 *tabs)
+inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	if(out==NULL)jbl_exception("NULL POINTER");
-	if(format&&*tabs>=0)for(jbl_int16 i=0;i<*tabs;jbl_stream_push_char(out,'\t'),++i);else *tabs=-*tabs;
-	if(this)jbl_stream_push_chars(out,UC(name));
-	else	jbl_stream_push_chars(out,UC"null          ");
-	if(format&&str)jbl_stream_push_chars(out,UC(str)),jbl_stream_push_char(out,' '),(format!=-1?jbl_stream_push_uint(out,format):0);
-	++*tabs;
+	if(!out)jbl_exception("NULL POINTER");
+	if(format)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
+	if(!this)typename=UC"null";
+	jbl_uint8 i=0;
+	for(;typename[i];jbl_stream_do(out,0))for(;typename[i]&&out->en<out->size;out->buf[out->en]=typename[i],++out->en,++i);
+	if(i<JBL_VIEW_NAME_LENGTH)
+		for(;i<JBL_VIEW_NAME_LENGTH;++i,jbl_stream_push_char(out,' '));
+#if JBL_VIEW_DISPLAY_VARNAME == 1
+	if(format)jbl_stream_push_chars(out,varname);
+#endif
+#if JBL_VIEW_DISPLAY_FUNC == 1
+	if(format&&func)jbl_stream_push_chars(out,UC" in func:"),jbl_stream_push_chars(out,func);
+#endif
+#if JBL_VIEW_DISPLAY_FILE == 1
+	if(format&&file)jbl_stream_push_chars(out,UC" at file:"),jbl_stream_push_chars(out,file);
+#endif
+#if JBL_VIEW_DISPLAY_LINE == 1
+	if(format&&file)jbl_stream_push_chars(out,UC" on line:"),jbl_stream_push_uint(out,line);
+#endif
 	return this?0:1;
 }
 #if JBL_JSON_ENABLE==1
-inline char jbl_stream_json_put_format(const void *this,jbl_stream *out,char format,jbl_int32 *tabs)
+inline char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	if(out==NULL)jbl_exception("NULL POINTER");
-	if(format&&*tabs>=0)for(jbl_int16 i=0;i<*tabs;jbl_stream_push_char(out,'\t'),++i);else *tabs=-*tabs;	
-	++*tabs;
+	if(!out)jbl_exception("NULL POINTER");
+	if(format&1)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
 	if(!this)return jbl_stream_push_chars(out,UC"null"),1;
 	return 0;
 }

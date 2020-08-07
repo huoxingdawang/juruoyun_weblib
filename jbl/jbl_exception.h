@@ -18,7 +18,7 @@ extern	jbl_uint8							jbl_exception_on_error;
 
 #define	jbl_exception(x)					__jbl_exception(__FUNCTION__,__FILE__,__LINE__,x)	//抛出一个异常
 void	__jbl_exception						(const char * function,const char * file,int line,char * x);
-#define	jbl_exit(x)							jbl_exception(NULL)
+void	jbl_exit							(int x);
 
 
 #else

@@ -32,10 +32,10 @@ static const char __jbl_base64_decode_table[]={-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,
 /*******************************************************************************************/
 /*                            以下函数实现字符串的base64编解码操作                      */
 /*******************************************************************************************/
-jbl_string * jbl_base64_encode(const jbl_string *this,jbl_string *result)
+jbl_string * jbl_base64_encode(jbl_string *this,jbl_string *result)
 {
 	if(this==NULL)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	jbl_string_size_type i=0,len=jbl_string_get_length_force(thi);
 	jbl_string *res;result=jbl_string_extend_to(result,len*4/3+4,1,&res);jbl_string_hash_clear(res);
 	while(len>2)
@@ -50,10 +50,10 @@ jbl_string * jbl_base64_encode(const jbl_string *this,jbl_string *result)
 	}
 	return result;
 }
-jbl_string * jbl_base64_decode(const jbl_string *this,jbl_string *result)
+jbl_string * jbl_base64_decode(jbl_string *this,jbl_string *result)
 {
 	if(this==NULL)jbl_exception("NULL POINTER");	
-	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string *thi=jbl_refer_pull(this);		
 	jbl_string_size_type i=0,len=jbl_string_get_length_force(thi);
 	jbl_uint8 bin=0,ch;
 	jbl_string *res;result=jbl_string_extend_to(result,len*3/4+3,1,&res);jbl_string_hash_clear(res);

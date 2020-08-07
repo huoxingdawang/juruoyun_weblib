@@ -76,13 +76,13 @@ void __jbl_md5_init(const jbl_uint8* input,jbl_string_size_type len,jbl_uint32 s
 		i = 0;
 	jbl_memory_copy(&buffer[index],&input[i],len-i);
 }
-jbl_string* jbl_md5(const jbl_string* this,jbl_string* out)
+jbl_string* jbl_md5(jbl_string* this,jbl_string* out)
 {
 	if(this==NULL)jbl_exception("NULL POINTER");
 	jbl_uint32 state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
 	jbl_uint8  padding[64]={0x80};
 	jbl_uint8  buffer[64],digest[16];
-	const jbl_string *		thi=jbl_refer_pull(this);
+	jbl_string *		thi=jbl_refer_pull(this);
 	jbl_string_size_type	len=jbl_string_get_length_force(thi);
 	__jbl_md5_init(jbl_string_get_chars_force(thi),len,state,count,buffer);
 	jbl_uint8 bits[8];

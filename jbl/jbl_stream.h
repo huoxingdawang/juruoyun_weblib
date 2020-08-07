@@ -79,9 +79,9 @@ jbl_stream *	jbl_stream_push_hex_8bits			(jbl_stream *this,jbl_uint8 in);
 #define			pf()								jbl_stream_do(jbl_stream_stdout,jbl_stream_force)
 #define			pl()								puint(__LINE__),pchars(" @ "__FILE__),pn(),pf()
 
-char			jbl_stream_view_put_format			(const void *this,jbl_stream *out,char*name,jbl_int32 format,char*str,jbl_int32 *tabs);
+char			jbl_stream_view_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);
 #if JBL_JSON_ENABLE==1
-char			jbl_stream_json_put_format			(const void *this,jbl_stream *out,char format,jbl_int32 *tabs);
+char			jbl_stream_json_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
 #endif
 
 extern			const jbl_stream_operater			jbl_stream_file_operators;

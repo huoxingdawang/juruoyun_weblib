@@ -25,13 +25,13 @@ typedef struct __jbl_var_operators
 	char	(*space_ship)(const void*,const void*);
 #if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
-	jbl_string*	(*json_encode)(const void*,jbl_string *,char,jbl_int32);
+	jbl_string*	(*json_encode)(const void*,jbl_string *,jbl_uint8,jbl_uint32);
 #endif
 #endif	
 #if JBL_STREAM_ENABLE==1
-	void	(*view_put)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32);
+	void *	(*view_put)(void*,jbl_stream *,jbl_uint8,jbl_uint32,jbl_uint32 line,unsigned char*,unsigned char *,unsigned char *);
 #if JBL_JSON_ENABLE==1
-	void	(*json_put)(const void*,jbl_stream *,char,jbl_int32);
+	void	(*json_put)(const void*,jbl_stream *,jbl_uint8,jbl_uint32);
 #endif
 #endif
 }jbl_var_operators;
@@ -45,9 +45,9 @@ typedef struct __jbl_var_operators
 				(void* (*)(void *))free,															\
 				(void* (*)(void *))copy,															\
 				(char  (*)(const void*,const void*))space_ship,										\
-				(jbl_string*(*)(const void*,jbl_string *,char,jbl_int32))json_encode,				\
-				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
-				(void(*)(const void*,jbl_stream *,char,jbl_int32))json_put,							\
+				(jbl_string*(*)(const void*,jbl_string *,jbl_uint8,jbl_uint32))json_encode,				\
+				(void* (*)(void*,jbl_stream *,jbl_uint8,jbl_uint32,jbl_uint32 line,unsigned char*,unsigned char *,unsigned char *))view_put,				\
+				(void(*)(const void*,jbl_stream *,jbl_uint8,jbl_uint32))json_put,							\
 			};
 		#else
 			//STRING 开 STREAM 开 JSON 关
@@ -56,7 +56,7 @@ typedef struct __jbl_var_operators
 				(void* (*)(void *))free,															\
 				(void* (*)(void *))copy,															\
 				(char  (*)(const void*,const void*))space_ship,										\
-				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
+				(void* (*)(void*,jbl_stream *,jbl_uint8,jbl_uint32,jbl_uint32 line,unsigned char*,unsigned char *,unsigned char *))view_put,				\
 			};
 		#endif
 	#else
@@ -67,7 +67,7 @@ typedef struct __jbl_var_operators
 				(void* (*)(void *))free,															\
 				(void* (*)(void *))copy,															\
 				(char  (*)(const void*,const void*))space_ship,										\
-				(jbl_string*(*)(const void*,jbl_string *,char,jbl_int32))json_encode,				\
+				(jbl_string*(*)(const void*,jbl_string *,jbl_uint8,jbl_uint32))json_encode,				\
 			};
 		#else
 			//STRING 开 STREAM 关 JSON 关
@@ -88,8 +88,8 @@ typedef struct __jbl_var_operators
 				(void* (*)(void *))free,															\
 				(void* (*)(void *))copy,															\
 				(char  (*)(const void*,const void*))space_ship,										\
-				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
-				(void(*)(const void*,jbl_stream *,char,jbl_int32))json_put,							\
+				(void* (*)(void*,jbl_stream *,jbl_uint8,jbl_uint32,jbl_uint32 line,unsigned char*,unsigned char *,unsigned char *))view_put,				\
+				(void(*)(const void*,jbl_stream *,jbl_uint8,jbl_uint32))json_put,							\
 			};
 		#else
 			//STRING 关 STREAM 开 JSON 关
@@ -98,7 +98,7 @@ typedef struct __jbl_var_operators
 				(void* (*)(void *))free,															\
 				(void* (*)(void *))copy,															\
 				(char  (*)(const void*,const void*))space_ship,										\
-				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
+				(void* (*)(void*,jbl_stream *,jbl_uint8,jbl_uint32,jbl_uint32 line,unsigned char*,unsigned char *,unsigned char *))view_put,				\
 			};
 		#endif
 	#else
@@ -141,24 +141,24 @@ typedef struct __jbl_var_data
 
 #define		jbl_V(x)						((jbl_var*)x)														//按照var使用一个变量
 jbl_var *	jbl_var_set_operators			(jbl_var * this,const jbl_var_operators *ops);						//设置一个var的操作器
-const jbl_var_operators *	jbl_var_get_operators			(const jbl_var * this);													//获取一个var的操作器
+const jbl_var_operators *	jbl_var_get_operators			(jbl_var * this);													//获取一个var的操作器
 jbl_var *	jbl_var_free					(jbl_var * this);													//释放一个var
 jbl_var *	jbl_var_copy					(jbl_var * this);													//复制一个var
-char		jbl_var_space_ship				(const jbl_var * this,const jbl_var * that);						//var的太空船操作符
+char		jbl_var_space_ship				(jbl_var * this,jbl_var * that);						//var的太空船操作符
 jbl_var *jbl_var_copy_as(void * that,const jbl_var_operators *ops);
 #if JBL_STREAM_ENABLE==1
-void		jbl_var_view_put				(const jbl_var * this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个var
-#define		jbl_var_view(x)					jbl_var_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')	//浏览一个var
+jbl_var *	jbl_var_view_put				(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个var
+#define		jbl_var_view(x)					jbl_var_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个var
 #if JBL_JSON_ENABLE==1
-void 		jbl_var_json_put				(const jbl_var * this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var
+void 		jbl_var_json_put				(jbl_var * this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从从out JSON格式化一个var
 #endif
 #endif
 
 #if JBL_STRING_ENABLE==1
 
 #if JBL_JSON_ENABLE==1
-jbl_string *	jbl_var_json_encode			(const jbl_var * this,jbl_string *out,char format,jbl_int32 tabs);	//JSON编码一个var
-jbl_var    *	jbl_var_json_decode			(jbl_var *this,const jbl_string* in,jbl_string_size_type *start);	//JSON解码一个var
+jbl_string *	jbl_var_json_encode			(jbl_var * this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码一个var
+jbl_var    *	jbl_var_json_decode			(jbl_var *this,jbl_string* in,jbl_string_size_type *start);	//JSON解码一个var
 #endif
 
 #endif
@@ -197,22 +197,22 @@ char			jbl_Vntf_space_ship			(jbl_var * this,jbl_var * that);					//比较两个
 
 #if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
-jbl_string * 	jbl_Vuint_json_encode		(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs);	//JSON编码一个var格式的uint
-jbl_string * 	jbl_Vint_json_encode		(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs);	//JSON编码一个var格式的int
-jbl_string * 	jbl_Vdouble_json_encode		(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs);	//JSON编码一个var格式的double
-jbl_string *	jbl_Vntf_json_encode		(const jbl_var* this,jbl_string *out,char format,jbl_int32 tabs);	//JSON编码一个var格式的null或true或false
+jbl_string * 	jbl_Vuint_json_encode		(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码一个var格式的uint
+jbl_string * 	jbl_Vint_json_encode		(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码一个var格式的int
+jbl_string * 	jbl_Vdouble_json_encode		(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码一个var格式的double
+jbl_string *	jbl_Vntf_json_encode		(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码一个var格式的null或true或false
 #endif
 #endif
 #if JBL_STREAM_ENABLE==1
-void 			jbl_Vuint_view_put			(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的uint
-void 			jbl_Vint_view_put			(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的int
-void 			jbl_Vdouble_view_put		(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的double
-void			jbl_Vntf_view_put			(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的null或true或false
+jbl_var * 		jbl_Vuint_view_put			(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从从out 浏览一个var格式的uint
+jbl_var * 		jbl_Vint_view_put			(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从从out 浏览一个var格式的int
+jbl_var * 		jbl_Vdouble_view_put		(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从从out 浏览一个var格式的double
+jbl_var *		jbl_Vntf_view_put			(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从从out 浏览一个var格式的null或true或false
 #if JBL_JSON_ENABLE==1
-void 			jbl_Vuint_json_put			(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的uint
-void 			jbl_Vint_json_put			(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的int
-void 			jbl_Vdouble_json_put		(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的double
-void			jbl_Vntf_json_put			(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的null或true或false
+void 			jbl_Vuint_json_put			(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从从out JSON格式化一个var格式的uint
+void 			jbl_Vint_json_put			(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从从out JSON格式化一个var格式的int
+void 			jbl_Vdouble_json_put		(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从从out JSON格式化一个var格式的double
+void			jbl_Vntf_json_put			(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从从out JSON格式化一个var格式的null或true或false
 #endif
 #endif
 

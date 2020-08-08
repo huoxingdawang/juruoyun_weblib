@@ -214,6 +214,8 @@ jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 forma
 }
 jbl_stream *jwl_socket_stream_new(jwl_socket* socket)
 {
+	if(!socket)jbl_exception("NULL POINTER");
+	if(jwl_socket_is_host(socket))jbl_exception("NEW STREAM FROM HOST SOCKET");	
 	jbl_stream *this=jbl_stream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,2);
 	this->tmp[0].u=0;	//第0为表示当前接受的长度
 	this->tmp[1].u=-1;	//第1位表示当前要求总接收
@@ -222,6 +224,8 @@ jbl_stream *jwl_socket_stream_new(jwl_socket* socket)
 #if JBL_VAR_ENABLE==1
 jbl_var *jwl_socket_Vstream_new(jwl_socket* socket)
 {
+	if(!socket)jbl_exception("NULL POINTER");
+	if(jwl_socket_is_host(socket))jbl_exception("NEW STREAM FROM HOST SOCKET");	
 	jbl_stream *this=(jbl_stream *)jbl_Vstream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,2);
 	this->tmp[0].u=0;	//第0为表示当前接受的长度
 	this->tmp[1].u=-1;	//第1位表示当前要求总接收
@@ -233,37 +237,41 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream* nxt=jbl_refer_pull(this->nxt);
-	jwl_socket *sock=((jwl_socket*)this->data);
-	sock=jbl_refer_pull(sock);
-	if(sock->handle==-1)
+	jwl_socket *socket=((jwl_socket*)this->data);
+	socket=jbl_refer_pull(socket);
+	if(socket->handle==-1)
 	{
 		this->en=0;
 		return jbl_log("SEND FAILED");
 	}
-	if(jwl_socket_is_host(sock))jbl_exception("SEND FROM HOST SOCKET");	
 	if(this->en)
 	{
-	//TODO 处理错误
-		for(jbl_uint8 i=0;i<1&&send(sock->handle,(char*)this->buf,this->en,0)==-1;++i)
+		//TODO 处理错误
+		for(jbl_uint8 i=0;i<1&&send(socket->handle,(char*)this->buf,this->en,0)==-1;++i)
 		{
-			jbl_log("SEND FAILED"),sock->handle=-1;
+			jbl_log("SEND FAILED"),socket->handle=-1;
 			break;
 		}
+		this->en=0;
 	}
-	this->en=0;
-	if(nxt!=NULL)
+	else
 	{
-		while(this->tmp[0].u<this->tmp[1].u)
+		if(nxt)
 		{
-			jbl_stream_buf_size_type len=jbl_min((this->tmp[1].u-this->tmp[0].u),(nxt->size-nxt->en));	
-			int j=recv(sock->handle,(char*)nxt->buf+nxt->en,len,0);
-			if(j==-1)
-				jbl_log("RECEIVE FAILED");
-			else
-				this->tmp[0].u+=j,nxt->en+=j;
-			jbl_stream_do(nxt,0);
+			while(this->tmp[0].u<this->tmp[1].u)
+			{
+				jbl_stream_buf_size_type len=jbl_min((this->tmp[1].u-this->tmp[0].u),(nxt->size-nxt->en));	
+				int j=recv(socket->handle,(char*)nxt->buf+nxt->en,len,0);
+				if(j==-1)
+					jbl_log("RECEIVE FAILED");
+				else
+					this->tmp[0].u+=j,nxt->en+=j;
+				jbl_stream_do(nxt,0);
+				if(j!=len)
+					break;
+			}
+			jbl_stream_do(nxt,flags);	
 		}
-		jbl_stream_do(nxt,flags);	
 	}
 }
 jbl_stream_operators_new(jwl_stream_socket_operators,jwl_socket_stream_operater,jwl_socket_free,NULL);

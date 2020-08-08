@@ -105,7 +105,6 @@ void jwl_http_resh_encode(jbl_stream *stream,jwl_http_resh *head,jbl_string_size
 	jbl_stream_push_chars(stream,UC"Server: "JWL_HTTP_RESPONSE_SERVER_NAME)															,rn();
 	if(head->status==206)
 	{
-		puint((head->range.end?head->range.end:size)-head->range.start),pn();
 		jbl_stream_push_chars(stream,UC"Content-Length: ")					,jbl_stream_push_uint(stream,(head->range.end?head->range.end:size)-head->range.start)	,rn();
 		//注意，range是闭区间，而jwl,jbl要求左闭右开区间
 		jbl_stream_push_chars(stream,UC"Content-Range: bytes ")				,jbl_stream_push_uint(stream,head->range.start)			,jbl_stream_push_char(stream,'-')	,jbl_stream_push_uint(stream,head->range.end-1)	,jbl_stream_push_char(stream,'/')	,jbl_stream_push_uint(stream,size)	,rn();

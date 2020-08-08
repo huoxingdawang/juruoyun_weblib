@@ -24,13 +24,27 @@ int main(int argc,char** argv)
 		if(!client)continue;
 		puint(++count);pn();
 		jwl_socket_view(client);
+		jbl_stream * client_stream=jwl_socket_stream_new(client);
 #ifdef _WIN32
 pl();
 #endif
 ///////////////////////////////////////////////////////////////////////
 //windows环境下，会卡在这里，导致ctrl+c关闭的时候，无法释放所有内存
 ///////////////////////////////////////////////////////////////////////
-		jbl_string *get=jwl_socket_receive(client,NULL);
+
+	jbl_string *get=jbl_string_new();
+	jbl_stream *tmp=jbl_string_stream_new(get);
+	jbl_stream_connect(client_stream,tmp);
+	jbl_stream_do(client_stream,jbl_stream_force);
+	tmp->data=NULL;
+	tmp=jbl_stream_free(tmp);
+
+
+//	get=jbl_string_free(get);
+//	get=jwl_socket_receive(client,NULL);
+
+
+
 #ifdef _WIN32
 pl();
 #endif
@@ -116,8 +130,6 @@ pl();
 		}
 		
 		jwl_http_resh_view(resh);pf();
-		
-		jbl_stream * client_stream=jwl_socket_stream_new(client);
 		jwl_http_resh_encode(client_stream,resh,jbl_string_get_length(res));
 		jbl_stream_push_string_start_end(client_stream,res,res_start,res_end);
 		jbl_stream_do(client_stream,1);

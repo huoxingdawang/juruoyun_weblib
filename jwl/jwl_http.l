@@ -379,12 +379,12 @@ jwl_http_reqh* jwl_http_reqh_decode(jbl_string *buf,jbl_string_size_type *start)
 		jwl_http_key key=__jwl_http_rqhd_scanner(buf->s+i,buf->s+buf->len,&addr);
 		switch(key)
 		{
-			case JWL_HTTP_KEY_END				:goto finish;																																						;break;
-			case JWL_HTTP_KEY_UA				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;--reqh->ua->len		;break;
-			case JWL_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->host		=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len		;break;
-			case JWL_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len	;break;
-			case JWL_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->etag		=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len		;break;
-			case JWL_HTTP_KEY_RANGE_BYTES		:reqh->range.start=jbl_string_get_uint_start(buf,&i)				;reqh->range.end=jbl_string_get_uint_start(buf,&i);reqh->range.end?(reqh->range.end+=1):0		;break;//注意，range是闭区间，而jwl,jbl要求左闭右开区间
+			case JWL_HTTP_KEY_END				:goto finish;																																							;break;
+			case JWL_HTTP_KEY_UA				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;--reqh->ua->len			;break;
+			case JWL_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->host		=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len			;break;
+			case JWL_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len		;break;
+			case JWL_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->etag		=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len			;break;
+			case JWL_HTTP_KEY_RANGE_BYTES		:reqh->range.start=jbl_string_get_uint_start_end(buf,&i,'\r')		;reqh->range.end=jbl_string_get_uint_start_end(buf,&i,'-');reqh->range.end?(reqh->range.end+=1):0	;break;//注意，range是闭区间，而jwl,jbl要求左闭右开区间
 			
 			case JWL_HTTP_KEY_COOKIE			:break;
 			case JWL_HTTP_KEY_ACCEPT			:break;

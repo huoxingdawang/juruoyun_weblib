@@ -21,8 +21,8 @@ typedef struct __jbl_stream
 	jbl_gc						gc;
 	const jbl_stream_operater *	op;
 	struct __jbl_stream *		nxt;
-	jbl_uint16					en;
-	jbl_uint16					size;
+	jbl_stream_buf_size_type					en;
+	jbl_stream_buf_size_type					size;
 	void *						data;
 	unsigned char *				buf;
 	union
@@ -48,8 +48,8 @@ typedef struct __jbl_stream_operater
 
 void			jbl_stream_start					();
 void			jbl_stream_stop						();
-jbl_stream *	jbl_stream_new						(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,jbl_uint8 tmplen);
-jbl_stream * 	jbl_stream_init						(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,jbl_uint8 tmplen);
+jbl_stream *	jbl_stream_new						(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
+jbl_stream * 	jbl_stream_init						(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
 jbl_stream * 	jbl_stream_copy						(jbl_stream* this);
 jbl_stream * 	jbl_stream_free						(jbl_stream* this);
 void			jbl_stream_do						(jbl_stream* this,jbl_uint8 flag);
@@ -96,7 +96,7 @@ extern	const	jbl_var_operators					jbl_stream_operators;
 
 jbl_stream *	jbl_Vstream							(jbl_var * this);
 #define			Vis_jbl_stream(x)					(jbl_var_get_operators(x)==&jbl_stream_operators)
-jbl_var *		jbl_Vstream_new						(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,jbl_uint8 tmplen);
+jbl_var *		jbl_Vstream_new						(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
 
 
 

@@ -93,7 +93,7 @@ void __jbl_base64_seo(jbl_stream* this,jbl_uint8 flags)
 	jbl_uint8 *s=this->buf;
 	if(nxt!=NULL)
 	{
-		jbl_uint16 i=0,len=this->en;
+		jbl_stream_buf_size_type i=0,len=this->en;
 		while(len>2)
 		{
 			if((nxt->en+4)>nxt->size)jbl_stream_do(nxt,0);
@@ -123,7 +123,7 @@ void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
 	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);		
 	if(nxt!=NULL)
 	{
-		jbl_uint16 i=0,len=this->en;
+		jbl_stream_buf_size_type i=0,len=this->en;
 		jbl_uint8 ch,bin=0;
 		while(i<len)
 		{

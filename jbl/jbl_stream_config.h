@@ -20,7 +20,7 @@
 #define JBL_VIEW_DISPLAY_FUNC		1
 #define JBL_VIEW_DISPLAY_FILE		1
 #define JBL_VIEW_DISPLAY_LINE		1
-
+typedef jbl_uint32 jbl_stream_buf_size_type;
 
 //#define JBL_STREAM_STDOUT	fopen("tmp/out.tmp","wb")
 #define JBL_STREAM_STDIN	stdin

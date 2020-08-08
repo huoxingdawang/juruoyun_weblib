@@ -314,7 +314,7 @@ void __jbl_aes_128_ecb_seo(jbl_stream* this,jbl_uint8 flags)
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
 	if(nxt!=NULL)
 	{
-		jbl_uint16 i=0,len=(this->en>>4)<<4;
+		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
@@ -344,7 +344,7 @@ void __jbl_aes_128_ecb_sdo(jbl_stream* this,jbl_uint8 flags)
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
 	if(nxt!=NULL)
 	{
-		jbl_uint16 i=0,len=(this->en>>4)<<4;
+		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
@@ -432,7 +432,7 @@ void __jbl_aes_128_cbc_seo(jbl_stream* this,jbl_uint8 flags)
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
 	if(nxt!=NULL)
 	{
-		jbl_uint16 i=0,len=(this->en>>4)<<4;
+		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
@@ -468,7 +468,7 @@ void __jbl_aes_128_cbc_sdo(jbl_stream* this,jbl_uint8 flags)
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
 	if(nxt!=NULL)
 	{
-		jbl_uint16 i=0,len=(this->en>>4)<<4;
+		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 		{
 			while(i<len)

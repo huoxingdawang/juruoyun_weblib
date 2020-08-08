@@ -221,7 +221,7 @@ void __jbl_string_u8tgso(jbl_stream* this,jbl_uint8 flags)//utf8_to_gb2312_strea
 	jbl_uint8 *s=this->buf;
 	if(nxt)
 	{
-		jbl_uint16 i=0,len=this->en;
+		jbl_stream_buf_size_type i=0,len=this->en;
 		for(;(i+6)<len;)
 		{
 			if((nxt->en+2)>nxt->size)jbl_stream_do(nxt,0);
@@ -253,7 +253,7 @@ void __jbl_string_gtu8so(jbl_stream* this,jbl_uint8 flags)//gb2312_to_utf8_strea
 	jbl_uint8 *s=this->buf;
 	if(nxt)
 	{
-		jbl_uint16 i=0,len=this->en;
+		jbl_stream_buf_size_type i=0,len=this->en;
 		for(;i<len;)
 		{
 			if(s[i]<0x80){nxt->buf[nxt->en++]=s[i++];continue;}

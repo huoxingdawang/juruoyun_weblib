@@ -443,7 +443,7 @@ jbl_ht * jbl_ht_merge_int(jbl_ht *this)
 	for(register jbl_ht_size_type i=0,j;i<thi->nxt;++i)
 		if((!thi->data[i].k)&&thi->data[i].v)
 		{
-			jbl_string *s=jbl_string_add_uint64(NULL,thi->data[i].h);
+			jbl_string *s=jbl_string_add_uint(NULL,thi->data[i].h);
 			char flag=0;
 			jbl_string_hash_type h=jbl_string_hash(s);
 			jbl_ht_size_type_signed	h2=gh2(thi,h);
@@ -508,7 +508,7 @@ jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,jbl_uint8 form
 		if(i->k==NULL)continue;
 		if((format&1)||(format&4))for(jbl_int32 j=0;j<tabs;out=jbl_string_add_char(out,'\t'),++j);
 		if(i->k==NULL)
-			out=jbl_string_add_uint64(out,i->h);
+			out=jbl_string_add_uint(out,i->h);
 		else
 			out=jbl_string_json_encode(i->k,out,0,0);
 		out=jbl_string_add_char(out,':');

@@ -226,7 +226,7 @@ inline char jbl_Vuint_space_ship(jbl_var * this,jbl_var * that)
 jbl_string* jbl_Vuint_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
-	out=jbl_string_add_uint64(out,((jbl_var_data*)this)->u);
+	out=jbl_string_add_uint(out,((jbl_var_data*)this)->u);
 	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;
 }
@@ -271,7 +271,7 @@ inline char jbl_Vint_space_ship(jbl_var * this,jbl_var * that)
 jbl_string* jbl_Vint_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
-	out=jbl_string_add_int64(out,((jbl_var_data*)this)->i);
+	out=jbl_string_add_int(out,((jbl_var_data*)this)->i);
 	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;	
 }

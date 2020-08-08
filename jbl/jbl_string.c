@@ -265,14 +265,14 @@ inline jbl_string *jbl_string_add_char(jbl_string *this,const char c)
 	thi->s[thi->len]=c,++thi->len;
 	return this;
 }
-inline jbl_string * jbl_string_add_int64_length(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c)
+inline jbl_string * jbl_string_add_int_length(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c)
 {
 	jbl_string *thi;this=jbl_string_extend_to(this,22,1,&thi);
 	if(in<0)
 		jbl_string_add_char_force(thi,'-'),in=-in;
-	return jbl_string_add_uint64_length(this,in,len,c);
+	return jbl_string_add_uint_length(this,in,len,c);
 }
-jbl_string * jbl_string_add_uint64_length(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c)
+jbl_string * jbl_string_add_uint_length(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c)
 {
 	jbl_string *thi;this=jbl_string_extend_to(this,jbl_max(len,21),1,&thi);jbl_string_hash_clear(thi);
 	if(!in)
@@ -290,7 +290,7 @@ jbl_string * jbl_string_add_uint64_length(jbl_string *this,jbl_uint64 in,jbl_uin
 jbl_string * jbl_string_add_double_length(jbl_string *this,double in,unsigned char len)
 {
 	this=jbl_string_extend(this,jbl_max(len,40));
-	this=jbl_string_add_int64(this,in);
+	this=jbl_string_add_int(this,in);
 	this=jbl_string_add_char(this,'.');
 	if(in<0)in=-in;
 	in-=(jbl_uint64)in;
@@ -360,7 +360,7 @@ inline unsigned char jbl_string_get(jbl_string *this,jbl_string_size_type i)
 	this=jbl_refer_pull(this);		
 	return (i<this->len)?this->s[i]:0;
 }
-jbl_int64 jbl_string_get_int64_start(jbl_string *this,jbl_string_size_type *start)
+jbl_int64 jbl_string_get_int_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);		
@@ -372,7 +372,7 @@ jbl_int64 jbl_string_get_int64_start(jbl_string *this,jbl_string_size_type *star
 	start?(*start=i):0;
 	return f?-x:x;	
 }
-jbl_uint64 jbl_string_get_uint64_start(jbl_string *this,jbl_string_size_type *start)
+jbl_uint64 jbl_string_get_uint_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	jbl_string *thi=jbl_refer_pull(this);		
@@ -698,7 +698,7 @@ void __jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	{
 		while(this->tmp[0].u<str->len)
 		{
-			jbl_uint16 len=jbl_min((str->len-this->tmp[0].u),(nxt->size-nxt->en));	
+			jbl_stream_buf_size_type len=jbl_min((str->len-this->tmp[0].u),(nxt->size-nxt->en));	
 			jbl_memory_copy(nxt->buf+nxt->en,str->s+this->tmp[0].u,len);
 			this->tmp[0].u+=len;
 			nxt->en+=len;
@@ -719,14 +719,20 @@ void jbl_string_update_stream_buf(jbl_stream* this)
 	this->buf=st->s+st->len;
 }
 jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operater,jbl_string_free,jbl_string_update_stream_buf);
-void jbl_stream_push_string(jbl_stream *out,jbl_string* this)
+void jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end)
 {
 	if(!out)jbl_exception("NULL POINTER");
 	if(!this)return;
 	out=jbl_refer_pull(out);
 	this=jbl_refer_pull(this);
-	for(jbl_string_size_type i=0;i<this->len;++i)
-		jbl_stream_push_char(out,this->s[i]);
+	for(jbl_min_update(end,this->len);i<end;)
+	{
+		jbl_stream_buf_size_type len=jbl_min((end-i),(out->size-out->en));	
+		jbl_memory_copy(out->buf+out->en,this->s+i,len);
+		i+=len;
+		out->en+=len;
+		jbl_stream_do(out,0);
+	}
 }
 jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
 {
@@ -779,7 +785,7 @@ jbl_var * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *sta
 		goto e;
 	return jbl_Vdouble_set(NULL,f?(-(((double)y/ji)+x)):(((double)y/ji)+x));
 e:;
-	jbl_uint64 e=jbl_string_get_uint64_start(this,start),ji2=1;
+	jbl_uint64 e=jbl_string_get_uint_start(this,start),ji2=1;
 	while(e--)ji2=(ji2<<3)+(ji2<<1);
 	return jbl_Vdouble_set(NULL,(f?(-(((double)y/ji)+x)):(((double)y/ji)+x))*ji2);
 }

@@ -40,11 +40,11 @@ void jbl_stream_stop()
 	jbl_stream_stdin		=jbl_stream_free(jbl_stream_stdin);	
 	jbl_stream_stdin_link	=jbl_stream_free(jbl_stream_stdin_link);	
 }
-inline jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,jbl_uint8 tmplen)
+inline jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
 {
 	return jbl_stream_init(jbl_malloc(jbl_stream_caculate_size(tmplen)+((buf)?0:size)),op,data,size,buf,tmplen);
 }
-jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,jbl_uint8 tmplen)
+jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
 {
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数		
@@ -84,7 +84,7 @@ jbl_stream * jbl_stream_copy(jbl_stream* this)
 	{
 		jbl_gc_plus(this);
 	}
-	jbl_uint16 size=jbl_malloc_size(this);
+	jbl_stream_buf_size_type size=jbl_malloc_size(this);
 	jbl_stream *that=jbl_malloc(size);
 	jbl_gc_init(that);
 	jbl_gc_plus(that);//增加引用计数	
@@ -116,7 +116,7 @@ jbl_stream* jbl_stream_push_char(jbl_stream* this,unsigned char c)
 {
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull(this);
-	((thi->en+1)>thi->size)?jbl_stream_do(thi,0):0;
+	((thi->en)>=thi->size)?jbl_stream_do(thi,0):0;
 	thi->buf[thi->en]=c;
 	++thi->en;
 	return this;
@@ -239,7 +239,7 @@ jbl_stream *jbl_stream_stdin_link;
 #if JBL_VAR_ENABLE==1
 jbl_var_operators_new(jbl_stream_operators,jbl_stream_free,jbl_stream_copy,NULL,NULL,NULL,NULL);
 inline jbl_stream * jbl_Vstream(jbl_var * this){if(this&&!Vis_jbl_stream(this))jbl_exception("VAR TYPE ERROR");return((jbl_stream*)this);}
-inline jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,jbl_uint8 tmplen)
+inline jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
 {
 	jbl_var *this=(jbl_var*)((char*)(jbl_malloc(jbl_stream_caculate_size(tmplen)+(sizeof(jbl_var))+((buf)?0:size))+(sizeof(jbl_var))));	
 	jbl_stream_init((jbl_stream*)this,op,data,size,buf,tmplen);

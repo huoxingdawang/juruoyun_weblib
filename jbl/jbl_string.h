@@ -78,13 +78,13 @@ jbl_string *			jbl_string_cache_replace				(jbl_string *str);
 jbl_string *			jbl_string_add_const_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知常量char*字符串
 #define					jbl_string_add_chars(x,y)				jbl_string_add_chars_length(x,y,jbl_strlen(y))							//添加一个char*字符串
 jbl_string *			jbl_string_add_chars_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知的char*字符串
-jbl_string *			jbl_string_add_string					(jbl_string *this,jbl_string *in);								//添加一个string
+jbl_string *			jbl_string_add_string					(jbl_string *this,jbl_string *in);										//添加一个string
 jbl_string *			jbl_string_add_char						(jbl_string *this,const char c);										//添加一个char
 #define					jbl_string_add_char_force(this,in)		(this->s[this->len++]=(in))												//强制添加一个char，当字符串为NULL或引用类型时将直接导致RE
-#define					jbl_string_add_int64(this,in)			jbl_string_add_int64_length(this,in,0,0)								//添加一个64位整数
-jbl_string *			jbl_string_add_int64_length				(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c);					//添加一个length位的64位整数，不足用c补齐	
-#define					jbl_string_add_uint64(this,in)			jbl_string_add_uint64_length(this,in,0,0)								//添加一个64位无符号整数
-jbl_string *			jbl_string_add_uint64_length			(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c);					//添加一个length位64位无符号整数，不足用c补齐
+#define					jbl_string_add_int(this,in)			jbl_string_add_int_length(this,in,0,0)										//添加一个64位整数
+jbl_string *			jbl_string_add_int_length				(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c);					//添加一个length位的64位整数，不足用c补齐	
+#define					jbl_string_add_uint(this,in)			jbl_string_add_uint_length(this,in,0,0)									//添加一个64位无符号整数
+jbl_string *			jbl_string_add_uint_length			(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c);						//添加一个length位64位无符号整数，不足用c补齐
 #define					jbl_string_add_double(this,in)			jbl_string_add_double_length(this,in,5)									//添加一个浮点数
 jbl_string *			jbl_string_add_double_length			(jbl_string *this,double in,unsigned char len);							//添加一个浮点数，保留len位小数
 jbl_string *			jbl_string_add_hex						(jbl_string *this,jbl_uint64 in);										//把一个64位无符号整数以16进制形式添加(无前导0)
@@ -108,18 +108,18 @@ void					jbl_string_print						(jbl_string *this,FILE * file);
 #define					jbl_string_get_chars_force(a)			((a)->s)																//强制获取一个字符串的传统字符串部分，当字符串为NULL或引用类型时将直接导致RE
 #define					jbl_string_get_size(a)					(((jbl_string*)jbl_refer_pull(a))->size)								//获取一个字符串大小
 #define					jbl_string_get_size_force(a)			((a)->size)																//强制获取一个字符串大小，当字符串为NULL或引用类型时将直接导致RE
-unsigned char			jbl_string_get							(jbl_string *this,jbl_string_size_type i);						//获取字符串a的第i位的内容(当越界时返回0)
+unsigned char			jbl_string_get							(jbl_string *this,jbl_string_size_type i);								//获取字符串a的第i位的内容(当越界时返回0)
 #define					jbl_string_get_force(a,i)				((a)->s[(i)])															//强制获取字符串a的第i位的内容，当字符串为NULL或引用类型或越界时将直接导致RE
 
-#define					jbl_string_get_int64(this)				jbl_string_get_int64_start(this,0)										//获取一个64位整数
-jbl_int64				jbl_string_get_int64_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个64位整数
-#define					jbl_string_get_uint64(this)				jbl_string_get_uint64_start(this,0)										//获取一个64位无符号整数
-jbl_uint64				jbl_string_get_uint64_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个64位无符号整数
+#define					jbl_string_get_int(this)				jbl_string_get_int_start(this,0)										//获取一个64位整数
+jbl_int64				jbl_string_get_int_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个64位整数
+#define					jbl_string_get_uint(this)				jbl_string_get_uint_start(this,0)										//获取一个64位无符号整数
+jbl_uint64				jbl_string_get_uint_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个64位无符号整数
 #define					jbl_string_get_double(this)				jbl_string_get_double_start(this,0)										//获取一个浮点数
-double					jbl_string_get_double_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个浮点数
+double					jbl_string_get_double_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个浮点数
 #define					jbl_string_get_hex(this)				jbl_string_get_hex_start(this,0)										//获取一个16进制表示的64位无符号整数
-jbl_uint64				jbl_string_get_hex_start				(jbl_string *this,jbl_string_size_type *start);					//从start位置开始获取一个16进制表示的64位无符号整数						
-jbl_uint64				jbl_string_get_hex_start_len			(jbl_string *this,jbl_string_size_type *start,jbl_string_size_type len);	//从start位置开始获取一个16进制表示的,长度为len的64位无符号整数
+jbl_uint64				jbl_string_get_hex_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个16进制表示的64位无符号整数						
+jbl_uint64				jbl_string_get_hex_start_len			(jbl_string *this,jbl_string_size_type *start,jbl_string_size_type len);//从start位置开始获取一个16进制表示的,长度为len的64位无符号整数
 /*******************************************************************************************/
 /*                            以下函数实现字符串的比较类操作                             */
 /*******************************************************************************************/
@@ -175,7 +175,8 @@ jbl_stream *			jbl_string_stream_new					(jbl_string *str);														//新�
 #if JBL_VAR_ENABLE==1
 jbl_var * 				jbl_string_Vstream_new					(jbl_string *str);														//新建一个var格式的字符串流(不进行复制操作)
 #endif
-void					jbl_stream_push_string					(jbl_stream *out,jbl_string* this);										//向out推出一个字符串
+#define					jbl_stream_push_string(out,this)		jbl_stream_push_string_start_end(out,this,0,-1)							//向out推出一个字符串
+void					jbl_stream_push_string_start_end		(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end);
 jbl_string *			jbl_string_read							(jbl_string *this,const unsigned char *c);
 
 #endif

@@ -12,7 +12,7 @@ int main(int argc,char** argv)
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");pf();
 	jbl_string *ip=jbl_string_add_chars(NULL,UC((argc>1)?argv[1]:"0.0.0.0"));
 	jbl_string *port=jbl_string_add_chars(NULL,UC((argc>2)?argv[2]:"1217"));
-	sock=jwl_socket_bind(sock,jwl_get_binary_ip(ip),jbl_string_get_uint64(port));
+	sock=jwl_socket_bind(sock,jwl_get_binary_ip(ip),jbl_string_get_uint(port));
 	ip=jbl_string_free(ip);
 	port=jbl_string_free(port);	
 	jwl_socket_view(sock);pf();

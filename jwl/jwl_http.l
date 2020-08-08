@@ -21,10 +21,12 @@ jwl_http_resh *jwl_http_resh_init(jwl_http_resh * this)
 	this->status		=0;
 	this->cache			=0;
 	this->cache_max_age	=0;	
-	this->charset	=0;	
+	this->charset		=0;	
 	this->content_type	=NULL;
 	this->etag			=NULL;
 	this->v				=NULL;
+	this->range.start	=0;
+	this->range.end		=0;
 	return this;
 }
 jwl_http_resh *jwl_http_resh_free(jwl_http_resh * this)
@@ -76,6 +78,8 @@ inline jwl_http_resh *jwl_http_resh_extend(jwl_http_resh * this,jwl_http_resh **
 	tmp->content_type	=jbl_string_copy(this->content_type);
 	tmp->etag			=jbl_string_copy(this->etag);
 	tmp->v				=jbl_ht_copy(this->v);
+	tmp->range.start	=this->range.start;
+	tmp->range.end		=this->range.end;
 	
 	jwl_http_resh_free(this);
 	if(ref)		ref->ptr=tmp;
@@ -83,84 +87,81 @@ inline jwl_http_resh *jwl_http_resh_extend(jwl_http_resh * this,jwl_http_resh **
 	if(pthi)	*pthi=tmp;	
 	return this;
 }
-jbl_string* jwl_http_resh_encode(jbl_string *buf,jwl_http_resh *head,jbl_string_size_type size)
+void jwl_http_resh_encode(jbl_stream *stream,jwl_http_resh *head,jbl_string_size_type size)
 {
-#define rn() buf=jbl_string_add_char(jbl_string_add_char(buf,'\r'),'\n')
-	if(!head)return buf;
+#define rn() jbl_stream_push_char(stream,'\r'),jbl_stream_push_char(stream,'\n')
+	if(!head)return;
 	head=jbl_refer_pull(head);
-	buf=jbl_string_extend(buf,JWL_HTTP_MAX_HEADER_LENGTH);
-	buf=jbl_string_add_chars(buf,UC"HTTP/1.1 ");
-	buf=jbl_string_add_uint64(buf,head->status);
+	jbl_stream_push_chars(stream,UC"HTTP/1.1 ");
+	jbl_stream_push_uint(stream,head->status);
 	switch(head->status)
 	{
-		case 200:
-			buf=jbl_string_add_chars(buf,UC" OK");
-			break;
-		case 304:
-			buf=jbl_string_add_chars(buf,UC" Not Modified");
-			break;
+		case 200:	jbl_stream_push_chars(stream,UC" OK")				;break;
+		case 206:	jbl_stream_push_chars(stream,UC" Partial Content")	;break;
+		case 304:	jbl_stream_push_chars(stream,UC" Not Modified")		;break;
+		case 416:	jbl_stream_push_chars(stream,UC" Range Not Satisfiable")		;break;
 	}
 	rn();
-	buf=jbl_string_add_chars(buf,UC"Server: "JWL_HTTP_RESPONSE_SERVER_NAME)															,rn();
-	buf=jbl_string_add_chars(buf,UC"Content-Length: ")						,buf=jbl_string_add_uint64(buf,size)					,rn();
-	buf=jbl_string_add_chars(buf,UC"Accept-Ranges: bytes")																			,rn();
+	jbl_stream_push_chars(stream,UC"Server: "JWL_HTTP_RESPONSE_SERVER_NAME)															,rn();
+	if(head->status==206)
+	{
+		puint((head->range.end?head->range.end:size)-head->range.start),pn();
+		jbl_stream_push_chars(stream,UC"Content-Length: ")					,jbl_stream_push_uint(stream,(head->range.end?head->range.end:size)-head->range.start)	,rn();
+		//注意，range是闭区间，而jwl,jbl要求左闭右开区间
+		jbl_stream_push_chars(stream,UC"Content-Range: bytes ")				,jbl_stream_push_uint(stream,head->range.start)			,jbl_stream_push_char(stream,'-')	,jbl_stream_push_uint(stream,head->range.end-1)	,jbl_stream_push_char(stream,'/')	,jbl_stream_push_uint(stream,size)	,rn();
+	}
+	else
+		jbl_stream_push_chars(stream,UC"Content-Length: ")					,jbl_stream_push_uint(stream,size)						,rn();
+	jbl_stream_push_chars(stream,UC"Accept-Ranges: bytes")																			,rn();
 	if(head->cache==JWL_HTTP_CACHE_MAX_AGE)
 	{
-		buf=jbl_string_add_chars(buf,UC"Cache-Control: max-age=")	,buf=jbl_string_add_uint64(buf,head->cache_max_age)			,rn();
+		jbl_stream_push_chars(stream,UC"Cache-Control: max-age=")	,jbl_stream_push_uint(stream,head->cache_max_age)				,rn();
 		jbl_time * t=jbl_time_add_second(jbl_time_now(NULL),head->cache_max_age);
-//		buf=jbl_string_add_chars(buf,UC"Date: ")	,buf=jbl_time_to_string_format(t,buf,UC JBL_TIME_FORMAT_RFC1123)				,rn();
-//		buf=jbl_string_add_chars(buf,UC"Expires: ")	,buf=jbl_time_to_string_format(t,buf,UC JBL_TIME_FORMAT_RFC1123)				,rn();
+//		jbl_stream_push_chars(stream,UC"Date: ")	,jbl_time_to_string_format(t,stream,UC JBL_TIME_FORMAT_RFC1123)					,rn();
+//		jbl_stream_push_chars(stream,UC"Expires: ")	,jbl_time_to_string_format(t,stream,UC JBL_TIME_FORMAT_RFC1123)					,rn();
 		t=jbl_time_free(t);
 	}
 	else
 	{
-		buf=jbl_string_add_chars(buf,UC"Pragma: no-cache")																			,rn();
-		buf=jbl_string_add_chars(buf,UC"Cache-Control: no-cache")																	,rn();
+		jbl_stream_push_chars(stream,UC"Pragma: no-cache")																			,rn();
+		jbl_stream_push_chars(stream,UC"Cache-Control: no-cache")																	,rn();
 	}
 	if(head->content_type)
 	{
-		buf=jbl_string_add_chars(buf,UC"Content-Type: ")					,buf=jbl_string_add_string(buf,head->content_type);
+		jbl_stream_push_chars(stream,UC"Content-Type: ")					,jbl_stream_push_string(stream,head->content_type);
 		char *charset[]={"","UTF-8"};
 		if(head->charset)
-			buf=jbl_string_add_chars(buf,UC"; charset=")					,buf=jbl_string_add_chars(buf,UC charset[head->charset]);
+			jbl_stream_push_chars(stream,UC"; charset=")					,jbl_stream_push_chars(stream,UC charset[head->charset]);
 		rn();
 	}
 	if(head->etag)
-		buf=jbl_string_add_chars(buf,UC"ETag: ")							,buf=jbl_string_add_string(buf,head->etag)				,rn();
+		jbl_stream_push_chars(stream,UC"ETag: ")							,jbl_stream_push_string(stream,head->etag)				,rn();
 	if(head->v)
 		jbl_ht_foreach(head->v,i)
 		{
-			buf=jbl_string_add_string(buf,jbl_htk(i));
-			buf=jbl_string_add_chars(buf,UC": ");
-//			buf=jbl_string_add_var(&buf,jbl_htv(i));
+			jbl_stream_push_string(stream,jbl_htk(i));
+			jbl_stream_push_chars(stream,UC": ");
+//			jbl_string_add_var(&stream,jbl_htv(i));
 			rn();
 		}
 	
 	
 	
-//	buf=jbl_string_add_chars(buf,UC"Connection: keep-alive");rn();
-//	buf=jbl_string_add_chars(buf,UC"Keep-Alive: timeout=4");rn();
-//	buf=jbl_string_add_chars(buf,UC"Proxy-Connection: keep-alive");rn();
+//	jbl_stream_push_chars(stream,UC"Connection: keep-alive");rn();
+//	jbl_stream_push_chars(stream,UC"Keep-Alive: timeout=4");rn();
+//	jbl_stream_push_chars(stream,UC"Proxy-Connection: keep-alive");rn();
 	
 	rn();
 #undef rn
-	return buf;
-}
-jwl_socket* jwl_http_send_res(jwl_socket *sock,jwl_http_resh *head,jbl_string *data)
-{
-	jbl_string *buf=jwl_http_resh_encode(NULL,head,jbl_string_get_length(data));
-	sock=jwl_socket_send(sock,buf);
-	buf=jbl_string_free(buf);
-	sock=jwl_socket_send(sock,data);
-	return sock;
 }
 
-jwl_http_resh * jwl_http_resh_set_status			(jwl_http_resh * this,jbl_uint16 status)			{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->status=status;return this;}
-jwl_http_resh * jwl_http_resh_set_cache				(jwl_http_resh * this,jbl_uint16 cache)				{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->cache=cache  ;return this;}
-jwl_http_resh * jwl_http_resh_set_charset			(jwl_http_resh * this,jbl_uint16 charset)			{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->charset=charset  ;return this;}
-jwl_http_resh * jwl_http_resh_set_cache_max_age		(jwl_http_resh * this,jbl_uint32 cache_max_age)		{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->cache_max_age=cache_max_age;return this;}
-jwl_http_resh * jwl_http_resh_set_content_type		(jwl_http_resh * this,jbl_string * content_type)	{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);jbl_string_free(thi->content_type);thi->content_type=(content_type);return this;}
-jwl_http_resh * jwl_http_resh_set_etag				(jwl_http_resh * this,jbl_string * etag)			{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);jbl_string_free(thi->etag);thi->etag=(etag);return this;}
+jwl_http_resh * jwl_http_resh_set_status			(jwl_http_resh * this,jbl_uint16 status)				{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->status=status;return this;}
+jwl_http_resh * jwl_http_resh_set_cache				(jwl_http_resh * this,jbl_uint16 cache)					{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->cache=cache  ;return this;}
+jwl_http_resh * jwl_http_resh_set_charset			(jwl_http_resh * this,jbl_uint16 charset)				{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->charset=charset  ;return this;}
+jwl_http_resh * jwl_http_resh_set_cache_max_age		(jwl_http_resh * this,jbl_uint32 cache_max_age)			{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->cache_max_age=cache_max_age;return this;}
+jwl_http_resh * jwl_http_resh_set_content_type		(jwl_http_resh * this,jbl_string * content_type)		{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);jbl_string_free(thi->content_type);thi->content_type=(content_type);return this;}
+jwl_http_resh * jwl_http_resh_set_etag				(jwl_http_resh * this,jbl_string * etag)				{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);jbl_string_free(thi->etag);thi->etag=(etag);return this;}
+jwl_http_resh *	jwl_http_resh_set_range				(jwl_http_resh * this,jbl_uint64 start,jbl_uint64 end)	{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->range.start=start;thi->range.end=end;return this;}
 //jwl_http_resh * jwl_http_resh_set					(jwl_http_resh * this,jbl_string * k, jbl_var *v);
 #if JBL_STREAM_ENABLE==1
 jwl_http_resh* jwl_http_resh_view_put(jwl_http_resh* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
@@ -178,6 +179,7 @@ jwl_http_resh* jwl_http_resh_view_put(jwl_http_resh* this,jbl_stream *out,jbl_ui
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"content type :");jbl_stream_push_string(out,thi->content_type)			;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"charset      :");jbl_stream_push_chars(out,UC charset[thi->charset])	;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"etag         :");jbl_stream_push_string(out,thi->etag)					;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"range        :");jbl_stream_push_uint(out,thi->range.start)			;jbl_stream_push_char(out,'-' );	jbl_stream_push_uint(out,thi->range.end)			;jbl_stream_push_char(out,'\n');	
 	if(thi->v)jbl_ht_foreach(thi->v,i)
 	{
 		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);//格式化的\t
@@ -231,6 +233,8 @@ jwl_http_reqh *jwl_http_reqh_init(jwl_http_reqh * this)
 	this->connection	=0;
 	this->cache			=0;
 	this->cache_max_age	=0;	
+	this->range.start	=0;	
+	this->range.end		=0;	
 //jbl_string	
 	this->url		=NULL;
 	this->host		=NULL;
@@ -299,6 +303,9 @@ inline jwl_http_reqh *jwl_http_reqh_extend(jwl_http_reqh * this,jwl_http_reqh **
 	tmp->cookie		=jbl_ht_copy(this->cookie);
 	tmp->v			=jbl_ht_copy(this->v);
 	
+	tmp->range.start	=this->range.start;
+	tmp->range.end		=this->range.end;	
+	
 	jwl_http_reqh_free(this);
 	if(ref)		ref->ptr=tmp;
 	else		this=tmp;
@@ -323,6 +330,7 @@ jwl_http_key __jwl_http_rqhd_scanner(unsigned char * YYCURSOR,unsigned char * YY
 		"Referer: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_REFERER;}
 		"Etag: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ETAG;}
 		"If-None-Match: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ETAG;}
+		"Range: bytes="					{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_RANGE_BYTES;}
      */
 	#undef YYCTYPE
 	#undef YYFILL
@@ -372,11 +380,12 @@ jwl_http_reqh* jwl_http_reqh_decode(jbl_string *buf,jbl_string_size_type *start)
 		jwl_http_key key=__jwl_http_rqhd_scanner(buf->s+i,buf->s+buf->len,&addr);
 		switch(key)
 		{
-			case JWL_HTTP_KEY_END				:goto finish;																															;break;
-			case JWL_HTTP_KEY_UA				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;--reqh->ua->len		;break;
-			case JWL_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->host	=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len		;break;
-			case JWL_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len	;break;
-			case JWL_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n';reqh->etag	=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len		;break;
+			case JWL_HTTP_KEY_END				:goto finish;																																						;break;
+			case JWL_HTTP_KEY_UA				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->ua		=jbl_string_add_char(reqh->ua		,buf->s[i]),++i)	;--reqh->ua->len		;break;
+			case JWL_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->host		=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len		;break;
+			case JWL_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len	;break;
+			case JWL_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->etag		=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len		;break;
+			case JWL_HTTP_KEY_RANGE_BYTES		:reqh->range.start=jbl_string_get_uint_start(buf,&i)				;reqh->range.end=jbl_string_get_uint_start(buf,&i);reqh->range.end?(reqh->range.end+=1):0		;break;//注意，range是闭区间，而jwl,jbl要求左闭右开区间
 			
 			case JWL_HTTP_KEY_COOKIE			:break;
 			case JWL_HTTP_KEY_ACCEPT			:break;
@@ -419,6 +428,7 @@ jwl_http_reqh* jwl_http_reqh_view_put(jwl_http_reqh* this,jbl_stream *out,jbl_ui
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"host         :");jbl_stream_push_string(out,thi->host)					;jbl_stream_push_char(out,'\n');	
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"referer      :");jbl_stream_push_string(out,thi->referer)				;jbl_stream_push_char(out,'\n');	
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"etag         :");jbl_stream_push_string(out,thi->etag)					;jbl_stream_push_char(out,'\n');	
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"range        :");jbl_stream_push_uint(out,thi->range.start)			;jbl_stream_push_char(out,'-' );	jbl_stream_push_uint(out,thi->range.end)			;jbl_stream_push_char(out,'\n');	
 	if(thi->v)jbl_ht_foreach(thi->v,i)
 	{
 		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);//格式化的\t

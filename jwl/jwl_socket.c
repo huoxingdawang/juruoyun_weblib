@@ -16,7 +16,10 @@
 	#include <netinet/in.h>
 	#include <arpa/inet.h>
 	#include <unistd.h>
+#include <signal.h>
 #endif
+#include <errno.h>
+
 //undefined reference to `__imp_WSAStartup'
 void jwl_socket_start()
 {
@@ -24,6 +27,9 @@ void jwl_socket_start()
 	WSADATA wsd;
 	if(WSAStartup(MAKEWORD(2,2),&wsd)!=0)
 		jbl_exception("DLL LOADING FAILED");
+#endif
+#ifdef __linux__
+	signal(SIGPIPE, SIG_IGN);
 #endif
 }
 inline jwl_socket * jwl_socket_new()
@@ -126,15 +132,6 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 	client->ip=claddr.sin_addr.s_addr;	
 	return client;
 }
-inline jwl_socket * jwl_socket_send(jwl_socket *this,jbl_string *data)
-{
-	if(!this)jbl_exception("NULL POINTER");
-	if(jwl_socket_is_host(this))jbl_exception("SEND FROM HOST SOCKET");	
-	if(data)
-		if(send(this->handle,(char*)jbl_string_get_chars(data),jbl_string_get_length(data),0)==-1)
-			jbl_log("SEND FAILED"),jbl_logstr(jbl_string_copy(data));
-	return this;
-}
 jbl_string * jwl_socket_receive(jwl_socket *this,jbl_string *data)
 {
 	if(!this)jbl_exception("NULL POINTER");	
@@ -215,33 +212,59 @@ jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 forma
 	jbl_stream_push_char(out,'\n');
 	return this;
 }
+jbl_stream *jwl_socket_stream_new(jwl_socket* socket)
+{
+	jbl_stream *this=jbl_stream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,2);
+	this->tmp[0].u=0;	//第0为表示当前接受的长度
+	this->tmp[1].u=-1;	//第1位表示当前要求总接收
+	return this;
+}
+#if JBL_VAR_ENABLE==1
+jbl_var *jwl_socket_Vstream_new(jwl_socket* socket)
+{
+	jbl_stream *this=(jbl_stream *)jbl_Vstream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,2);
+	this->tmp[0].u=0;	//第0为表示当前接受的长度
+	this->tmp[1].u=-1;	//第1位表示当前要求总接收
+	return (jbl_var *)this;
+}
+#endif
 void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 {
-/*
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream* nxt=jbl_refer_pull(this->nxt);
 	jwl_socket *sock=((jwl_socket*)this->data);
 	sock=jbl_refer_pull(sock);
+	if(sock->handle==-1)
+	{
+		this->en=0;
+		return jbl_log("SEND FAILED");
+	}
+	if(jwl_socket_is_host(sock))jbl_exception("SEND FROM HOST SOCKET");	
 	if(this->en)
-		if(send(sock->handle,(char*)this->buf,this->en,0)==-1)
-			jbl_exception("SEND FAILED");	
+	{
+	//TODO 处理错误
+		for(jbl_uint8 i=0;i<1&&send(sock->handle,(char*)this->buf,this->en,0)==-1;++i)
+		{
+			jbl_log("SEND FAILED"),sock->handle=-1;
+			break;
+		}
+	}
 	this->en=0;
 	if(nxt!=NULL)
 	{
-		ret=recv(this->handle,(char*)jbl_string_get_chars(data)+jbl_string_get_length(data),JWL_SOCKET_RECEIVE_BUF_LENGTH,0);
-		
-	}
-		while(this->tmpv<str->len)
+		while(this->tmp[0].u<this->tmp[1].u)
 		{
-			jbl_uint16 len=jbl_min((str->len-this->tmpv),(nxt->size-nxt->en));	
-			jbl_memory_copy(nxt->buf+nxt->en,str->s+this->tmpv,len);
-			this->tmpv+=len;
-			nxt->en+=len;
+			jbl_stream_buf_size_type len=jbl_min((this->tmp[1].u-this->tmp[0].u),(nxt->size-nxt->en));	
+			int j=recv(sock->handle,nxt->buf+nxt->en,len,0);
+			if(j==-1)
+				jbl_log("RECEIVE FAILED");
+			else
+				this->tmp[0].u+=j,nxt->en+=j;
 			jbl_stream_do(nxt,0);
 		}
-		jbl_stream_do(nxt,flags);
-*/
+		jbl_stream_do(nxt,flags);	
+	}
 }
 jbl_stream_operators_new(jwl_stream_socket_operators,jwl_socket_stream_operater,jwl_socket_free,NULL);
 
@@ -253,53 +276,6 @@ void jbl_string_update_stream_buf(jbl_stream* this)
 	jbl_string *str_=jbl_refer_pull(((jbl_string*)this->data));	
 	this->buf=str_->s+str_->len;
 }
-void jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
-{
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jbl_string    ",format,str,&tabs))return;
-	jbl_stream_push_chars(out,UC":size:");
-	jbl_stream_push_uint(out,this->size);
-	jbl_stream_push_chars(out,UC"\tlen:");
-	jbl_stream_push_uint(out,this->len);
-	jbl_stream_push_chars(out,UC"\ts:");
-	for(jbl_string_size_type i=0;i<this->len;jbl_stream_push_char(out,this->s[i]),++i);
-}
-void jbl_stream_push_string(jbl_stream *out,jbl_string* this)
-{
-	if(out==NULL)jbl_exception("NULL POINTER");
-	out=jbl_refer_pull(out);
-	this=jbl_refer_pull(this);
-	for(jbl_string_size_type i=0;i<this->len;++i)
-		jbl_stream_push_char_force(out,this->s[i]);
-}
-#if JBL_JSON_ENABLE==1
-void jbl_string_json_put(jbl_string* this,jbl_stream *out,char format,jbl_int32 tabs)
-{
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;
-	jbl_stream_push_char(out,'"');
-	for(jbl_string_size_type i=0;i<this->len;++i)
-	{
-		if(this->s[i]>31&&this->s[i]!='\"' &&this->s[i]!='\\')
-			jbl_stream_push_char(out,this->s[i]);
-		else
-		{
-			jbl_stream_push_char(out,'\\');
-			jbl_uint8 token;
-			switch(token=this->s[i])
-			{
-				case '\\':jbl_stream_push_char(out,'\\');	break;
-				case '\"':jbl_stream_push_char(out,'\"');	break;
-				case '\b':jbl_stream_push_char(out,'b');	break;
-				case '\f':jbl_stream_push_char(out,'f');	break;
-				case '\n':jbl_stream_push_char(out,'n');	break;
-				case '\r':jbl_stream_push_char(out,'r');	break;
-				case '\t':jbl_stream_push_char(out,'t');	break;
-				default  :jbl_stream_push_chars(out,UC"u00"),jbl_stream_push_hex_8bits(out,token);break;
-			}
-		}		
-	}
-	jbl_stream_push_char(out,'"');
-}
-#endif
 */
 #endif
 

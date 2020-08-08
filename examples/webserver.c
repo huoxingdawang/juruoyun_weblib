@@ -12,7 +12,7 @@ int main(int argc,char** argv)
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");pf();
 	jbl_string *ip=jbl_string_add_chars(NULL,UC((argc>1)?argv[1]:"0.0.0.0"));
 	jbl_string *port=jbl_string_add_chars(NULL,UC((argc>2)?argv[2]:"1217"));
-	sock=jwl_socket_bind(sock,jwl_get_binary_ip(ip),jbl_string_get_uint64(port));
+	sock=jwl_socket_bind(sock,jwl_get_binary_ip(ip),jbl_string_get_uint(port));
 	ip=jbl_string_free(ip);
 	port=jbl_string_free(port);	
 	jwl_socket_view(sock);pf();
@@ -24,12 +24,16 @@ int main(int argc,char** argv)
 		if(!client)continue;
 		puint(++count);pn();
 		jwl_socket_view(client);
+#ifdef _WIN32
 pl();
+#endif
 ///////////////////////////////////////////////////////////////////////
 //windows环境下，会卡在这里，导致ctrl+c关闭的时候，无法释放所有内存
 ///////////////////////////////////////////////////////////////////////
 		jbl_string *get=jwl_socket_receive(client,NULL);
+#ifdef _WIN32
 pl();
+#endif
 //		jbl_string_view(get);
 		jwl_http_reqh * reqh=jwl_http_reqh_decode(get,NULL);
 		get=jbl_string_free(get);
@@ -39,6 +43,7 @@ pl();
 		
 		jbl_string *	res	=NULL;							//输出缓冲
 		jwl_http_resh *	resh=jwl_http_resh_new();			//响应头
+		jbl_uint64		res_start=0,res_end=-1;
 		if(jbl_string_space_ship_chars(reqh->url,"/favicon.ico")==0)
 		{
 			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO));
@@ -69,7 +74,7 @@ pl();
 		}
 		else if(jbl_string_space_ship_chars(reqh->url,"/video")==0)
 		{
-			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_MP4));
+			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_WEBM));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
 			resh=jwl_http_resh_set_cache_max_age(resh,36000);
 			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"135"));
@@ -78,9 +83,22 @@ pl();
 			else
 			{
 				resh=jwl_http_resh_set_status		(resh,200);
-				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.mp4","rb"));fclose(fp);
-			}			
-		}		
+				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.webm","rb"));fclose(fp);
+				if(reqh->range.start!=0)
+				{
+					if(reqh->range.start>jbl_string_get_length(res)||reqh->range.end>jbl_string_get_length(res))
+						resh=jwl_http_resh_set_status		(resh,416),res=jbl_string_free(res);
+					else
+					{
+						resh=jwl_http_resh_set_status		(resh,206);
+						res_start=reqh->range.start;
+						res_end=reqh->range.start+jbl_min(409600,reqh->range.end-reqh->range.start);
+						jbl_min_update(res_end,jbl_string_get_length(res));
+						resh=jwl_http_resh_set_range		(resh,res_start,res_end);
+					}
+				}
+			}
+		}	
 		else /*if(jbl_string_space_ship_chars(reqh->url,"/")==0)*/
 		{
 			resh=jwl_http_resh_set_status		(resh,200);
@@ -88,7 +106,7 @@ pl();
 			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_HTML));
 			resh=jwl_http_resh_set_charset		(resh,JWL_HTTP_CHARSET_UTF8);
 			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"123123"));			
-			res=jbl_string_add_uint64(res,count);
+			res=jbl_string_add_uint(res,count);
 			res=jbl_string_add_chars(res,UC
 				"Hello world,Juruoyun!<br>蒟蒻云<br>"
 				"<a href=\"pic\">pic</a><br>"
@@ -97,11 +115,14 @@ pl();
 			);
 		}
 		
-		jwl_http_resh_view(resh);
+		jwl_http_resh_view(resh);pf();
 		
+		jbl_stream * client_stream=jwl_socket_stream_new(client);
+		jwl_http_resh_encode(client_stream,resh,jbl_string_get_length(res));
+		jbl_stream_push_string_start_end(client_stream,res,res_start,res_end);
+		jbl_stream_do(client_stream,1);
 		
-		jwl_http_send_res(client,resh,res);
-
+		client_stream=jbl_stream_free(client_stream);
 		reqh=jwl_http_reqh_free(reqh);
 		resh=jwl_http_resh_free(resh);
 		client=jwl_socket_free(client);

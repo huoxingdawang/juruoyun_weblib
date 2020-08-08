@@ -35,7 +35,6 @@ jwl_socket *	jwl_socket_bind			(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);
 jwl_socket *	jwl_socket_connect		(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);	//发起一个socket连接
 jwl_socket *	jwl_socket_close		(jwl_socket *this);									//关闭一个socket请求
 jwl_socket *	jwl_socket_accept		(jwl_socket *this);									//接受一个socket请求
-jwl_socket *	jwl_socket_send			(jwl_socket *this,jbl_string *data);				//发送
 jbl_string *	jwl_socket_receive		(jwl_socket *this,jbl_string *data);				//接收
 jwl_socket *	jwl_socket_send_safe	(jwl_socket *this,jbl_string *data);				//安全发送
 jbl_string *	jwl_socket_receive_safe	(jwl_socket *this,jbl_string *data);				//安全接收
@@ -51,7 +50,14 @@ jwl_socket*		jwl_socket_view_put				(jwl_socket* this,jbl_stream *out,jbl_uint8 
 
 
 extern			const jbl_stream_operater	jwl_stream_socket_operators;
-#define			jwl_stream_socket_new(x)	jbl_stream_new(&jwl_stream_socket_operators,x,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,0,NULL)	//新建sock加密流
+jbl_stream *	jwl_socket_stream_new		(jwl_socket* socket);
+
+
+#if JBL_VAR_ENABLE==1
+jbl_var *		jwl_socket_Vstream_new		(jwl_socket* socket);
+#endif
+
+
 
 #endif
 

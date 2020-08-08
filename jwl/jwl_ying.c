@@ -22,15 +22,15 @@ void jwl_stop()
 jbl_uint64 jwl_get_binary_ip(jbl_string *this)
 {
 	jbl_string_size_type i=0;
-	return (jbl_string_get_uint64_start(this,&i))+(jbl_string_get_uint64_start(this,&i)<<8)+(jbl_string_get_uint64_start(this,&i)<<16)+(jbl_string_get_uint64_start(this,&i)<<24);
+	return (jbl_string_get_uint_start(this,&i))+(jbl_string_get_uint_start(this,&i)<<8)+(jbl_string_get_uint_start(this,&i)<<16)+(jbl_string_get_uint_start(this,&i)<<24);
 }
 jbl_string * jwl_get_string_ip(jbl_uint64 ip,jbl_string *this)
 {
 	this=jbl_string_extend(this,15);
-	this=jbl_string_add_uint64(this,(ip&0XFF));this=jbl_string_add_char(this,'.');ip>>=8;
-	this=jbl_string_add_uint64(this,(ip&0XFF));this=jbl_string_add_char(this,'.');ip>>=8;
-	this=jbl_string_add_uint64(this,(ip&0XFF));this=jbl_string_add_char(this,'.');ip>>=8;
-	this=jbl_string_add_uint64(this,(ip&0XFF));
+	this=jbl_string_add_uint(this,(ip&0XFF));this=jbl_string_add_char(this,'.');ip>>=8;
+	this=jbl_string_add_uint(this,(ip&0XFF));this=jbl_string_add_char(this,'.');ip>>=8;
+	this=jbl_string_add_uint(this,(ip&0XFF));this=jbl_string_add_char(this,'.');ip>>=8;
+	this=jbl_string_add_uint(this,(ip&0XFF));
 	return this;
 }
 #endif

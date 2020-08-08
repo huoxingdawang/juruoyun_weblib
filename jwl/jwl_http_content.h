@@ -112,6 +112,7 @@
 #define JWL_HTTP_CONTENT_TYPE_DJVU		"image/vnd.djvu"
 #define JWL_HTTP_CONTENT_TYPE_DJV		"image/vnd.djvu"
 #define JWL_HTTP_CONTENT_TYPE_WBMP		"image/vnd.wap.wbmp"
+#define JWL_HTTP_CONTENT_TYPE_WEBM		"video/webm"
 #define JWL_HTTP_CONTENT_TYPE_RAS		"image/x-cmu-raster"
 #define JWL_HTTP_CONTENT_TYPE_PNM		"image/x-portable-anymap"
 #define JWL_HTTP_CONTENT_TYPE_PBM		"image/x-portable-bitmap"

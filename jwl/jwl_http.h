@@ -36,7 +36,10 @@ typedef struct __jwl_http_resh//response head 响应头
 	
 	jbl_string *	content_type;
 	jbl_string *	etag;
-	
+	struct{
+		jbl_uint64 start;
+		jbl_uint64 end;
+	}range;
 	
 	jbl_ht *		v;
 }jwl_http_resh;
@@ -49,6 +52,10 @@ typedef struct __jwl_http_reqh//request head 请求头
 	jbl_uint32		cache:2;
 	jbl_uint32		cache_max_age;
 	
+	struct{
+		jbl_uint64 start;
+		jbl_uint64 end;
+	}range;
 	
 	
 	jbl_string *	url;
@@ -74,6 +81,7 @@ typedef enum
 	JWL_HTTP_KEY_ACCEPT_ENCODING,
 	JWL_HTTP_KEY_ACCEPT_LANGUAGE,
 	JWL_HTTP_KEY_CACHE_CONTROL,
+	JWL_HTTP_KEY_RANGE_BYTES,
 }jwl_http_key;
 typedef enum
 {
@@ -94,8 +102,7 @@ jwl_http_resh *	jwl_http_resh_copy			(jwl_http_resh * this);
 jwl_http_resh *	jwl_http_resh_extend		(jwl_http_resh * this,jwl_http_resh **pthi);
 
 
-jbl_string *	jwl_http_resh_encode		(jbl_string *buf,jwl_http_resh *head,jbl_string_size_type size);
-jwl_socket *	jwl_http_send_res			(jwl_socket *sock,jwl_http_resh *head,jbl_string *data);
+void			jwl_http_resh_encode		(jbl_stream *stream,jwl_http_resh *head,jbl_string_size_type size);
 
 jwl_http_resh *	jwl_http_resh_set_status			(jwl_http_resh * this,jbl_uint16 status);
 jwl_http_resh *	jwl_http_resh_set_cache				(jwl_http_resh * this,jbl_uint16 cache);
@@ -103,6 +110,7 @@ jwl_http_resh *	jwl_http_resh_set_charset			(jwl_http_resh * this,jbl_uint16 cha
 jwl_http_resh *	jwl_http_resh_set_cache_max_age		(jwl_http_resh * this,jbl_uint32 cache_max_age);
 jwl_http_resh *	jwl_http_resh_set_content_type		(jwl_http_resh * this,jbl_string * content_type);
 jwl_http_resh *	jwl_http_resh_set_etag				(jwl_http_resh * this,jbl_string * etag);
+jwl_http_resh *	jwl_http_resh_set_range				(jwl_http_resh * this,jbl_uint64 start,jbl_uint64 end);
 //jwl_http_resh *	jwl_http_resh_set					(jwl_http_resh * this,jbl_string * k, jbl_var *v);
 /*******************************************************************************************/
 /*                            以下函实现响应头浏览操作                                   */

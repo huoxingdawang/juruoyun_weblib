@@ -20,7 +20,7 @@ int main(int argc,char** argv)
 		jbl_string *send=jbl_rand_string(NULL,1024*1024*512,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
 		jbl_time *t1=NULL,*t2=NULL;
 //		jbl_string_view(send);
-		sock=jwl_socket_connect(sock,jwl_get_binary_ip(ip),jbl_string_get_uint64(port));
+		sock=jwl_socket_connect(sock,jwl_get_binary_ip(ip),jbl_string_get_uint(port));
 		t1=jbl_time_now(t1);		
 		jwl_socket_send_safe(sock,send);
 		pchars("\nsend used time:");puint(jbl_time_minus((t2=jbl_time_now(t2)),t1));pchars("ms\n");		

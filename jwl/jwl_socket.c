@@ -256,7 +256,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 		while(this->tmp[0].u<this->tmp[1].u)
 		{
 			jbl_stream_buf_size_type len=jbl_min((this->tmp[1].u-this->tmp[0].u),(nxt->size-nxt->en));	
-			int j=recv(sock->handle,nxt->buf+nxt->en,len,0);
+			int j=recv(sock->handle,(char*)nxt->buf+nxt->en,len,0);
 			if(j==-1)
 				jbl_log("RECEIVE FAILED");
 			else

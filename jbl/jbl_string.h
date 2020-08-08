@@ -115,6 +115,7 @@ unsigned char			jbl_string_get							(jbl_string *this,jbl_string_size_type i);	
 jbl_int64				jbl_string_get_int_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个64位整数
 #define					jbl_string_get_uint(this)				jbl_string_get_uint_start(this,0)										//获取一个64位无符号整数
 jbl_uint64				jbl_string_get_uint_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个64位无符号整数
+jbl_uint64				jbl_string_get_uint_start_end			(jbl_string *this,jbl_string_size_type *start,unsigned char end);		//从start位置开始获取一个64位无符号整数
 #define					jbl_string_get_double(this)				jbl_string_get_double_start(this,0)										//获取一个浮点数
 double					jbl_string_get_double_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个浮点数
 #define					jbl_string_get_hex(this)				jbl_string_get_hex_start(this,0)										//获取一个16进制表示的64位无符号整数

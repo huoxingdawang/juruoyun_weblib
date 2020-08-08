@@ -385,6 +385,19 @@ jbl_uint64 jbl_string_get_uint_start(jbl_string *this,jbl_string_size_type *star
 	start?(*start=i):0;
 	return x;	
 }
+jbl_uint64 jbl_string_get_uint_start_end(jbl_string *this,jbl_string_size_type *start,unsigned char end)
+{
+	if(!this)jbl_exception("NULL POINTER");	
+	jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string_size_type i=start?(*start):0; 	
+	if(i>=thi->len)
+		return 0;
+	unsigned char c;jbl_uint64 x=0;
+	for(;((c=thi->s[i])<'0'||c>'9')&&i<thi->len&&c!=end;++i);
+	for(x=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&c!=end&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
+	start?(*start=i):0;
+	return x;	
+}
 double jbl_string_get_double_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	

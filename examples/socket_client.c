@@ -17,7 +17,7 @@ int main(int argc,char** argv)
 
 	for(int i=0;i<1;++i)
 	{
-		jbl_string *send=jbl_rand_string(NULL,1024*1024*512,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
+		jbl_string *send=jbl_rand_string(NULL,1024*1024,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
 		jbl_time *t1=NULL,*t2=NULL;
 //		jbl_string_view(send);
 		sock=jwl_socket_connect(sock,jwl_get_binary_ip(ip),jbl_string_get_uint(port));

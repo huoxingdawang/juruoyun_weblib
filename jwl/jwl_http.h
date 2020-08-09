@@ -36,6 +36,7 @@ typedef struct __jwl_http_resh//response head 响应头
 	
 	jbl_string *	content_type;
 	jbl_string *	etag;
+	jbl_string *	filename;
 	struct{
 		jbl_uint64 start;
 		jbl_uint64 end;
@@ -110,6 +111,7 @@ jwl_http_resh *	jwl_http_resh_set_charset			(jwl_http_resh * this,jbl_uint16 cha
 jwl_http_resh *	jwl_http_resh_set_cache_max_age		(jwl_http_resh * this,jbl_uint32 cache_max_age);
 jwl_http_resh *	jwl_http_resh_set_content_type		(jwl_http_resh * this,jbl_string * content_type);
 jwl_http_resh *	jwl_http_resh_set_etag				(jwl_http_resh * this,jbl_string * etag);
+jwl_http_resh *	jwl_http_resh_set_filename			(jwl_http_resh * this,jbl_string * filename);
 jwl_http_resh *	jwl_http_resh_set_range				(jwl_http_resh * this,jbl_uint64 start,jbl_uint64 end);
 //jwl_http_resh *	jwl_http_resh_set					(jwl_http_resh * this,jbl_string * k, jbl_var *v);
 /*******************************************************************************************/
@@ -134,29 +136,5 @@ jwl_http_reqh*			jwl_http_reqh_view_put				(jwl_http_reqh* this,jbl_stream *out,
 #endif
 
 
-
-/*
-
-#include <stdio.h>
-
-void 			jwl_http_response_head_init				(jwl_http_response_head *this);
-void 			jwl_http_response_head_free				(jwl_http_response_head *this);
-void 			jwl_http_response_head_clear				(jwl_http_response_head *this);
-void 			jwl_http_request_head_init				(jwl_http_request_head *this);
-void 			jwl_http_request_head_free				(jwl_http_request_head *this);
-void 			jwl_http_request_head_clear				(jwl_http_request_head *this);
-
-#define			jwl_http_response_head_const(s,ct)					{s,ct}
-#define			jwl_http_response_head_set_status(this,s)			(this)->status=(s)	
-#define			jwl_http_response_head_set_content_type(this,ct)		jbl_string_equal_chars_light(&(this)->content_type,(ct))
-#define			jwl_http_response_head_set_cache(this,a)				(this)->cache=(a)
-#define			jwl_http_response_head_set_max_age(this,a)			jwl_http_response_head_set_cache(this,JWL_HTTP_CACHE_MAX_AGE),(this)->cache_max_age=(a)
-#define			jwl_http_response_head_set_etag(this,et,cpt)			jbl_string_copy(&(this)->etag,(et),cpt)
-#define			jwl_http_response_head_set_etag_str(this,et)			jbl_string_equal_chars_light(&(this)->etag,(et))
-#define			jwl_http_response_head_set(this,a,b,c,d)				jbl_hash_table_insert((&(this)->v),a,b,c,d)
-#define			jwl_http_response_head_set_str(this,a,b,c,d,e)		jbl_hash_table_insert_str((&(this)->v),a,b,c,d,e)
-
-
-*/
 #endif
 #endif

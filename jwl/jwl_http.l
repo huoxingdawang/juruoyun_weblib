@@ -24,6 +24,7 @@ jwl_http_resh *jwl_http_resh_init(jwl_http_resh * this)
 	this->charset		=0;	
 	this->content_type	=NULL;
 	this->etag			=NULL;
+	this->filename		=NULL;
 	this->v				=NULL;
 	this->range.start	=0;
 	this->range.end		=0;
@@ -41,6 +42,7 @@ jwl_http_resh *jwl_http_resh_free(jwl_http_resh * this)
 		{
 			this->content_type	=jbl_string_free(this->content_type);
 			this->etag			=jbl_string_free(this->etag);
+			this->filename		=jbl_string_free(this->filename);
 			this->v				=jbl_ht_free	(this->v);
 		}
 		if(jbl_gc_is_var(this))//因为该功能依赖jbl_ht,jbl_ht强制依赖var所以不用宏判断
@@ -77,6 +79,7 @@ inline jwl_http_resh *jwl_http_resh_extend(jwl_http_resh * this,jwl_http_resh **
 	tmp->cache_max_age	=this->cache_max_age;
 	tmp->content_type	=jbl_string_copy(this->content_type);
 	tmp->etag			=jbl_string_copy(this->etag);
+	tmp->filename		=jbl_string_copy(this->filename);
 	tmp->v				=jbl_ht_copy(this->v);
 	tmp->range.start	=this->range.start;
 	tmp->range.end		=this->range.end;
@@ -99,6 +102,7 @@ void jwl_http_resh_encode(jbl_stream *stream,jwl_http_resh *head,jbl_string_size
 		case 200:	jbl_stream_push_chars(stream,UC" OK")				;break;
 		case 206:	jbl_stream_push_chars(stream,UC" Partial Content")	;break;
 		case 304:	jbl_stream_push_chars(stream,UC" Not Modified")		;break;
+		case 404:	jbl_stream_push_chars(stream,UC" Not Found")		;break;
 		case 416:	jbl_stream_push_chars(stream,UC" Range Not Satisfiable")		;break;
 	}
 	rn();
@@ -107,7 +111,7 @@ void jwl_http_resh_encode(jbl_stream *stream,jwl_http_resh *head,jbl_string_size
 	{
 		jbl_stream_push_chars(stream,UC"Content-Length: ")					,jbl_stream_push_uint(stream,(head->range.end?head->range.end:size)-head->range.start)	,rn();
 		//注意，range是闭区间，而jwl,jbl要求左闭右开区间
-		jbl_stream_push_chars(stream,UC"Content-Range: bytes ")				,jbl_stream_push_uint(stream,head->range.start)			,jbl_stream_push_char(stream,'-')	,jbl_stream_push_uint(stream,head->range.end-1)	,jbl_stream_push_char(stream,'/')	,jbl_stream_push_uint(stream,size)	,rn();
+		jbl_stream_push_chars(stream,UC"Content-Range: bytes ")				,jbl_stream_push_uint(stream,head->range.start)			,jbl_stream_push_char(stream,'-')	,jbl_stream_push_uint(stream,head->range.end?(head->range.end-1):0)	,jbl_stream_push_char(stream,'/')	,jbl_stream_push_uint(stream,size)	,rn();
 	}
 	else
 		jbl_stream_push_chars(stream,UC"Content-Length: ")					,jbl_stream_push_uint(stream,size)						,rn();
@@ -135,6 +139,13 @@ void jwl_http_resh_encode(jbl_stream *stream,jwl_http_resh *head,jbl_string_size
 	}
 	if(head->etag)
 		jbl_stream_push_chars(stream,UC"ETag: ")							,jbl_stream_push_string(stream,head->etag)				,rn();
+	if(head->filename)
+	{
+		jbl_stream_push_chars(stream,UC"Content-Disposition: attachment; filename=\"");
+		jbl_stream_push_string(stream,head->filename);
+		jbl_stream_push_char(stream,'"');
+		rn();
+	}
 	if(head->v)
 		jbl_ht_foreach(head->v,i)
 		{
@@ -161,6 +172,7 @@ jwl_http_resh * jwl_http_resh_set_cache_max_age		(jwl_http_resh * this,jbl_uint3
 jwl_http_resh * jwl_http_resh_set_content_type		(jwl_http_resh * this,jbl_string * content_type)		{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);jbl_string_free(thi->content_type);thi->content_type=(content_type);return this;}
 jwl_http_resh * jwl_http_resh_set_etag				(jwl_http_resh * this,jbl_string * etag)				{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);jbl_string_free(thi->etag);thi->etag=(etag);return this;}
 jwl_http_resh *	jwl_http_resh_set_range				(jwl_http_resh * this,jbl_uint64 start,jbl_uint64 end)	{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);thi->range.start=start;thi->range.end=end;return this;}
+jwl_http_resh * jwl_http_resh_set_filename			(jwl_http_resh * this,jbl_string * filename)			{jwl_http_resh *thi;this=jwl_http_resh_extend(this,&thi);jbl_string_free(thi->filename);thi->filename=(filename);return this;}
 //jwl_http_resh * jwl_http_resh_set					(jwl_http_resh * this,jbl_string * k, jbl_var *v);
 #if JBL_STREAM_ENABLE==1
 jwl_http_resh* jwl_http_resh_view_put(jwl_http_resh* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
@@ -170,6 +182,7 @@ jwl_http_resh* jwl_http_resh_view_put(jwl_http_resh* this,jbl_stream *out,jbl_ui
 	++tabs;
 	char *charset[]={"","UTF-8"};
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"status       :");jbl_stream_push_uint(out,thi->status)					;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"filename     :");jbl_stream_push_string(out,thi->filename)				;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"cache        :");jbl_stream_push_uint(out,thi->cache)					;jbl_stream_push_char(out,'\t');
 	if(thi->cache==JWL_HTTP_CACHE_MAX_AGE)
 		jbl_stream_push_chars(out,UC"(max-age,"),jbl_stream_push_uint(out,thi->cache_max_age)			,jbl_stream_push_chars(out,UC")\n");
@@ -384,7 +397,7 @@ jwl_http_reqh* jwl_http_reqh_decode(jbl_string *buf,jbl_string_size_type *start)
 			case JWL_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->host		=jbl_string_add_char(reqh->host		,buf->s[i]),++i)	;--reqh->host->len			;break;
 			case JWL_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->referer	=jbl_string_add_char(reqh->referer	,buf->s[i]),++i)	;--reqh->referer->len		;break;
 			case JWL_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;reqh->etag		=jbl_string_add_char(reqh->etag		,buf->s[i]),++i)	;--reqh->etag->len			;break;
-			case JWL_HTTP_KEY_RANGE_BYTES		:reqh->range.start=jbl_string_get_uint_start_end(buf,&i,'\r')		;reqh->range.end=jbl_string_get_uint_start_end(buf,&i,'-');reqh->range.end?(reqh->range.end+=1):0	;break;//注意，range是闭区间，而jwl,jbl要求左闭右开区间
+			case JWL_HTTP_KEY_RANGE_BYTES		:reqh->range.start=jbl_string_get_uint_start_end(buf,&i,'-')		;reqh->range.end=jbl_string_get_uint_start_end(buf,&i,'\r');reqh->range.end?(reqh->range.end+=1):0	;break;//注意，range是闭区间，而jwl,jbl要求左闭右开区间
 			
 			case JWL_HTTP_KEY_COOKIE			:break;
 			case JWL_HTTP_KEY_ACCEPT			:break;

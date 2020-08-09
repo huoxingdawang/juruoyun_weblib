@@ -50,7 +50,6 @@ pl();
 #endif
 //		jbl_string_view(get);
 		jwl_http_reqh * reqh=jwl_http_reqh_decode(get,NULL);
-		get=jbl_string_free(get);
 		jwl_http_reqh_view(reqh);	
 		
 		
@@ -60,10 +59,10 @@ pl();
 		jbl_uint64		res_start=0,res_end=-1;
 		if(jbl_string_space_ship_chars(reqh->url,"/favicon.ico")==0)
 		{
-			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO));
+			resh=jwl_http_resh_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO)));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
 			resh=jwl_http_resh_set_cache_max_age(resh,36000);
-			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"456"));
+			resh=jwl_http_resh_set_etag			(resh,jbl_gc_minus(jbl_string_cache_get(UC"456")));
 			if(jbl_string_space_ship_chars(reqh->etag,"456")==0)
 				resh=jwl_http_resh_set_status		(resh,304);				
 			else
@@ -74,10 +73,10 @@ pl();
 		}
 		else if(jbl_string_space_ship_chars(reqh->url,"/pic")==0)
 		{
-			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_PNG));
+			resh=jwl_http_resh_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_PNG)));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
 			resh=jwl_http_resh_set_cache_max_age(resh,36000);
-			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"789"));
+			resh=jwl_http_resh_set_etag			(resh,jbl_gc_minus(jbl_string_cache_get(UC"789")));
 			if(jbl_string_space_ship_chars(reqh->etag,"789")==0)
 				resh=jwl_http_resh_set_status		(resh,304);
 			else
@@ -86,22 +85,31 @@ pl();
 				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.png","rb"));fclose(fp);
 			}
 		}
-		else if(jbl_string_space_ship_chars(reqh->url,"/video")==0)
+		else if(jbl_string_space_ship_chars(reqh->url,"/download")==0)
 		{
-			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_WEBM));
+			resh=jwl_http_resh_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_TXT)));
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
 			resh=jwl_http_resh_set_cache_max_age(resh,36000);
-			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"135"));
+			resh=jwl_http_resh_set_status		(resh,200);
+			resh=jwl_http_resh_set_filename		(resh,jbl_gc_minus(jbl_string_cache_get("download.txt")));
+			res =jbl_rand_string				(NULL,1024*1024*10,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
+		}
+		else if(jbl_string_space_ship_chars(reqh->url,"/video")==0)
+		{
+			resh=jwl_http_resh_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_MP4)));
+			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
+			resh=jwl_http_resh_set_cache_max_age(resh,36000);
+			resh=jwl_http_resh_set_etag			(resh,jbl_gc_minus(jbl_string_cache_get(UC"135")));
 			if(jbl_string_space_ship_chars(reqh->etag,"135")==0)
 				resh=jwl_http_resh_set_status		(resh,304);
 			else
 			{
 				resh=jwl_http_resh_set_status		(resh,200);
-				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.webm","rb"));fclose(fp);
+				FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.mp4","rb"));fclose(fp);
 				if(reqh->range.start!=0)
 				{
 					if(reqh->range.start>jbl_string_get_length(res)||reqh->range.end>jbl_string_get_length(res))
-						resh=jwl_http_resh_set_status		(resh,416),res=jbl_string_free(res);
+						resh=jwl_http_resh_set_status		(resh,416),res=jbl_string_free(res),jbl_string_view(get);
 					else
 					{
 						resh=jwl_http_resh_set_status		(resh,206);
@@ -113,27 +121,50 @@ pl();
 				}
 			}
 		}	
-		else /*if(jbl_string_space_ship_chars(reqh->url,"/")==0)*/
+		else if(jbl_string_space_ship_chars(reqh->url,"/")==0)
 		{
 			resh=jwl_http_resh_set_status		(resh,200);
 			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_NO);
-			resh=jwl_http_resh_set_content_type	(resh,jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_HTML));
+			resh=jwl_http_resh_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_HTML)));
 			resh=jwl_http_resh_set_charset		(resh,JWL_HTTP_CHARSET_UTF8);
-			resh=jwl_http_resh_set_etag			(resh,jbl_string_cache_get(UC"123123"));			
+			resh=jwl_http_resh_set_etag			(resh,jbl_gc_minus(jbl_string_cache_get(UC"123123")));			
 			res=jbl_string_add_uint(res,count);
 			res=jbl_string_add_chars(res,UC
 				"Hello world,Juruoyun!<br>蒟蒻云<br>"
 				"<a href=\"pic\">pic</a><br>"
 				"<a href=\"video\">video</a><br>"
+				"<a href=\"download\">download</a><br>"
 				"注意F5或刷新按钮会导致缓存失败，退化为304<br>"
 			);
 		}
-		
+		else
+		{
+			resh=jwl_http_resh_set_status		(resh,404);
+			resh=jwl_http_resh_set_cache		(resh,JWL_HTTP_CACHE_NO);
+			resh=jwl_http_resh_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_HTML)));
+			resh=jwl_http_resh_set_charset		(resh,JWL_HTTP_CHARSET_UTF8);
+			resh=jwl_http_resh_set_etag			(resh,jbl_gc_minus(jbl_string_cache_get(UC"123123")));			
+			res=jbl_string_add_uint(res,count);
+			res=jbl_string_add_chars(res,UC
+				"<body bgcolor='#000' style='background-color:#000;'>"
+				"<div style='font-size:200px; color:#F00;background-color:#000;' align='center'>WARNING!<br></div>"
+				"<div style='font-size:50px; color:#F00;background-color:#000;' align='center'>You are trying to get something that we don't have.<br>Please stop now!<br>(╯°Д°)╯︵ ┻━┻</div>"
+				"<div style='font-size:25px; color:#F00;background-color:#000;' align='center'>If you sure that the URL:"
+			);
+			res=jbl_string_add_chars(res,UC"http://");
+			res=jbl_string_add_string(res,reqh->host);
+			res=jbl_string_add_string(res,reqh->url);			
+			res=jbl_string_add_chars(res,UC
+				" is right,send an email to develop group.<br>"
+				"<a href='/'>Click here to back</a><br><span style='color:white;'></a></div></body>"
+			);
+		}
 		jwl_http_resh_view(resh);pf();
 		jwl_http_resh_encode(client_stream,resh,jbl_string_get_length(res));
 		jbl_stream_push_string_start_end(client_stream,res,res_start,res_end);
-		jbl_stream_do(client_stream,1);
+		jbl_stream_do(client_stream,1);		
 		
+		get=jbl_string_free(get);		
 		client_stream=jbl_stream_free(client_stream);
 		reqh=jwl_http_reqh_free(reqh);
 		resh=jwl_http_resh_free(resh);

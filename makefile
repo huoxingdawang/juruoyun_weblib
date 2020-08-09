@@ -129,13 +129,15 @@ ifeq ($(findstring jbl,$(complain_re2c)),jbl)
 	re2c -o jbl$(H)jbl_time.c jbl$(H)jbl_time.l
 endif
 endif
-# ifeq ($(system),macos)
-# ifeq ($(findstring jbl,$(complain_re2c)),jbl)
-# endif
-# endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_time.o       jbl$(H)jbl_time.c        $(JBL_EXLIB)
 jbl/jbl_var            :
+ifeq ($(system),linux)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_var.c jbl$(H)jbl_var.l
+endif
+endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_var.o        jbl$(H)jbl_var.c         $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_var_data.o   jbl$(H)jbl_var_data.c    $(JBL_EXLIB)
 jbl/jbl_ying           :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_ying.o       jbl$(H)jbl_ying.c        $(JBL_EXLIB)
 #   Copyright (c) [2019] juruoyun developer team

@@ -10,17 +10,30 @@
 #include "jbl_log.h"
 #if JBL_LOG_ENABLE==1
 #include "jbl_stream.h"
+#include "jbl_var.h"
+#include "jbl_string.h"
+#include <stdarg.h>
 jbl_uint32 __jbl_logs_cnt;
+jbl_uint32 __jbl_log_parameter_cnt;
 jbl_uint8 __jbl_logs_start;
-jbl_log_struct jbl_logs[JBL_LOG_MAX_LENGTH];
+jbl_log_struct __jbl_logs[JBL_LOG_MAX_LENGTH];
+jbl_log_parameter_struct __jbl_log_parameter[JBL_LOG_MAX_LENGTH*4];
+
+
+
+
+
+
+
 void jbl_log_start()
 {
 	__jbl_logs_cnt=0;
 	__jbl_logs_start=1;
+	__jbl_log_parameter_cnt=0;
 	fclose(fopen(JBL_LOG_DIR,"wb"));
 #if JBL_TIME_ENABLE==1
 	for(jbl_uint32 i=0;i<JBL_LOG_MAX_LENGTH;++i)
-		jbl_time_init(&jbl_logs[i].t);
+		jbl_time_init(&__jbl_logs[i].t);
 #endif	
 }
 void jbl_log_stop()
@@ -28,19 +41,42 @@ void jbl_log_stop()
 	jbl_log_save();	
 }
 
-void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,jbl_uint8 type,void *s)
+void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigned char *s,...)
 {
 	if(!__jbl_logs_start)return;
-	jbl_logs[__jbl_logs_cnt].file=file;
-	jbl_logs[__jbl_logs_cnt].func=func;
-	jbl_logs[__jbl_logs_cnt].line=line;
-	jbl_logs[__jbl_logs_cnt].type=type;
-	jbl_logs[__jbl_logs_cnt].s=s;
+	__jbl_logs[__jbl_logs_cnt].file=file;
+	__jbl_logs[__jbl_logs_cnt].func=func;
+	__jbl_logs[__jbl_logs_cnt].line=line;
+	__jbl_logs[__jbl_logs_cnt].chars=s;
+	va_list arg_ptr;
+	va_start(arg_ptr,s);
+	for(jbl_string_size_type i=0,len=jbl_strlen(s);i<len;++i)
+	{
+		unsigned char * addr;
+		const jbl_var_operators *key=jbl_var_scanner(s+i,s+len,&addr);
+		i=addr-s-1;
+		switch((jbl_pointer_int)key)
+		{
+			case JBL_VAR_SCANNER_KEY_UNDEFINED				:							;break;
+			case JBL_VAR_SCANNER_KEY_END					:goto finish;				;break;
+			case JBL_VAR_SCANNER_KEY_INT					:__jbl_log_parameter[__jbl_log_parameter_cnt].i=va_arg(arg_ptr,jbl_int64)	;++__jbl_log_parameter_cnt	;break;
+			case JBL_VAR_SCANNER_KEY_UINT					:__jbl_log_parameter[__jbl_log_parameter_cnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_log_parameter_cnt	;break;
+			case JBL_VAR_SCANNER_KEY_DOUBLE					:__jbl_log_parameter[__jbl_log_parameter_cnt].d=va_arg(arg_ptr,double)		;++__jbl_log_parameter_cnt	;break;
+			case JBL_VAR_SCANNER_KEY_CHAR					:__jbl_log_parameter[__jbl_log_parameter_cnt].c=va_arg(arg_ptr,int)			;++__jbl_log_parameter_cnt	;break;//类型提升
+			case JBL_VAR_SCANNER_KEY_CHARS					:__jbl_log_parameter[__jbl_log_parameter_cnt].s=va_arg(arg_ptr,char *)		;++__jbl_log_parameter_cnt	;break;
+			case JBL_VAR_SCANNER_KEY_HEX					:__jbl_log_parameter[__jbl_log_parameter_cnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_log_parameter_cnt	;break;
+			default											:__jbl_log_parameter[__jbl_log_parameter_cnt].p=va_arg(arg_ptr,void *)		;++__jbl_log_parameter_cnt	;break;
+		}
+	}
+	finish:;
+	va_end(arg_ptr); 
 #if JBL_TIME_ENABLE==1
-	jbl_time_now(&jbl_logs[__jbl_logs_cnt].t);
+	jbl_time_now(&__jbl_logs[__jbl_logs_cnt].t);
 #endif	
 	++__jbl_logs_cnt;
 	if((__jbl_logs_cnt+10)>=JBL_LOG_MAX_LENGTH)
+		jbl_log_save();
+	else if((__jbl_log_parameter_cnt+40)>=JBL_LOG_MAX_LENGTH*4)
 		jbl_log_save();
 }
 #include <stdio.h>
@@ -48,14 +84,14 @@ void jbl_log_save()
 {
 	if((__jbl_logs_start&0x02))return;
 	__jbl_logs_start|=0x02;
-	jbl_log("Saving logs");
+	jbl_log(UC "Saving logs");
 #if JBL_STREAM_ENABLE==1
 	jbl_stream*out=jbl_stream_new(&jbl_stream_file_operators,fopen(JBL_LOG_DIR,"ab"),8192-jbl_stream_caculate_size(0),NULL,0);	
 	for(jbl_uint32 i=0;i<__jbl_logs_cnt;++i)
 	{
 #if JBL_TIME_ENABLE==1
 		jbl_time_decoded tt;
-		jbl_time_decode(&jbl_logs[i].t,&tt);
+		jbl_time_decode(&__jbl_logs[i].t,&tt);
 		jbl_stream_push_char(out,'[');
 		jbl_stream_push_uint(out,tt.year)	;jbl_stream_push_char(out,'-');
 		jbl_stream_push_uint(out,tt.month)	;jbl_stream_push_char(out,'-');
@@ -66,15 +102,32 @@ void jbl_log_save()
 		jbl_stream_push_uint(out,tt.ms)		;jbl_stream_push_char(out,']');
 		jbl_stream_push_char(out,'\t');
 #endif	
-		jbl_stream_push_chars(out,UC "At:"  );jbl_stream_push_chars(out,UC jbl_logs[i].file);jbl_stream_push_char(out,'\t');
-		jbl_stream_push_chars(out,UC "Line:");jbl_stream_push_uint (out,   jbl_logs[i].line);jbl_stream_push_char(out,'\t');
-		jbl_stream_push_chars(out,UC "Func:");jbl_stream_push_chars(out,UC jbl_logs[i].func);jbl_stream_push_char(out,'\t');
-#if JBL_STRING_ENABLE==1
-		if(jbl_logs[i].type)
-			jbl_stream_push_string(out,jbl_logs[i].s),jbl_logs[i].s=jbl_string_free(jbl_logs[i].s);
-		else
-#endif	
-			jbl_stream_push_chars(out,UC jbl_logs[i].chars);
+		jbl_stream_push_chars(out,UC "At:"  );jbl_stream_push_chars(out,UC __jbl_logs[i].file);jbl_stream_push_char(out,'\t');
+		jbl_stream_push_chars(out,UC "Line:");jbl_stream_push_uint (out,   __jbl_logs[i].line);jbl_stream_push_char(out,'\t');
+		jbl_stream_push_chars(out,UC "Func:");jbl_stream_push_chars(out,UC __jbl_logs[i].func);jbl_stream_push_char(out,'\t');
+		
+		jbl_uint32 j=0;
+		for(jbl_string_size_type k=0,len=jbl_strlen(__jbl_logs[i].chars);k<len;++k)
+		{
+			unsigned char * addr;		
+			const jbl_var_operators *key=jbl_var_scanner(__jbl_logs[i].chars+k,__jbl_logs[i].chars+len,&addr);
+			k=addr-__jbl_logs[i].chars-1;
+			switch((jbl_pointer_int)key)
+			{
+				case JBL_VAR_SCANNER_KEY_UNDEFINED				:jbl_stream_push_char(out,__jbl_logs[i].chars[k])						;break;
+				case JBL_VAR_SCANNER_KEY_END					:goto finish															;break;
+				case JBL_VAR_SCANNER_KEY_INT					:jbl_stream_push_int(out,__jbl_log_parameter[j].i)				;++j	;break;
+				case JBL_VAR_SCANNER_KEY_UINT					:jbl_stream_push_uint(out,__jbl_log_parameter[j].u)				;++j	;break;
+				case JBL_VAR_SCANNER_KEY_DOUBLE					:jbl_stream_push_double(out,__jbl_log_parameter[j].d)			;++j	;break;
+				case JBL_VAR_SCANNER_KEY_CHAR					:jbl_stream_push_char(out,__jbl_log_parameter[j].c)				;++j	;break;
+				case JBL_VAR_SCANNER_KEY_CHARS					:jbl_stream_push_chars(out,UC __jbl_log_parameter[j].s)			;++j	;break;
+				case JBL_VAR_SCANNER_KEY_HEX					:jbl_stream_push_hex(out,__jbl_log_parameter[j].u)				;++j	;break;
+				default											:if(((const jbl_var_operators *)key)->view_put)((const jbl_var_operators *)key)->view_put(__jbl_log_parameter[j].p,out,1,0,0,NULL,NULL,NULL)	;++j;	;break;
+			}
+		}
+		finish:;
+		
+		
 		jbl_stream_push_char(out,'\n');
 	}
 	jbl_stream_do(out,jbl_stream_force);	
@@ -82,6 +135,7 @@ void jbl_log_save()
 #endif	
 	__jbl_logs_start&=(~0x02);
 	__jbl_logs_cnt=0;
+	__jbl_log_parameter_cnt=0;
 }
 
 #endif

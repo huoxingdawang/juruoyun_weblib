@@ -19,24 +19,25 @@ typedef struct __jbl_log_struct
 	const char * file;
 	const char * func;
 	jbl_uint32 line;
-	jbl_uint8 type;
 #if JBL_TIME_ENABLE==1
 	jbl_time t;
 #endif
-	union
-	{	
-#if JBL_STRING_ENABLE==1
-		jbl_string *s;
-#endif
-		char * chars;
-	};
+	unsigned char * chars;
 }jbl_log_struct;
+typedef union __jbl_log_parameter_struct
+{
+	jbl_uint64 u;
+	jbl_uint32 i;
+	double d;
+	char c;
+	char* s;
+	void *p;
+}jbl_log_parameter_struct;
 void	jbl_log_start	();
 void	jbl_log_stop	();
 void	jbl_log_save	();
-void	jbl_log_add_log	(const char * file,const char * func,jbl_uint32 line,jbl_uint8 type,void *s);
-#define	jbl_log(s)		jbl_log_add_log(__FILE__,__FUNCTION__,__LINE__,0,s)
-#define	jbl_logstr(s)	jbl_log_add_log(__FILE__,__FUNCTION__,__LINE__,1,s)
+void	jbl_log_add_log	(const char * file,const char * func,jbl_uint32 line,unsigned char *s,...);
+#define	jbl_log(s,...)		jbl_log_add_log(__FILE__,__FUNCTION__,__LINE__,s,## __VA_ARGS__)
 
 
 

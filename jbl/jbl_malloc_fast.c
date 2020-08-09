@@ -15,6 +15,7 @@
 #include "jbl_ying.h"
 #include "jbl_bitset.h"
 #include "jbl_exception.h"
+#include "jbl_log.h"
 /*******************************************************************************************/
 /*                            联动 jbl_stream                                               */
 /*******************************************************************************************/
@@ -113,7 +114,7 @@ void*					__jbl_malloc_small			(jbl_uint16 size);							//该函数  会操作si
 void					__jbl_free_small			(void* ptr);								//该函数  会操作size              但不会操作applied_size
 void					__jbl_free_smalls			();											//该函数不会操作size和applied_size
 void*					__jbl_malloc_huge			(jbl_malloc_size_type size);				//该函数  会操作size和applied_size
-void					__jbl_free_huge				(void* ptr);								//该函数  会操作size和applied_size
+jbl_uint8				__jbl_free_huge				(void* ptr);								//该函数  会操作size和applied_size
 #define					is_aligned_2M(ptr)			((((jbl_malloc_size_type)(ptr))&0X1fffff)==0)
 #define					aligned_to_2M(ptr)			((void*)(((jbl_malloc_size_type)(ptr))&(~0X1fffff)))
 #define					is_aligned_4K(ptr)			((((jbl_malloc_size_type)(ptr))&(0XFFF))==0)
@@ -258,7 +259,8 @@ void jbl_free(void * ptr)
 	if(!is_aligned_4K(ptr))//没有4k，small
 		return __jbl_free_small(ptr);
 	if(is_aligned_2M(ptr))//按照2M对齐，因为large的第一个page被用于管理自身，所以一定不会用这个函数释放
-		return __jbl_free_huge(ptr);
+		if(__jbl_free_huge(ptr))
+			return;
 	void *page=aligned_to_4K(ptr);
 	jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);
 	jbl_uint16 i=get_page_i(page,chunk);
@@ -543,9 +545,9 @@ void __jbl_free_smalls()
 		}
 		for(jbl_malloc_free_slot *ptr=jbl_malloc_heap.slot[type].next;ptr;ptr=ptr->next)			//这些small没释放，充值father page的计数
 		{
-			void *page=aligned_to_4K(ptr);								//计算page地址
-			jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);		//计算chunk地址
-			jbl_uint16 i=get_page_i(page,chunk);							//计算page编号
+			void *page=aligned_to_4K(ptr);															//计算page地址
+			jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);										//计算chunk地址
+			jbl_uint16 i=get_page_i(page,chunk);													//计算page编号
 			jbl_uint16 fi=i-(jbl_uint32)((chunk->map[i]>>10)&0X1FF);								//计算father page编号
 			chunk->map[fi]=0X20000000|type;															//重置
 		}
@@ -567,7 +569,7 @@ void *__jbl_malloc_huge(jbl_malloc_size_type size)
 	return this->ptr;
 }
 //释放一段huge内存
-void __jbl_free_huge(void* ptr)
+jbl_uint8 __jbl_free_huge(void* ptr)
 {
 	for(jbl_malloc_huge_struct *huge=jbl_malloc_heap.huge_list,*pre=NULL;huge;pre=huge,huge=huge->next)//查找整个链表
 		if(ptr==huge->ptr)//找到
@@ -579,9 +581,10 @@ void __jbl_free_huge(void* ptr)
 			jbl_malloc_heap.applied_size-=huge->size;		//更新内存占用
 			jbl_malloc_heap.size-=huge->size;				//更新内存申请
 			__jbl_free_small(huge);							//释放huge链表头
-			return;
+			return true;
 		}
-	jbl_exception("MEMORY ERROR");
+	jbl_log(UC "HUGE ERROR");
+	return false;
 }
 #endif
 

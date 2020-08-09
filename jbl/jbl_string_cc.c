@@ -141,7 +141,7 @@ jbl_uint16 __jbl_string_utg(jbl_uint16 chr)//unicode to gb2312
 		else									hi=i;
 	}
 #if JBL_STRING_CODE_CHANGE_DEBUG==1
-	jbl_logstr(jbl_string_add_hex(jbl_string_add_chars(NULL,UC "uni:\t0x"),chr));
+	jbl_log(UC"Unknow unicode 0X%X",(jbl_uint64)chr);
 #endif
 	return 0;
 }
@@ -157,7 +157,7 @@ jbl_uint16 __jbl_string_gtu(jbl_uint16 chr)//gb2312 to utf8
 		else												hi=i;
 	}
 #if JBL_STRING_CODE_CHANGE_DEBUG==1	
-	jbl_logstr(jbl_string_add_hex(jbl_string_add_chars(NULL,UC "gb:\t0x"),chr));
+	jbl_log(UC"Unknow unicode 0X%X",(jbl_uint64)chr);
 #endif
 	return 0;
 }

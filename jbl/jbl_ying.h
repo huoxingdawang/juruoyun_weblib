@@ -33,19 +33,9 @@ typedef unsigned long long	jbl_uint64;
 
 #define UC	(unsigned char *)
 
-#define JBL_PRINT_COLORFUL_BLACK		0
-#define JBL_PRINT_COLORFUL_RED			1
-#define JBL_PRINT_COLORFUL_LIGHT_GREEN	2
-#define JBL_PRINT_COLORFUL_YELLOW		3
-#define JBL_PRINT_COLORFUL_PURPLE		4
-#define JBL_PRINT_COLORFUL_GREEN		5
-#define JBL_PRINT_COLORFUL_WHITE		6
-
-#ifdef __linux__
-	#define jbl_print_colorful(f,s,bc,fc) fprintf(f,"\x1b[%d;%dm%s\x1b[0m",bc+40,fc+30,s)
+#ifdef __x86_64__
 	typedef jbl_uint64 jbl_pointer_int;
 #else
-	#define jbl_print_colorful(f,s,bc,fc) fprintf(f,s)
 	typedef jbl_uint32 jbl_pointer_int;
 #endif
 

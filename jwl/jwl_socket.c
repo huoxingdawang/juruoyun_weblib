@@ -16,7 +16,7 @@
 	#include <netinet/in.h>
 	#include <arpa/inet.h>
 	#include <unistd.h>
-#include <signal.h>
+	#include <signal.h>
 #endif
 #include <errno.h>
 
@@ -92,7 +92,7 @@ jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)
 	skaddr.sin_port=htons(port);
 	skaddr.sin_addr.s_addr=ip;
 	if(connect(this->handle,(struct sockaddr*)&skaddr,sizeof(skaddr))==-1)
-		this=jwl_socket_close(this),jbl_log("CONNECT FAILED");
+		this=jwl_socket_close(this),jbl_log(UC "CONNECT FAILED");
 	this->port=port;
 	this->ip=ip;
 	return this;
@@ -123,7 +123,7 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 #endif	
 	if((handle=accept(this->handle,(struct sockaddr*)&claddr,&length))==-1)
 	{
-		jbl_log("ACCEPT FAILED");
+		jbl_log(UC "ACCEPT FAILED");
 		return NULL;
 	}
 	jwl_socket *client=jwl_socket_new();
@@ -132,19 +132,7 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 	client->ip=claddr.sin_addr.s_addr;	
 	return client;
 }
-jbl_string * jwl_socket_receive(jwl_socket *this,jbl_string *data)
-{
-	if(!this)jbl_exception("NULL POINTER");	
-	if(jwl_socket_is_host(this))jbl_exception("RECEIVE FROM HOST SOCKET");		
-    int ret=0;
-	do
-	{
-		data=jbl_string_extend(data,JWL_SOCKET_RECEIVE_BUF_LENGTH);
-		ret=recv(this->handle,(char*)jbl_string_get_chars(data)+jbl_string_get_length(data),JWL_SOCKET_RECEIVE_BUF_LENGTH,0);
-		jbl_string_set_length(data,jbl_string_get_length(data)+ret);
-	}while(ret==JWL_SOCKET_RECEIVE_BUF_LENGTH);
-	return data;
-}
+//TODO 考虑移除
 jwl_socket * jwl_socket_send_safe(jwl_socket *this,jbl_string *data)
 {
 	if(!this)jbl_exception("NULL POINTER");
@@ -155,7 +143,7 @@ jwl_socket * jwl_socket_send_safe(jwl_socket *this,jbl_string *data)
 	jbl_memory_copy(buf,&n,sizeof n);
 	if((send(this->handle,buf,16,0)==-1)||
 	    send(this->handle,(char*)jbl_string_get_chars(data),jbl_string_get_length(data),0)==-1)
-		jbl_log("SEND FAILED"),jbl_logstr(jbl_string_copy(data));
+		jbl_log(UC "SEND FAILED");
 	return this;
 }
 jbl_string * jwl_socket_receive_safe(jwl_socket *this,jbl_string *data)
@@ -239,18 +227,17 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	jbl_stream* nxt=jbl_refer_pull(this->nxt);
 	jwl_socket *socket=((jwl_socket*)this->data);
 	socket=jbl_refer_pull(socket);
-	if(socket->handle==-1)
-	{
-		this->en=0;
-		return jbl_log("SEND FAILED");
-	}
 	if(this->en)
 	{
-		//TODO 处理错误
-		for(jbl_uint8 i=0;i<1&&send(socket->handle,(char*)this->buf,this->en,0)==-1;++i)
+		for(jbl_uint8 i=0;i<1&&socket->handle!=-1&&send(socket->handle,(char*)this->buf,this->en,0)==-1;++i)
 		{
-			jbl_log("SEND FAILED"),socket->handle=-1;
-			break;
+			if((errno!=EINTR&&errno!=EWOULDBLOCK&&errno!=EAGAIN))
+			{
+				jbl_log(UC "Send failed\terrno:%d",errno);
+				socket->handle=-1;
+				break;
+			}
+			jbl_log(UC "Send failed\terrno:%d retrying %d",errno,i);
 		}
 		this->en=0;
 	}
@@ -258,14 +245,18 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	{
 		if(nxt)
 		{
-			while(this->tmp[0].u<this->tmp[1].u)
+			while(this->tmp[0].u<this->tmp[1].u&&socket->handle!=-1)
 			{
-				jbl_stream_buf_size_type len=jbl_min((this->tmp[1].u-this->tmp[0].u),(nxt->size-nxt->en));	
-				int j=recv(socket->handle,(char*)nxt->buf+nxt->en,len,0);
-				if(j==-1)
-					jbl_log("RECEIVE FAILED");
-				else
-					this->tmp[0].u+=j,nxt->en+=j;
+				jbl_stream_buf_size_type len=jbl_min((this->tmp[1].u-this->tmp[0].u),(nxt->size-nxt->en));
+				int j;
+				for(jbl_uint8 i=0;i<10&&(j=recv(socket->handle,(char*)nxt->buf+nxt->en,len,0))==-1;++i,jbl_log(UC "Receive failed\terrno:%d retrying %d",errno,i))
+					if((errno!=EINTR&&errno!=EWOULDBLOCK&&errno!=EAGAIN))
+					{
+						jbl_log(UC "Receive failed\terrno:%d",errno);
+						socket->handle=-1;
+						return;
+					}				
+				this->tmp[0].u+=j,nxt->en+=j;
 				jbl_stream_do(nxt,0);
 				if(j!=len)
 					break;
@@ -276,15 +267,10 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 }
 jbl_stream_operators_new(jwl_stream_socket_operators,jwl_socket_stream_operater,jwl_socket_free,NULL);
 
-/*
-void jbl_string_update_stream_buf(jbl_stream* this)
-{
-	this=jbl_refer_pull(this);	
-	this->data=jbl_string_extend_to((jbl_string*)this->data,0);
-	jbl_string *str_=jbl_refer_pull(((jbl_string*)this->data));	
-	this->buf=str_->s+str_->len;
-}
-*/
+
+
+//连接池
+
 #endif
 
 

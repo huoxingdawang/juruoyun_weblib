@@ -52,7 +52,7 @@ jwl_socket * jwl_socket_free(jwl_socket *this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		(jbl_gc_is_ref(this))?jwl_socket_free((jwl_socket *)jbl_refer_pull(this)):jwl_socket_close(this);
+		(jbl_gc_is_ref(this))?jwl_socket_free((jwl_socket*)(((jbl_reference*)this)->ptr)):jwl_socket_close(this);
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));
@@ -181,7 +181,7 @@ void jwl_socket_receive_length(jbl_socket_handle *this,jbl_string *data,jbl_stri
 #if JBL_STREAM_ENABLE==1
 jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jwl_socket* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jwl_socket",line,varname,func,file))return this;
+	jwl_socket* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jwl_socket",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	if(thi->handle==-1)
 		jbl_stream_push_chars(out,UC" disconnected");
 	else

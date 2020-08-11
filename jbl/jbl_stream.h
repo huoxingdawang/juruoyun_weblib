@@ -60,13 +60,14 @@ void			jbl_stream_do						(jbl_stream* this,jbl_uint8 flag);
 		
 #define 		jbl_stream_force					B0000_0001
 
-jbl_stream *	jbl_stream_push_char				(jbl_stream* this,unsigned char c);
-jbl_stream *	jbl_stream_push_chars				(jbl_stream* this,const unsigned char *str);
-jbl_stream *	jbl_stream_push_uint				(jbl_stream* this,jbl_uint64 in);
-jbl_stream *	jbl_stream_push_int					(jbl_stream* this,jbl_int64 in);
-jbl_stream *	jbl_stream_push_double				(jbl_stream* this,double in);
-jbl_stream *	jbl_stream_push_hex					(jbl_stream *this,jbl_uint64 in);
-jbl_stream *	jbl_stream_push_hex_8bits			(jbl_stream *this,jbl_uint8 in);
+void			jbl_stream_push_char				(jbl_stream * this,unsigned char c);
+void			jbl_stream_push_chars				(jbl_stream * this,const unsigned char *str);
+#define			jbl_stream_push_uint(this,in)		jbl_stream_push_uint_length(this,in,0,0)
+void			jbl_stream_push_uint_length			(jbl_stream * this,jbl_uint64 in,jbl_uint8 len,char c);
+void			jbl_stream_push_int					(jbl_stream * this,jbl_int64 in);
+void			jbl_stream_push_double				(jbl_stream * this,double in);
+void			jbl_stream_push_hex					(jbl_stream * this,jbl_uint64 in);
+void			jbl_stream_push_hex_8bits			(jbl_stream * this,jbl_uint8 in);
 #define			pchars(x)							jbl_stream_push_chars(jbl_stream_stdout,UC(x))
 #define			pint(x)								jbl_stream_push_int(jbl_stream_stdout,x)
 #define			puint(x)							jbl_stream_push_uint(jbl_stream_stdout,x)

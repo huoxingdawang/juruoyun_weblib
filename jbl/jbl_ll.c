@@ -111,7 +111,7 @@ jbl_ll* jbl_ll_free(jbl_ll *this)
 	if(!jbl_gc_refcnt(this))
 	{
 		if(jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))
-			jbl_ll_free((jbl_ll *)jbl_refer_pull(this));
+			jbl_ll_free((jbl_ll*)(((jbl_reference*)this)->ptr));
 		else
 			jbl_ll_foreach_del(this,i,j)
 				jbl_ll_node_delete(this,i);	
@@ -310,7 +310,7 @@ void jbl_ll_json_put(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uin
 #if JBL_STREAM_ENABLE==1
 jbl_ll*jbl_ll_view_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_ll* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_ll",line,varname,func,file))return this;
+	jbl_ll* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_ll",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_chars(out,UC"\tlen:");jbl_stream_push_uint(out,thi->len);
 	jbl_stream_push_char(out,'\n');
 	jbl_ll_size_type j=0;

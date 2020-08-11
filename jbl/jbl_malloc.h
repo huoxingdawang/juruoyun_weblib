@@ -36,7 +36,7 @@ void					jbl_malloc_stop			();										//关闭内存管理
 /*******************************************************************************************/
 void*					jbl_malloc				(jbl_malloc_size_type size);			//申请一段内存
 void*					jbl_realloc				(void* ptr,jbl_malloc_size_type size);	//重新申请一段内存
-void					jbl_free				(void* p);								//释放一段内存
+void					jbl_free				(void* ptr);							//释放一段内存
 jbl_malloc_size_type	jbl_malloc_size			(void* ptr);							//获取一段内存的大小
 #else
 #define jbl_malloc_start()	1

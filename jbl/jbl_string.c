@@ -671,7 +671,7 @@ void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_u
 /*******************************************************************************************/
 jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file))return this;
+	jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_chars(out,UC" size:");
 	jbl_stream_push_uint(out,this->size);
 	jbl_stream_push_chars(out,UC"\tlen:");
@@ -733,20 +733,21 @@ void jbl_string_update_stream_buf(jbl_stream* this)
 	this->buf=st->s+st->len;
 }
 jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operater,jbl_string_free,jbl_string_update_stream_buf);
-void jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end)
+jbl_string*  jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end)
 {
 	if(!out)jbl_exception("NULL POINTER");
-	if(!this)return;
+	if(!this)return this;
 	out=jbl_refer_pull(out);
-	this=jbl_refer_pull(this);
-	for(jbl_min_update(end,this->len);i<end;)
+	jbl_string *thi=jbl_refer_pull(this);
+	for(jbl_min_update(end,thi->len);i<end;)
 	{
 		jbl_stream_buf_size_type len=jbl_min((end-i),(out->size-out->en));	
-		jbl_memory_copy(out->buf+out->en,this->s+i,len);
+		jbl_memory_copy(out->buf+out->en,thi->s+i,len);
 		i+=len;
 		out->en+=len;
 		jbl_stream_do(out,0);
 	}
+	return this;
 }
 jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
 {

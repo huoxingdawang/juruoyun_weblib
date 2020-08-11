@@ -52,6 +52,9 @@ start:;
 #elif __linux__
 	#include <malloc.h>
 #endif
+#if JBL_MALLOC_LOG ==1
+#include "jbl_log.h"
+#endif
 /*******************************************************************************************/
 /*                            结构体定义                                                   */
 /*******************************************************************************************/
@@ -64,29 +67,27 @@ typedef struct __jbl_malloc_heap_struct
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
 #if JBL_MALLOC_COUNT==1
-	jbl_uint64 __jbl_malloc_count[3];
+	jbl_malloc_heap_struct jbl_malloc_heap;
 #endif
-jbl_malloc_heap_struct jbl_malloc_heap;
 /*******************************************************************************************/
 /*                            以下函数完成内存管理组件启动和停止                           */
 /*******************************************************************************************/
 void jbl_malloc_start()
 {
+#if JBL_MALLOC_COUNT==1
 	jbl_malloc_heap.size=0;
 	jbl_malloc_heap.peak=0;
-#if JBL_MALLOC_COUNT==1
-	__jbl_malloc_count[0]=0;
-	__jbl_malloc_count[1]=0;
-	__jbl_malloc_count[2]=0;
 #endif
 }
 void jbl_malloc_stop()
 {
 #if JBL_STREAM_ENABLE==1
+#if JBL_MALLOC_COUNT==1
 //输出内存统计
 	jbl_stream_push_chars(jbl_stream_stdout,UC"\n\n");
 	jbl_stream_push_chars(jbl_stream_stdout,UC"Memory            :");jbl_stream_push_uint(jbl_stream_stdout,jbl_malloc_heap.size-__jbl_malloc_get_ignore_size());jbl_stream_push_chars(jbl_stream_stdout,UC"B\n");	
 	jbl_stream_push_chars(jbl_stream_stdout,UC"Max memory        :");jbl_stream_push_uint(jbl_stream_stdout,jbl_malloc_heap.peak);jbl_stream_push_chars(jbl_stream_stdout,UC"B(");jbl_stream_push_double(jbl_stream_stdout,(double)jbl_malloc_heap.peak/1048576);jbl_stream_push_chars(jbl_stream_stdout,UC"M)\n");	
+#endif
 //统计完成关流
 	jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
@@ -95,17 +96,28 @@ void jbl_malloc_stop()
 /*******************************************************************************************/
 /*                            以下函数完成内存管理组件基本操作                           */
 /*******************************************************************************************/
-void* jbl_malloc(jbl_malloc_size_type size)
+inline void* jbl_malloc(jbl_malloc_size_type size)
 {
-	if(size==0)jbl_exception("MEMORY ERROR");
+#if JBL_MALLOC_NULL_PTR_CHECK ==1
+	if(!size)jbl_exception("MEMORY ERROR");
+#endif
 	void *ptr=malloc(size);
-	if(!ptr)jbl_exception("MEMORY ERROR");	
+#if JBL_MALLOC_NULL_PTR_CHECK ==1
+	if(!ptr)jbl_exception("MEMORY ERROR");
+#endif
+#if JBL_MALLOC_LOG ==1
+	jbl_log(UC "addr:0X%X\tsize:%d",ptr,jbl_malloc_size(ptr));
+#endif
+#if JBL_MALLOC_COUNT ==1
 	jbl_malloc_heap.size+=jbl_malloc_size(ptr),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
+#endif
 	return ptr;
 }
-jbl_malloc_size_type jbl_malloc_size(void* ptr)
+inline jbl_malloc_size_type jbl_malloc_size(void* ptr)
 {
+#if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("NULL POINTER");	
+#endif	
 #ifdef _WIN32
 	return _msize(ptr);
 #elif __APPLE__
@@ -116,31 +128,56 @@ jbl_malloc_size_type jbl_malloc_size(void* ptr)
 }
 void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 {
+#if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("NULL POINTER");	
-	if(size==0)jbl_exception("MEMORY ERROR");		
+	if(!size)jbl_exception("MEMORY ERROR");		
+#endif
 #ifdef _WIN32
-	void * ptr2=jbl_malloc(size);
-	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
-	jbl_malloc_size_type size_new=_msize(ptr);
-	jbl_min_update(size_new,size);
-	jbl_memory_copy(ptr2,ptr,size_new);
-	jbl_free(ptr);
+	void * ptr2=malloc(size);
+#if JBL_MALLOC_NULL_PTR_CHECK ==1
+	if(!ptr2)jbl_exception("MEMORY ERROR");
+#endif
+	jbl_malloc_size_type size_old=_msize(ptr);
+#if JBL_MALLOC_COUNT ==1
+	jbl_malloc_heap.size-=size_old;
+	jbl_malloc_heap.size+=_msize(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);	
+#endif
+	jbl_min_update(size_old,size);
+	jbl_memory_copy(ptr2,ptr,size_old);
+	free(ptr);
+#if JBL_MALLOC_LOG ==1
+	jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr2,_msize(ptr2));
+#endif
 	return ptr2;
 #elif defined(__APPLE__) || defined(__linux__)
+#if JBL_MALLOC_COUNT ==1
 	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
+#endif
 	void *ptr2=realloc(ptr,size);
-	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
+#if JBL_MALLOC_NULL_PTR_CHECK ==1
+	if(!ptr2)jbl_exception("MEMORY ERROR");
+#endif
+#if JBL_MALLOC_COUNT ==1
 	jbl_malloc_heap.size+=jbl_malloc_size(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
-	if(ptr2==NULL)
-		jbl_exception("MEMORY ERROR");
+#endif
+#if JBL_MALLOC_LOG ==1
+	jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr2,jbl_malloc_size(ptr2));
+#endif
 	return ptr2;
 #endif
 }
-void jbl_free(void * p)
+inline void jbl_free(void * ptr)
 {
-	if(!p)jbl_exception("NULL POINTER");	
-	jbl_malloc_heap.size-=jbl_malloc_size(p);
-	free(p);
+#if JBL_MALLOC_NULL_PTR_CHECK ==1
+	if(!ptr)jbl_exception("NULL POINTER");	
+#endif
+#if JBL_MALLOC_LOG ==1
+	jbl_log(UC "addr:0X%X",ptr);
+#endif
+#if JBL_MALLOC_COUNT ==1
+	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
+#endif
+	free(ptr);
 }
 #endif
 #endif

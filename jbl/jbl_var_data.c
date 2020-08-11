@@ -17,7 +17,7 @@ jbl_var * __jbl_var_data_free(jbl_var *this)
 	jbl_gc_minus(((jbl_var_data*)this));
 	if(!jbl_gc_refcnt(((jbl_var_data*)this)))
 	{
-		((jbl_gc_is_ref(((jbl_var_data*)this)))?__jbl_var_data_free((jbl_var *)jbl_refer_pull(this)):0);
+		((jbl_gc_is_ref(((jbl_var_data*)this)))?__jbl_var_data_free((jbl_var*)(((jbl_reference*)this)->ptr)):0);
 		jbl_free((char*)this-sizeof(jbl_var));
 	}
 	return NULL;
@@ -61,7 +61,7 @@ jbl_string* jbl_Vuint_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format
 #if JBL_STREAM_ENABLE==1
 jbl_var* jbl_Vuint_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"uint64",line,varname,func,file))return this;
+	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"uint64",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_uint(out,((jbl_var_data*)thi)->u);
 	jbl_stream_push_char(out,'\n');
 	return this;
@@ -106,7 +106,7 @@ jbl_string* jbl_Vint_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 format,
 #if JBL_STREAM_ENABLE==1
 jbl_var* jbl_Vint_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"int64",line,varname,func,file))return this;
+	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"int64",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_int(out,((jbl_var_data*)thi)->i);
 	jbl_stream_push_char(out,'\n');
 	return this;
@@ -151,7 +151,7 @@ jbl_string* jbl_Vdouble_json_encode(jbl_var* this,jbl_string *out,jbl_uint8 form
 #if JBL_STREAM_ENABLE==1
 jbl_var* jbl_Vdouble_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"double",line,varname,func,file))return this;
+	jbl_var *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"double",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_double(out,((jbl_var_data*)thi)->d);
 	jbl_stream_push_char(out,'\n');
 	return this;

@@ -140,6 +140,9 @@ jbl_string *		jbl_time_to_string				(jbl_time *this,jbl_string *result);								
 jbl_string *		jbl_time_to_string_format		(jbl_time *this,jbl_string *result,const unsigned char * format);		//把time格式化成字符串时间戳
 #endif
 #if JBL_STREAM_ENABLE==1
+void				jbl_stream_push_time			(jbl_stream *out,jbl_time *this,const unsigned char * format);
+#endif
+#if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现时间的浏览操作                                 */
 /*******************************************************************************************/

@@ -64,7 +64,7 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		((jbl_gc_is_ref(this))?jbl_stream_free((jbl_stream *)jbl_refer_pull(this)):((((this->op->free)?(this->op->free(this->data)):0)),jbl_stream_free(((jbl_stream *)jbl_refer_pull(this))->nxt)));
+		((jbl_gc_is_ref(this))?jbl_stream_free((jbl_stream*)(((jbl_reference*)this)->ptr)):((((this->op->free)?(this->op->free(this->data)):0)),jbl_stream_free(((jbl_stream *)jbl_refer_pull(this))->nxt)));
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));
@@ -112,25 +112,23 @@ void jbl_stream_do(jbl_stream* this,jbl_uint8 flag)
 	if(!op)return;
 	op(this,flag);
 }
-jbl_stream* jbl_stream_push_char(jbl_stream* this,unsigned char c)
+void jbl_stream_push_char(jbl_stream* this,unsigned char c)
 {
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull(this);
 	((thi->en)>=thi->size)?jbl_stream_do(thi,0):0;
 	thi->buf[thi->en]=c;
 	++thi->en;
-	return this;
 }
-jbl_stream* jbl_stream_push_chars(jbl_stream* this,const unsigned char *str)
+void jbl_stream_push_chars(jbl_stream* this,const unsigned char *str)
 {
-	if(!str)return this;
+	if(!str)return;
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull(this);
 	thi=jbl_refer_pull(thi);
 	for(;*str;jbl_stream_do(thi,0))for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en);
-	return this;
 }
-jbl_stream* jbl_stream_push_uint(jbl_stream* this,jbl_uint64 in)
+void jbl_stream_push_uint_length(jbl_stream *this,jbl_uint64 in,jbl_uint8 len,char c)
 {
 	if(in==0)return jbl_stream_push_char(this,'0');
 	jbl_stream*thi=jbl_refer_pull(this);
@@ -138,18 +136,17 @@ jbl_stream* jbl_stream_push_uint(jbl_stream* this,jbl_uint64 in)
 	unsigned char b[21];
 	b[cnt--]=0;
 	while(in)b[cnt--]=in%10+'0',in/=10;
+	for(jbl_uint8 i=19-cnt;i<len;jbl_stream_push_char(thi,c),++i);
 	jbl_stream_push_chars(thi,b+cnt+1);	
-	return this;
 }
-jbl_stream* jbl_stream_push_int(jbl_stream* this,jbl_int64 in)
+void jbl_stream_push_int(jbl_stream* this,jbl_int64 in)
 {
 	jbl_stream*thi=jbl_refer_pull(this);
 	if(in<0)
 		jbl_stream_push_char(thi,'-'),in=-in;
 	jbl_stream_push_uint(thi,in);
-	return this;
 }
-jbl_stream* jbl_stream_push_double(jbl_stream* this,double in)
+void jbl_stream_push_double(jbl_stream* this,double in)
 {
 	jbl_stream*thi=jbl_refer_pull(this);
 	jbl_stream_push_int(thi,in);
@@ -165,21 +162,18 @@ jbl_stream* jbl_stream_push_double(jbl_stream* this,double in)
 	b[cnt--]=0;
 	while(t)b[cnt--]=t%10+'0',t/=10;
 	jbl_stream_push_chars(thi,b+20-7+2);
-	return this;
 }
-jbl_stream* jbl_stream_push_hex(jbl_stream *this,jbl_uint64 in)
+void jbl_stream_push_hex(jbl_stream *this,jbl_uint64 in)
 {
 	unsigned char n=1;
 	while((in>>(n<<2)))++n;
 	const char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 	for(;n--;jbl_stream_push_char(this,hex[(in>>(n<<2))&15]));
-	return this;
 }
-jbl_stream* jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)
+void jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)
 {
 	const char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 	jbl_stream_push_char(this,hex[(in>>4)&15]),jbl_stream_push_char(this,hex[in&15]);	
-	return this;
 }
 inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {

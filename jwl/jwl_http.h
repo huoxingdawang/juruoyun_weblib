@@ -14,6 +14,7 @@
 #include "jwl_ying.h"
 #include "jwl_socket.h"
 #include "jwl_http_content.h"
+
 #define JWL_HTTP_CONNECTION_UNKNOW		0
 #define JWL_HTTP_CONNECTION_KEEP_ALIVE	1
 #define JWL_HTTP_CONNECTION_CLOSE		2
@@ -25,50 +26,39 @@
 #define JWL_HTTP_CHARSET_UTF8			1
 
 
-typedef struct __jwl_http_resh//response head 响应头
+typedef struct __jwl_http_head//response head 响应头
 {
 	jbl_gc			gc;
+//response
 	jbl_uint32 		status:9;
-	jbl_uint32 		cache:2;
 	jbl_uint32		charset:1;
-	jbl_uint32 		cache_max_age;	
 	
-	
-	jbl_string *	content_type;
-	jbl_string *	etag;
-	jbl_string *	filename;
-	struct{
-		jbl_uint64 start;
-		jbl_uint64 end;
-	}range;
-	
-	jbl_ht *		v;
-}jwl_http_resh;
-typedef struct __jwl_http_reqh//request head 请求头
-{
-	jbl_gc			gc;
+//request
 	jbl_uint32		method:3;
 	jbl_uint32		protocol:2;
 	jbl_uint32		connection:2;
-	jbl_uint32		cache:2;
-	jbl_uint32		cache_max_age;
-	
+//both	
+	jbl_uint32 		cache:2;
+	jbl_uint32 		cache_max_age;
 	struct{
 		jbl_uint64 start;
 		jbl_uint64 end;
 	}range;
+	jbl_string *	etag;
 	
-	
+//response
+	jbl_string *	content_type;
+	jbl_string *	filename;	
+//request
 	jbl_string *	url;
 	jbl_string *	host;
 	jbl_string *	ua;
 	jbl_string *	referer;
-	jbl_string *	etag;
 	
 	
 	jbl_ht *		cookie;
 	jbl_ht *		v;
-}jwl_http_reqh;
+}jwl_http_head;
 typedef enum
 {
 	JWL_HTTP_KEY_UNDEFINED,
@@ -96,45 +86,38 @@ typedef enum
 	JWL_HTTP_PROTOCOL_HTTP,
 	JWL_HTTP_PROTOCOL_HTTPS,
 }jwl_http_protocol;
-jwl_http_resh *	jwl_http_resh_new			();
-jwl_http_resh *	jwl_http_resh_init			(jwl_http_resh * this);
-jwl_http_resh *	jwl_http_resh_free			(jwl_http_resh * this);
-jwl_http_resh *	jwl_http_resh_copy			(jwl_http_resh * this);
-jwl_http_resh *	jwl_http_resh_extend		(jwl_http_resh * this,jwl_http_resh **pthi);
+jwl_http_head *	jwl_http_head_new			();
+jwl_http_head *	jwl_http_head_init			(jwl_http_head * this);
+jwl_http_head *	jwl_http_head_free			(jwl_http_head * this);
+jwl_http_head *	jwl_http_head_copy			(jwl_http_head * this);
+jwl_http_head *	jwl_http_head_extend		(jwl_http_head * this,jwl_http_head **pthi);
 
 
-void			jwl_http_resh_encode		(jbl_stream *stream,jwl_http_resh *head,jbl_string_size_type size);
+void			jwl_http_head_encode		(jbl_stream *stream,jwl_http_head *head,jbl_string_size_type size);
+jwl_http_head *	jwl_http_head_decode		(jbl_string *buf,jbl_string_size_type *start);
 
-jwl_http_resh *	jwl_http_resh_set_status			(jwl_http_resh * this,jbl_uint16 status);
-jwl_http_resh *	jwl_http_resh_set_cache				(jwl_http_resh * this,jbl_uint16 cache);
-jwl_http_resh *	jwl_http_resh_set_charset			(jwl_http_resh * this,jbl_uint16 charset);
-jwl_http_resh *	jwl_http_resh_set_cache_max_age		(jwl_http_resh * this,jbl_uint32 cache_max_age);
-jwl_http_resh *	jwl_http_resh_set_content_type		(jwl_http_resh * this,jbl_string * content_type);
-jwl_http_resh *	jwl_http_resh_set_etag				(jwl_http_resh * this,jbl_string * etag);
-jwl_http_resh *	jwl_http_resh_set_filename			(jwl_http_resh * this,jbl_string * filename);
-jwl_http_resh *	jwl_http_resh_set_range				(jwl_http_resh * this,jbl_uint64 start,jbl_uint64 end);
-//jwl_http_resh *	jwl_http_resh_set					(jwl_http_resh * this,jbl_string * k, jbl_var *v);
+jwl_http_head *	jwl_http_head_set_status			(jwl_http_head * this,jbl_uint16 status);
+jwl_http_head *	jwl_http_head_set_charset			(jwl_http_head * this,jbl_uint16 charset);
+
+jwl_http_head *	jwl_http_head_set_cache				(jwl_http_head * this,jbl_uint16 cache);
+jwl_http_head *	jwl_http_head_set_cache_max_age		(jwl_http_head * this,jbl_uint32 cache_max_age);
+jwl_http_head *	jwl_http_head_set_range				(jwl_http_head * this,jbl_uint64 start,jbl_uint64 end);
+jwl_http_head *	jwl_http_head_set_etag				(jwl_http_head * this,jbl_string * etag);
+
+jwl_http_head *	jwl_http_head_set_content_type		(jwl_http_head * this,jbl_string * content_type);
+jwl_http_head *	jwl_http_head_set_filename			(jwl_http_head * this,jbl_string * filename);
+//jwl_http_head *	jwl_http_head_set					(jwl_http_head * this,jbl_string * k, jbl_var *v);
+#define			jwl_http_head_set_request(x)		(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置request标记
+#define			jwl_http_head_set_response(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//设置response标记
+#define			jwl_http_head_is_request(x)			(jbl_gc_is_user1((jwl_socket*)jbl_refer_pull(x)))		//获取request标记
+#define			jwl_http_head_is_response(x)		(!jbl_gc_is_user1((jwl_socket*)jbl_refer_pull(x)))		//获取response标记
 /*******************************************************************************************/
 /*                            以下函实现响应头浏览操作                                   */
 /*******************************************************************************************/
 #if JBL_STREAM_ENABLE==1
-jwl_http_resh*			jwl_http_resh_view_put				(jwl_http_resh* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
-#define					jwl_http_resh_view(x)				jwl_http_resh_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
+jwl_http_head*			jwl_http_head_view_put				(jwl_http_head* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
+#define					jwl_http_head_view(x)				jwl_http_head_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
 #endif
-
-
-
-jwl_http_reqh *	jwl_http_reqh_new		();
-jwl_http_reqh *	jwl_http_reqh_init		(jwl_http_reqh * this);
-jwl_http_reqh *	jwl_http_reqh_free		(jwl_http_reqh * this);
-jwl_http_reqh *	jwl_http_reqh_extend	(jwl_http_reqh * this,jwl_http_reqh **pthi);
-jwl_http_reqh *	jwl_http_reqh_decode	(jbl_string *buf,jbl_string_size_type *start);
-
-#if JBL_STREAM_ENABLE==1
-jwl_http_reqh*			jwl_http_reqh_view_put				(jwl_http_reqh* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
-#define					jwl_http_reqh_view(x)				jwl_http_reqh_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
-#endif
-
 
 #endif
 #endif

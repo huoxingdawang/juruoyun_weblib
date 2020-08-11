@@ -15,10 +15,10 @@ int main()
 		"Referer: http://test0.juruoyun.top/\r\n"
 		"Cookie: id=1; code=7FRWuMuuKnotkD2S4qqydnMwQrEJV4HykR0bmmjpfx41ChsWdw4540709f5c6c74b70576c38cf7f7608d55b974d6625187f24fe780700e42bd57\r\n"
 		"Upgrade-Insecure-Requests: 1\r\n");
-	jwl_http_reqh * reqh=jwl_http_reqh_decode(s1,NULL);
+	jwl_http_head * reqh=jwl_http_head_decode(s1,NULL);
 	s1=jbl_string_free(s1);
-	jwl_http_reqh_view(reqh);
-	reqh=jwl_http_reqh_free(reqh);
+	jwl_http_head_view(reqh);
+	reqh=jwl_http_head_free(reqh);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jwl_stop();
 	jbl_stop(); 	

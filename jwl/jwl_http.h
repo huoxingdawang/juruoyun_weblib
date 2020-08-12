@@ -15,10 +15,6 @@
 #include "jwl_socket.h"
 #include "jwl_http_content.h"
 
-#define JWL_HTTP_CONNECTION_UNKNOW		0
-#define JWL_HTTP_CONNECTION_KEEP_ALIVE	1
-#define JWL_HTTP_CONNECTION_CLOSE		2
-#define JWL_HTTP_CONNECTION_UPGRADE		3
 #define JWL_HTTP_CACHE_UNKNOW			0
 #define JWL_HTTP_CACHE_NO				1
 #define JWL_HTTP_CACHE_MAX_AGE			2
@@ -36,8 +32,8 @@ typedef struct __jwl_http_head//response head 响应头
 //request
 	jbl_uint32		method:3;
 	jbl_uint32		protocol:2;
-	jbl_uint32		connection:2;
 //both	
+	jbl_uint32		connection:2;
 	jbl_uint32 		cache:2;
 	jbl_uint32 		cache_max_age;
 	struct{
@@ -73,6 +69,7 @@ typedef enum
 	JWL_HTTP_KEY_ACCEPT_LANGUAGE,
 	JWL_HTTP_KEY_CACHE_CONTROL,
 	JWL_HTTP_KEY_RANGE_BYTES,
+	JWL_HTTP_KEY_CONNECTION,
 }jwl_http_key;
 typedef enum
 {
@@ -86,6 +83,13 @@ typedef enum
 	JWL_HTTP_PROTOCOL_HTTP,
 	JWL_HTTP_PROTOCOL_HTTPS,
 }jwl_http_protocol;
+typedef enum
+{
+	JWL_HTTP_CONNECTION_UNKNOW,
+	JWL_HTTP_CONNECTION_KEEP_ALIVE,
+	JWL_HTTP_CONNECTION_CLOSE,
+	JWL_HTTP_CONNECTION_UPGRADE,
+}jwl_http_connection;
 jwl_http_head *	jwl_http_head_new			();
 jwl_http_head *	jwl_http_head_init			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_free			(jwl_http_head * this);
@@ -99,6 +103,7 @@ jwl_http_head *	jwl_http_head_decode		(jbl_string *buf,jbl_string_size_type *sta
 jwl_http_head *	jwl_http_head_set_status			(jwl_http_head * this,jbl_uint16 status);
 jwl_http_head *	jwl_http_head_set_charset			(jwl_http_head * this,jbl_uint16 charset);
 
+jwl_http_head *	jwl_http_head_set_connection		(jwl_http_head * this,jbl_uint16 connection);
 jwl_http_head *	jwl_http_head_set_cache				(jwl_http_head * this,jbl_uint16 cache);
 jwl_http_head *	jwl_http_head_set_cache_max_age		(jwl_http_head * this,jbl_uint32 cache_max_age);
 jwl_http_head *	jwl_http_head_set_range				(jwl_http_head * this,jbl_uint64 start,jbl_uint64 end);

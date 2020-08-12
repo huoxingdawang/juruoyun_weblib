@@ -16,6 +16,7 @@
 #ifdef _WIN32
 	#include <winsock2.h>
 #endif
+#include <sys/epoll.h>
 typedef struct __jwl_socket
 {
 	jbl_gc gc;
@@ -27,16 +28,36 @@ typedef struct __jwl_socket
 	jbl_uint64 ip;
 	jbl_uint32 port;
 }jwl_socket;
-void			jwl_socket_start		();													//启动socket
-jwl_socket *	jwl_socket_new			();													//新建一个socket
-jwl_socket *	jwl_socket_init			(jwl_socket *this);									//初始化一个socket
-jwl_socket *	jwl_socket_free			(jwl_socket *this);									//释放一个socket
-jwl_socket *	jwl_socket_bind			(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);	//启动一个socket监听
-jwl_socket *	jwl_socket_connect		(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);	//发起一个socket连接
-jwl_socket *	jwl_socket_close		(jwl_socket *this);									//关闭一个socket请求
-jwl_socket *	jwl_socket_accept		(jwl_socket *this);									//接受一个socket请求
-jwl_socket *	jwl_socket_send_safe	(jwl_socket *this,jbl_string *data);				//安全发送
-jbl_string *	jwl_socket_receive_safe	(jwl_socket *this,jbl_string *data);				//安全接收
+typedef struct __jwl_socket_poll_data
+{
+	jwl_socket *socket;
+	struct __jwl_socket_poll_data *nxt;
+}jwl_socket_poll_data;
+typedef struct __jwl_socket_poll
+{
+	jbl_gc gc;
+	int epfd;
+	int nfds;
+	jwl_socket_poll_data *data;
+	jwl_socket_poll_data *now;
+	jbl_uint16 len;
+	struct epoll_event events[0];
+}jwl_socket_poll;
+
+
+void			jwl_socket_start			();													//启动socket
+jwl_socket *	jwl_socket_new				();													//新建一个socket
+jwl_socket *	jwl_socket_init				(jwl_socket *this);									//初始化一个socket
+jwl_socket *	jwl_socket_free				(jwl_socket *this);									//释放一个socket
+jwl_socket *	jwl_socket_copy				(jwl_socket * this);								//拷贝一个socket
+#define			jwl_socket_extend(this)		(this)
+jwl_socket *	jwl_socket_bind				(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);	//启动一个socket监听
+jwl_socket *	jwl_socket_connect			(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);	//发起一个socket连接
+jwl_socket *	jwl_socket_close			(jwl_socket *this);									//关闭一个socket请求
+jwl_socket *	jwl_socket_accept			(jwl_socket *this);									//接受一个socket请求
+jwl_socket *	jwl_socket_send_safe		(jwl_socket *this,jbl_string *data);				//安全发送
+jbl_string *	jwl_socket_receive_safe		(jwl_socket *this,jbl_string *data);				//安全接收
+#define			jwl_socket_if_equal(a,b)	(((jwl_socket*)jbl_refer_pull(a))->handle==((jwl_socket*)jbl_refer_pull(b))->handle)
 
 #define			jwl_socket_set_host(x)			(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置host标记
 #define			jwl_socket_reset_host(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//删除host标记
@@ -55,14 +76,22 @@ jbl_stream *	jwl_socket_stream_new		(jwl_socket* socket);
 #if JBL_VAR_ENABLE==1
 jbl_var *		jwl_socket_Vstream_new		(jwl_socket* socket);
 #endif
-
-
-
 #endif
 
+jwl_socket_poll *	jwl_socket_poll_new				();													//新建一个socket
+jwl_socket_poll *	jwl_socket_poll_init			(jwl_socket_poll *this);									//初始化一个socket
+jwl_socket_poll *	jwl_socket_poll_free			(jwl_socket_poll *this);									//释放一个socket
+jwl_socket_poll *	jwl_socket_poll_copy			(jwl_socket_poll * this);								//拷贝一个socket
+#define				jwl_socket_poll_extend(this)	(this)
+jwl_socket_poll *	jwl_socket_poll_add				(jwl_socket_poll *this,jwl_socket* socket);
+jwl_socket_poll *	jwl_socket_poll_remove			(jwl_socket_poll *this,jwl_socket* socket);
+jwl_socket_poll *	jwl_socket_poll_wait			(jwl_socket_poll *this);
+jwl_socket      *	jwl_socket_poll_get				(jwl_socket_poll *this);
 
-
-
+#if JBL_STREAM_ENABLE==1
+jwl_socket_poll*	jwl_socket_poll_view_put		(jwl_socket_poll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个socket
+#define				jwl_socket_poll_view(x)			jwl_socket_poll_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个socket
+#endif
 
 
 

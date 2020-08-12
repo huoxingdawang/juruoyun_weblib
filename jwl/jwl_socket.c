@@ -11,15 +11,23 @@
 #if JWL_SOCKET_ENABLE==1
 #ifdef _WIN32
 	#include <winsock2.h>
-#elif defined(__APPLE__) || defined(__linux__)
+#elif __APPLE__
 	#include <sys/socket.h>
 	#include <netinet/in.h>
 	#include <arpa/inet.h>
 	#include <unistd.h>
 	#include <signal.h>
+	#include <sys/event.h>
+	#include <sys/types.h>
+#elif __linux__
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#include <unistd.h>
+	#include <signal.h>
+	#include <sys/epoll.h>
 #endif
 #include <errno.h>
-#include <sys/epoll.h>
 
 
 //undefined reference to `__imp_WSAStartup'
@@ -29,8 +37,9 @@ void jwl_socket_start()
 	WSADATA wsd;
 	if(WSAStartup(MAKEWORD(2,2),&wsd)!=0)
 		jbl_exception("DLL LOADING FAILED");
-#endif
-#ifdef __linux__
+#elif __linux__
+	signal(SIGPIPE, SIG_IGN);
+#elif __APPLE__
 	signal(SIGPIPE, SIG_IGN);
 #endif
 }
@@ -117,6 +126,7 @@ inline jwl_socket * jwl_socket_close(jwl_socket *this)
 	jwl_socket_reset_host(this);
 	this->port=0;
 	this->ip=0;
+	this->handle=-1;
 	return this;
 }
 inline jwl_socket * jwl_socket_accept(jwl_socket *this)
@@ -213,6 +223,7 @@ jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 forma
 jbl_stream *jwl_socket_stream_new(jwl_socket* socket)
 {
 	if(!socket)jbl_exception("NULL POINTER");
+	if(-1==((jwl_socket*)jbl_refer_pull(socket))->handle)jbl_exception("NEW STREAM FROM CLOSED SOCKET");	
 	if(jwl_socket_is_host(socket))jbl_exception("NEW STREAM FROM HOST SOCKET");	
 	jbl_stream *this=jbl_stream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,2);
 	this->tmp[0].u=0;	//第0为表示当前接受的长度
@@ -244,7 +255,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 			if((errno!=EINTR&&errno!=EWOULDBLOCK&&errno!=EAGAIN))
 			{
 				jbl_log(UC "Send failed\terrno:%d",errno);
-				socket->handle=-1;
+				jwl_socket_close(socket);
 				break;
 			}
 			jbl_log(UC "Send failed\terrno:%d retrying %d",errno,i);
@@ -280,7 +291,13 @@ jbl_stream_operators_new(jwl_stream_socket_operators,jwl_socket_stream_operater,
 //连接池
 inline jwl_socket_poll * jwl_socket_poll_new()
 {
-	return jwl_socket_poll_init(jbl_malloc(sizeof(jwl_socket_poll)+(sizeof(struct epoll_event)*128)));	
+	return jwl_socket_poll_init(jbl_malloc(sizeof(jwl_socket_poll)+
+#ifdef __linux__	
+	(sizeof(struct epoll_event)
+#elif __APPLE__
+	(sizeof(struct kevent)
+#endif	
+	*128)));	
 }
 jwl_socket_poll * jwl_socket_poll_init(jwl_socket_poll *this)
 {
@@ -288,10 +305,14 @@ jwl_socket_poll * jwl_socket_poll_init(jwl_socket_poll *this)
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	this->data=NULL;
-	this->now=NULL;
+	
 	this->len=0;
-	this->nfds=0;
-	if(-1==(this->epfd=epoll_create1(0)))jbl_exception("POLL FAILED");
+	this->event_len=0;
+#ifdef __linux__
+	if(-1==(this->handle=epoll_create1(0)))jbl_exception("POLL FAILED");
+#elif __APPLE__
+	if(-1==(this->handle=kqueue()))jbl_exception("POLL FAILED");
+#endif
 	return this;
 }
 inline jwl_socket_poll *jwl_socket_poll_copy(jwl_socket_poll * this)
@@ -308,7 +329,14 @@ jwl_socket_poll * jwl_socket_poll_free(jwl_socket_poll *this)
 		if(jbl_gc_is_ref(this))
 			jwl_socket_poll_free((jwl_socket_poll*)(((jbl_reference*)this)->ptr));
 		else
-			for(jwl_socket_poll_data *i=this->data,*j;i;jwl_socket_free(i->socket),j=i->nxt,jbl_free(i),i=j);
+		{
+			for(jwl_socket_poll_data *i=this->data,*j=NULL;i;jwl_socket_free(i->socket),j=i->nxt,jbl_free(i),i=j);
+#ifdef __linux__
+			close(this->handle);
+#elif __APPLE__
+			close(this->handle);
+#endif
+		}
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));
@@ -330,16 +358,24 @@ jwl_socket_poll * jwl_socket_poll_add(jwl_socket_poll *this,jwl_socket* socket)
 
 	++thi->len;
 	socket=jbl_refer_pull(socket);	
+#ifdef __linux__
 	struct epoll_event ev;
 	ev.data.fd=socket->handle;
 	ev.data.ptr=socket;
     ev.events=EPOLLIN|EPOLLET;
-    epoll_ctl(this->epfd,EPOLL_CTL_ADD,socket->handle,&ev);	
+    epoll_ctl(this->handle,EPOLL_CTL_ADD,socket->handle,&ev);	
+#elif __APPLE__
+	struct kevent ev;
+	EV_SET(&ev,socket->handle,EVFILT_READ,EV_ADD|EV_ENABLE,0,0,NULL);
+	ev.udata=socket;
+	kevent(this->handle,&ev,1,NULL,0,NULL);
+#endif
 	return this;
 }
 jwl_socket_poll * jwl_socket_poll_remove(jwl_socket_poll *this,jwl_socket* socket)
 {
 	if(!this||!socket)jbl_exception("NULL POINTER");	
+//jwl_socket_view(socket);
 	jwl_socket_poll * thi=jbl_refer_pull(this);
 	socket=jbl_refer_pull(socket);	
 
@@ -352,14 +388,44 @@ jwl_socket_poll * jwl_socket_poll_remove(jwl_socket_poll *this,jwl_socket* socke
 		}
 	if(!found)
 		jbl_exception("SOCKET NOT IN POLL");
+#ifdef __linux__
+	epoll_ctl(this->handle,EPOLL_CTL_DEL,found->socket->handle,NULL);	
+#elif __APPLE__
+	struct kevent ev;
+	EV_SET(&ev,found->socket->handle,EVFILT_READ,EV_DELETE|EV_DISABLE,0,0,NULL);
+	kevent(this->handle,&ev,1,NULL,0,NULL);
+#endif
 	jwl_socket_free(found->socket);
 	if(pre)	pre->nxt=found->nxt;
 	else	thi->data=found->nxt;
-	if(thi->now==found)thi->now=found->nxt;
 	jbl_free(found);
-
 	--thi->len;
-	
+	return this;
+}
+jwl_socket_poll * jwl_socket_poll_remove_closed(jwl_socket_poll *this)
+{
+	if(!this)jbl_exception("NULL POINTER");	
+	jwl_socket_poll * thi=jbl_refer_pull(this);
+	for(jwl_socket_poll_data *i=thi->data,*pre=NULL;i;)
+		if(-1==i->socket->handle)
+		{
+			jwl_socket_poll_data *j=i->nxt;
+#ifdef __linux__
+			epoll_ctl(this->handle,EPOLL_CTL_DEL,i->socket->handle,NULL);	
+#elif __APPLE__
+			struct kevent ev;
+			EV_SET(&ev,i->socket->handle,EVFILT_READ,EV_DELETE|EV_DISABLE,0,0,NULL);
+			kevent(this->handle,&ev,1,NULL,0,NULL);
+#endif
+			jwl_socket_free(i->socket);
+			if(pre)	pre->nxt=i->nxt;
+			else	thi->data=i->nxt;
+			jbl_free(i);
+			i=j;
+			--thi->len;
+		}
+		else
+			pre=i,i=i->nxt;
 	return this;
 }
 jwl_socket_poll * jwl_socket_poll_wait(jwl_socket_poll *this)
@@ -367,16 +433,28 @@ jwl_socket_poll * jwl_socket_poll_wait(jwl_socket_poll *this)
 	if(!this)jbl_exception("NULL POINTER");	
 	jwl_socket_poll * thi=jbl_refer_pull(this);
 	if(!thi->len)return this;
-	if(-1==(thi->nfds=epoll_wait(thi->epfd,thi->events,128,-1)))
-		jbl_exception("POLL FAILED");	
+#ifdef __linux__
+	if(-1==(thi->event_len=epoll_wait(thi->handle,thi->events,128,-1)))			jbl_exception("POLL FAILED");
+#elif __APPLE__
+	if(-1==(thi->event_len=kevent(thi->handle,NULL,0,thi->events,128,NULL)))	jbl_exception("POLL FAILED");
+#endif
 	return this;
 }
 jwl_socket * jwl_socket_poll_get(jwl_socket_poll *this)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	jwl_socket_poll * thi=jbl_refer_pull(this);
-	while(thi->nfds)
-		return jwl_socket_copy((jwl_socket*)thi->events[--thi->nfds].data.ptr);
+	while(thi->event_len)
+	{
+#ifdef __linux__
+		jwl_socket *socket=(jwl_socket*)thi->events[--thi->event_len].data.ptr;
+#elif __APPLE__
+		jwl_socket *socket=(jwl_socket*)thi->events[--thi->event_len].udata;
+#endif
+		jwl_socket *sock=jbl_refer_pull(socket);
+		if(-1==sock->handle)this=jwl_socket_poll_remove(this,socket); 
+		else				return jwl_socket_copy(socket);
+	}
 	return NULL;
 }
 #if JBL_STREAM_ENABLE==1

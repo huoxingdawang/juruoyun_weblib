@@ -27,7 +27,7 @@ int main(int argc,char** argv)
 	{
 		poll=jwl_socket_poll_wait(poll);
 		jwl_socket *client=NULL;
-		while(client=jwl_socket_poll_get(poll))
+		while(NULL!=(client=jwl_socket_poll_get(poll)))
 		{
 			if(jwl_socket_if_equal(client,host))
 			{
@@ -35,6 +35,7 @@ pl();
 				client=jwl_socket_free(client);
 				client=jwl_socket_accept(host);
 				poll=jwl_socket_poll_add(poll,client);
+				poll=jwl_socket_poll_remove_closed(poll);
 				jwl_socket_poll_view(poll);
 				client=jwl_socket_free(client);
 			}
@@ -54,7 +55,7 @@ pl();
 			tmp->data=NULL;
 			tmp=jbl_stream_free(tmp);
 			jbl_stream_disconnect(client_stream);//断开连接
-//jbl_string_view(get);
+jbl_string_view(get);
 				jwl_http_head * reqh=jwl_http_head_decode(get,NULL);
 				jwl_http_head_view(reqh);	
 				
@@ -97,7 +98,7 @@ pl();
 					resh=jwl_http_head_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
 					resh=jwl_http_head_set_cache_max_age(resh,36000);
 					resh=jwl_http_head_set_status		(resh,200);
-					resh=jwl_http_head_set_filename		(resh,jbl_gc_minus(jbl_string_cache_get("download.txt")));
+					resh=jwl_http_head_set_filename		(resh,jbl_gc_minus(jbl_string_cache_get(UC"download.txt")));
 					res =jbl_rand_string				(NULL,1024*1024*10,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
 				}
 				else if(jbl_string_space_ship_chars(reqh->url,"/video")==0)
@@ -111,7 +112,7 @@ pl();
 					else
 					{
 						resh=jwl_http_head_set_status		(resh,200);
-						FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//test.mp4","rb"));fclose(fp);
+						FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles/test.mp4","rb"));fclose(fp);
 						if(reqh->range.start!=0)
 						{
 							if(reqh->range.start>jbl_string_get_length(res)||reqh->range.end>jbl_string_get_length(res))

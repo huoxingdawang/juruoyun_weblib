@@ -15,8 +15,12 @@
 #include "jwl_ying.h"
 #ifdef _WIN32
 	#include <winsock2.h>
+#elif __linux__
+	#include <sys/epoll.h>
+#elif __APPLE__
+#include <sys/event.h>
+#include <sys/types.h>
 #endif
-#include <sys/epoll.h>
 typedef struct __jwl_socket
 {
 	jbl_gc gc;
@@ -36,12 +40,16 @@ typedef struct __jwl_socket_poll_data
 typedef struct __jwl_socket_poll
 {
 	jbl_gc gc;
-	int epfd;
-	int nfds;
-	jwl_socket_poll_data *data;
-	jwl_socket_poll_data *now;
 	jbl_uint16 len;
-	struct epoll_event events[0];
+	jwl_socket_poll_data *data;
+	
+	int handle;
+	int event_len;
+#ifdef __linux__
+	struct epoll_event	events[0];
+#elif __APPLE__
+	struct kevent 		events[0];	
+#endif
 }jwl_socket_poll;
 
 
@@ -57,7 +65,7 @@ jwl_socket *	jwl_socket_close			(jwl_socket *this);									//关闭一个socket
 jwl_socket *	jwl_socket_accept			(jwl_socket *this);									//接受一个socket请求
 jwl_socket *	jwl_socket_send_safe		(jwl_socket *this,jbl_string *data);				//安全发送
 jbl_string *	jwl_socket_receive_safe		(jwl_socket *this,jbl_string *data);				//安全接收
-#define			jwl_socket_if_equal(a,b)	(((jwl_socket*)jbl_refer_pull(a))->handle==((jwl_socket*)jbl_refer_pull(b))->handle)
+#define			jwl_socket_if_equal(a,b)	(jbl_refer_pull(a)==jbl_refer_pull(b))
 
 #define			jwl_socket_set_host(x)			(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置host标记
 #define			jwl_socket_reset_host(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//删除host标记
@@ -85,6 +93,7 @@ jwl_socket_poll *	jwl_socket_poll_copy			(jwl_socket_poll * this);								//拷�
 #define				jwl_socket_poll_extend(this)	(this)
 jwl_socket_poll *	jwl_socket_poll_add				(jwl_socket_poll *this,jwl_socket* socket);
 jwl_socket_poll *	jwl_socket_poll_remove			(jwl_socket_poll *this,jwl_socket* socket);
+jwl_socket_poll * jwl_socket_poll_remove_closed(jwl_socket_poll *this);
 jwl_socket_poll *	jwl_socket_poll_wait			(jwl_socket_poll *this);
 jwl_socket      *	jwl_socket_poll_get				(jwl_socket_poll *this);
 

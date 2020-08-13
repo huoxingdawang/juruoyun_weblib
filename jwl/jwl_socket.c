@@ -29,7 +29,6 @@
 #endif
 #include <errno.h>
 
-
 //undefined reference to `__imp_WSAStartup'
 void jwl_socket_start()
 {
@@ -272,7 +271,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 				if((errno!=EINTR&&errno!=EWOULDBLOCK&&errno!=EAGAIN))
 				{
 					jbl_log(UC "Receive failed\terrno:%d",errno);
-					socket->handle=-1;
+					jwl_socket_close(socket);
 					return;
 				}				
 			this->tmp[0].u+=j,nxt->en+=j;

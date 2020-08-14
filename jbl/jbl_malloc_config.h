@@ -14,7 +14,7 @@
 #include "jbl_ying.h"
 #define JBL_MALLOC_FAST				1
 #define JBL_MALLOC_COUNT			1
-#define JBL_MALLOC_LOG				1
+#define JBL_MALLOC_LOG				0
 #define JBL_MALLOC_NULL_PTR_CHECK	1
 #if __SIZEOF_POINTER__ == 8
 	typedef jbl_uint64 jbl_malloc_size_type;

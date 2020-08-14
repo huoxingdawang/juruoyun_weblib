@@ -31,7 +31,7 @@ typedef union __jbl_log_parameter_struct
 	double d;
 	char c;
 	char* s;
-	void *p;
+	void *v;
 }jbl_log_parameter_struct;
 void	jbl_log_start	();
 void	jbl_log_stop	();

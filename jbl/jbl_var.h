@@ -152,16 +152,17 @@ jbl_var    *	jbl_var_json_decode			(jbl_var *this,jbl_string* in,jbl_string_size
 
 typedef enum
 {
-	JBL_VAR_SCANNER_KEY_UNDEFINED	=(jbl_pointer_int)-1,
-	JBL_VAR_SCANNER_KEY_END			=(jbl_pointer_int)-2,
-	JBL_VAR_SCANNER_KEY_INT			=(jbl_pointer_int)-3,
-	JBL_VAR_SCANNER_KEY_UINT		=(jbl_pointer_int)-4,
-	JBL_VAR_SCANNER_KEY_DOUBLE		=(jbl_pointer_int)-5,
-	JBL_VAR_SCANNER_KEY_CHAR		=(jbl_pointer_int)-6,
-	JBL_VAR_SCANNER_KEY_CHARS		=(jbl_pointer_int)-7,
-	JBL_VAR_SCANNER_KEY_HEX			=(jbl_pointer_int)-8,
+	JBL_VAR_SCANNER_KEY_UNDEFINED	,
+	JBL_VAR_SCANNER_KEY_END			,
+	JBL_VAR_SCANNER_KEY_INT			,
+	JBL_VAR_SCANNER_KEY_UINT		,
+	JBL_VAR_SCANNER_KEY_DOUBLE		,
+	JBL_VAR_SCANNER_KEY_CHAR		,
+	JBL_VAR_SCANNER_KEY_CHARS		,
+	JBL_VAR_SCANNER_KEY_HEX			,
+	JBL_VAR_SCANNER_KEY_VAR			,
 }jbl_var_scanner_key;
-const jbl_var_operators * jbl_var_scanner	(unsigned char * YYCURSOR,unsigned char *YYLIMIT,unsigned char **addr);
+jbl_var_scanner_key jbl_var_scanner	(unsigned char * YYCURSOR,unsigned char **addr);
 
 
 #endif

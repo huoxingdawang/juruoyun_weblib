@@ -165,7 +165,7 @@ jbl_var* jbl_var_view_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uin
 	else goto print;
 	return this;
 print:;
-	jbl_stream_view_put_format(this,out,format,tabs,UC"unprintable var",line,varname,func,file);
+	jbl_stream_view_put_format(this,out,format,tabs,UC"unprintable var",line,varname,func,file);jbl_stream_push_char(out,'\n');
 	return this;
 }
 #if JBL_JSON_ENABLE==1
@@ -180,18 +180,20 @@ void jbl_var_json_put(jbl_var * this,jbl_stream *out,jbl_uint8 format,jbl_uint32
 #endif
 
 
-const jbl_var_operators * jbl_var_scanner(unsigned char * YYCURSOR,unsigned char *YYLIMIT,unsigned char **addr)
+jbl_var_scanner_key jbl_var_scanner(unsigned char * YYCURSOR,unsigned char **addr)
 {
-	unsigned char *		YYMARKER;
+//	unsigned char * YYMARKER;
 	#define YYCTYPE		unsigned char
-	#define YYFILL(n)	return (const jbl_var_operators *)JBL_VAR_SCANNER_KEY_END;
-    /*!re2c
-		[^]					{if(addr)*addr=YYCURSOR;return (const jbl_var_operators *)JBL_VAR_SCANNER_KEY_UNDEFINED;}	
-		"%d"				{if(addr)*addr=YYCURSOR;return (const jbl_var_operators *)JBL_VAR_SCANNER_KEY_INT;}	
-		"%f"				{if(addr)*addr=YYCURSOR;return (const jbl_var_operators *)JBL_VAR_SCANNER_KEY_DOUBLE;}
-		"%s"				{if(addr)*addr=YYCURSOR;return (const jbl_var_operators *)JBL_VAR_SCANNER_KEY_CHARS;}
-		"%c"				{if(addr)*addr=YYCURSOR;return (const jbl_var_operators *)JBL_VAR_SCANNER_KEY_CHAR;}
-		"%X"				{if(addr)*addr=YYCURSOR;return (const jbl_var_operators *)JBL_VAR_SCANNER_KEY_HEX;}
+	/*!re2c
+re2c:yyfill:enable = 0;
+		[^]		{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_UNDEFINED;}	
+		[\x00]	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_END;}	
+		"%d"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_INT;}	
+		"%f"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_DOUBLE;}
+		"%s"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_CHARS;}
+		"%c"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_CHAR;}
+		"%X"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_HEX;}
+		"%v"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_VAR;}
      */
 	#undef YYCTYPE
 	#undef YYFILL	

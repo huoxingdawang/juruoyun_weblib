@@ -673,9 +673,9 @@ jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 forma
 {
 	jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_chars(out,UC" size:");
-	jbl_stream_push_uint(out,this->size);
+	jbl_stream_push_uint(out,thi->size);
 	jbl_stream_push_chars(out,UC"\tlen:");
-	jbl_stream_push_uint(out,this->len);
+	jbl_stream_push_uint(out,thi->len);
 	jbl_stream_push_chars(out,UC"\ts:");
 	for(jbl_string_size_type i=0;i<thi->len;jbl_stream_push_char(out,thi->s[i]),++i);
 	jbl_stream_push_char(out,'\n');

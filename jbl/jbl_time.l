@@ -403,7 +403,7 @@ jbl_time* jbl_time_view_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_
 	jbl_time * thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_time",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_chars(out,UC"\ttime stamp:");
 	jbl_stream_push_int(out,thi->t);
-	jbl_stream_push_time(out,this,UC"\tY-m-d H:i:s.u");
+	jbl_stream_push_time(out,thi,UC"\tY-m-d H:i:s.u");
 	jbl_stream_push_char(out,'\n');
 	return this;
 }

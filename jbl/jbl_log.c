@@ -50,12 +50,10 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 	__jbl_logs[__jbl_logs_cnt].chars=s;
 	va_list arg_ptr;
 	va_start(arg_ptr,s);
-	for(jbl_string_size_type i=0,len=jbl_strlen(s);i<len;++i)
+	for(;*s;)
 	{
-		unsigned char * addr;
-		const jbl_var_operators *key=jbl_var_scanner(s+i,s+len,&addr);
-		i=addr-s-1;
-		switch((jbl_pointer_int)key)
+		jbl_var_scanner_key key=jbl_var_scanner(s,&s);
+		switch(key)
 		{
 			case JBL_VAR_SCANNER_KEY_UNDEFINED				:							;break;
 			case JBL_VAR_SCANNER_KEY_END					:goto finish;				;break;
@@ -65,7 +63,7 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 			case JBL_VAR_SCANNER_KEY_CHAR					:__jbl_log_parameter[__jbl_log_parameter_cnt].c=va_arg(arg_ptr,int)			;++__jbl_log_parameter_cnt	;break;//类型提升
 			case JBL_VAR_SCANNER_KEY_CHARS					:__jbl_log_parameter[__jbl_log_parameter_cnt].s=va_arg(arg_ptr,char *)		;++__jbl_log_parameter_cnt	;break;
 			case JBL_VAR_SCANNER_KEY_HEX					:__jbl_log_parameter[__jbl_log_parameter_cnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_log_parameter_cnt	;break;
-			default											:__jbl_log_parameter[__jbl_log_parameter_cnt].p=va_arg(arg_ptr,void *)		;++__jbl_log_parameter_cnt	;break;
+			case JBL_VAR_SCANNER_KEY_VAR					:__jbl_log_parameter[__jbl_log_parameter_cnt].v=jbl_var_copy(va_arg(arg_ptr,jbl_var*))	;++__jbl_log_parameter_cnt	;break;
 		}
 	}
 	finish:;
@@ -102,14 +100,12 @@ void jbl_log_save()
 		jbl_stream_push_chars(out,UC "Line:");jbl_stream_push_uint (out,   __jbl_logs[i].line);jbl_stream_push_char(out,'\t');
 		jbl_stream_push_chars(out,UC "Func:");jbl_stream_push_chars(out,UC __jbl_logs[i].func);jbl_stream_push_char(out,'\t');
 		
-		for(jbl_string_size_type k=0,len=jbl_strlen(__jbl_logs[i].chars);k<len;++k)
+		for(unsigned char *s=__jbl_logs[i].chars;*s;)
 		{
-			unsigned char * addr;		
-			const jbl_var_operators *key=jbl_var_scanner(__jbl_logs[i].chars+k,__jbl_logs[i].chars+len,&addr);
-			k=addr-__jbl_logs[i].chars-1;
-			switch((jbl_pointer_int)key)
+			jbl_var_scanner_key key=jbl_var_scanner(s,&s);
+			switch(key)
 			{
-				case JBL_VAR_SCANNER_KEY_UNDEFINED				:jbl_stream_push_char(out,__jbl_logs[i].chars[k])						;break;
+				case JBL_VAR_SCANNER_KEY_UNDEFINED				:jbl_stream_push_char(out,*(s-1))										;break;
 				case JBL_VAR_SCANNER_KEY_END					:goto finish															;break;
 				case JBL_VAR_SCANNER_KEY_INT					:jbl_stream_push_int(out,__jbl_log_parameter[j].i)				;++j	;break;
 				case JBL_VAR_SCANNER_KEY_UINT					:jbl_stream_push_uint(out,__jbl_log_parameter[j].u)				;++j	;break;
@@ -117,7 +113,7 @@ void jbl_log_save()
 				case JBL_VAR_SCANNER_KEY_CHAR					:jbl_stream_push_char(out,__jbl_log_parameter[j].c)				;++j	;break;
 				case JBL_VAR_SCANNER_KEY_CHARS					:jbl_stream_push_chars(out,UC __jbl_log_parameter[j].s)			;++j	;break;
 				case JBL_VAR_SCANNER_KEY_HEX					:jbl_stream_push_hex(out,__jbl_log_parameter[j].u)				;++j	;break;
-				default											:if(((const jbl_var_operators *)key)->view_put)((const jbl_var_operators *)key)->view_put(__jbl_log_parameter[j].p,out,1,0,0,NULL,NULL,NULL)	;++j;	;break;
+				case JBL_VAR_SCANNER_KEY_VAR					:jbl_stream_push_char(out,'\n');jbl_var_view_put(__jbl_log_parameter[j].v,out,1,JBL_VIEW_DEFAULT_TABS,0,NULL,NULL,NULL)	;__jbl_log_parameter[j].v=jbl_var_free(__jbl_log_parameter[j].v)	;++j	;break;
 			}
 		}
 		finish:;

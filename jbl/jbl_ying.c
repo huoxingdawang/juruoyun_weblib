@@ -28,9 +28,9 @@ void jbl_start()
 }
 void jbl_stop()
 {
+	jbl_string_stop();
 	jbl_log_stop();
 	jbl_stream_stop();
-	jbl_string_stop();
 	jbl_malloc_stop();
 }
 inline jbl_int64 jbl_ceil(long double i)

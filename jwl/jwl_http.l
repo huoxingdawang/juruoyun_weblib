@@ -32,6 +32,7 @@ jwl_http_head *jwl_http_head_init(jwl_http_head * this)
 	this->range.end		=0;	
 	this->etag			=NULL;
 
+	this->cond			=0;	
 //jbl_string
 	this->content_type	=NULL;
 	this->filename		=NULL;
@@ -89,7 +90,7 @@ inline jwl_http_head *jwl_http_head_extend(jwl_http_head * this,jwl_http_head **
 	{
 		jwl_http_head *ttt=((jbl_reference*)thi)->ptr;
 		if(jbl_gc_refcnt(thi)==1)
-			((jbl_reference*)thi)->ptr=NULL,pl();
+			((jbl_reference*)thi)->ptr=NULL,
 		jwl_http_head_free(thi);
 		thi=ttt;
 	}	
@@ -221,126 +222,100 @@ void jwl_http_head_encode(jbl_stream *stream,jwl_http_head *head,jbl_string_size
 	rn();
 #undef rn
 }
-// GET / HTTP/1.1
-// Host: test0.juruoyun.top:1217
-// User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
-// Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-// Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
-// Accept-Encoding: gzip, deflate
-// Connection: keep-alive
-// Upgrade-Insecure-Requests: 1
-// Pragma: no-cache
-// Cache-Control: no-cache
+/*!types:re2c */
 
-jwl_http_key __jwl_http_rqhd_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
-{
-	unsigned char *		YYMARKER;
-	#define YYCTYPE		unsigned char
-	#define YYFILL(n)	return JWL_HTTP_KEY_END;
-    /*!re2c
-		[^]								{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_UNDEFINED;}	
-		"\r\n\r\n"						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_END;}
-		"Host: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_HOST;}
-		"User-Agent: "					{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_UA;}
-		"Accept: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ACCEPT;}
-		"Accept-Encoding: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ACCEPT_ENCODING;}
-		"Accept-Language: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ACCEPT_LANGUAGE;}
-		"Cache-Control: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_CACHE_CONTROL;}
-		"Cookie: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_CACHE_CONTROL;}
-		"Referer: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_REFERER;}
-		"Etag: "						{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ETAG;}
-		"If-None-Match: "				{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_ETAG;}
-		"Range: bytes="					{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_RANGE_BYTES;}
-		"Connection: "					{if(addr)*addr=YYCURSOR;return JWL_HTTP_KEY_CONNECTION;}
-     */
-	#undef YYCTYPE
-	#undef YYFILL
-}
-//Connection: keep-alive
-jwl_http_method __jwl_http_method_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
-{
-	unsigned char *		YYMARKER;
-	#define YYCTYPE		unsigned char
-	#define YYFILL(n)	return 0;
-    /*!re2c
-		[^]		{if(addr)*addr=YYCURSOR;return JWL_HTTP_METHOD_UNKNOW;}	
-		"POST"	{if(addr)*addr=YYCURSOR;return JWL_HTTP_METHOD_POST;}
-		"GET"	{if(addr)*addr=YYCURSOR;return JWL_HTTP_METHOD_GET;}
-     */
-	#undef YYCTYPE
-	#undef YYFILL
-}
-jwl_http_protocol __jwl_http_protocol_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
-{
-	unsigned char *		YYMARKER;
-	#define YYCTYPE		unsigned char
-	#define YYFILL(n)	return 0;
-    /*!re2c
-		[^]			{if(addr)*addr=YYCURSOR;return JWL_HTTP_PROTOCOL_UNKNOW;}	
-		"HTTP/1.1"	{if(addr)*addr=YYCURSOR;return JWL_HTTP_PROTOCOL_HTTP;}
-     */
-	#undef YYCTYPE
-	#undef YYFILL
-}
-jwl_http_connection __jwl_http_connection_scanner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
-{
-	unsigned char *		YYMARKER;
-	#define YYCTYPE		unsigned char
-	#define YYFILL(n)	return 0;
-    /*!re2c
-		[^]				{if(addr)*addr=YYCURSOR;return JWL_HTTP_CONNECTION_UNKNOW;}	
-		"keep-alive"	{if(addr)*addr=YYCURSOR;return JWL_HTTP_CONNECTION_KEEP_ALIVE;}
-     */
-	#undef YYCTYPE
-	#undef YYFILL
-}
 jwl_http_head* jwl_http_head_decode(jbl_string *buf,jbl_string_size_type *start)
 {	
 	if(!buf)return NULL;
 	buf=jbl_refer_pull(buf);
-	jbl_string_size_type i=0;if(start)i=*start;
-	unsigned char *addr;
+	if(!buf->len)return NULL;
 	jwl_http_head * head=jwl_http_head_new();
 	jwl_http_head_set_request(head);
+	unsigned char *		YYMARKER;
+	unsigned char *		YYCURSOR=buf->s+(start?(*start):0);
+	#define YYCTYPE		unsigned char
+/*!re2c
+	re2c:yyfill:enable					=0;
+	re2c:condenumprefix					=jwl_http_scanner_condition_;
+	re2c:define:YYCONDTYPE				= jwl_http_scanner_condition;
+	re2c:define:YYSETCONDITION			= "head->cond = ";
+	re2c:define:YYSETCONDITION@cond		= #;
+	re2c:define:YYGETCONDITION			= head->cond;
+	re2c:define:YYGETCONDITION:naked	= 1;
+	<> :=> method
+	<method> 		"POST"								{head->method=JWL_HTTP_METHOD_POST														;goto yyc_method;}
+	<method> 		"GET"								{head->method=JWL_HTTP_METHOD_GET														;goto yyc_method;}
+	<method>		" " 				=> url			{head->url				=jbl_string_free    (head->url)									;goto yyc_url;}
 	
-	head->method=__jwl_http_method_scanner(buf->s+i,buf->s+buf->len,&addr);i=addr-buf->s;
+	<url>			[]									{head->url				=jbl_string_add_char(head->url,*YYCURSOR)						;++YYCURSOR;goto yyc_url;}
+	<url>			" " 				=> protocol		{																						;goto yyc_protocol;}
 	
-	for(++i;buf->s[i]!=' ';head->url=jbl_string_add_char(head->url,buf->s[i]),++i);++i;
+	<protocol>		"HTTP/1.1"							{head->protocol			=JWL_HTTP_PROTOCOL_HTTP_1_1										;goto yyc_protocol;}
+	<protocol>		"\r\n"				=> head_body	{																						;goto yyc_head_body;}
 	
-	head->protocol=__jwl_http_protocol_scanner(buf->s+i,buf->s+buf->len,&addr);i=addr-buf->s;
+	<head_body>		"Host: "			=> head_host	{head->host				=jbl_string_free    (head->host)								;goto yyc_head_host;}
+	<head_host>		[]									{head->host				=jbl_string_add_char(head->host,*YYCURSOR)						;++YYCURSOR;goto yyc_head_host;}
+	<head_host>		"\r\n"				=> head_body	{																						;goto yyc_head_body;}
 
-	for(;i<buf->len;++i)
-	{
-		jwl_http_key key=__jwl_http_rqhd_scanner(buf->s+i,buf->s+buf->len,&addr);
-		switch(key)
-		{
-			case JWL_HTTP_KEY_END				:goto finish;																																							;break;
-			case JWL_HTTP_KEY_UA				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;head->ua		=jbl_string_add_char(head->ua		,buf->s[i]),++i)	;--head->ua->len			;break;
-			case JWL_HTTP_KEY_HOST				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;head->host		=jbl_string_add_char(head->host		,buf->s[i]),++i)	;--head->host->len			;break;
-			case JWL_HTTP_KEY_REFERER			:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;head->referer	=jbl_string_add_char(head->referer	,buf->s[i]),++i)	;--head->referer->len		;break;
-			case JWL_HTTP_KEY_ETAG				:for(i=addr-buf->s;i<buf->len&&buf->s[i-1]!='\r'&&buf->s[i]!='\n'	;head->etag		=jbl_string_add_char(head->etag		,buf->s[i]),++i)	;--head->etag->len			;break;
-			case JWL_HTTP_KEY_RANGE_BYTES		:head->range.start=jbl_string_get_uint_start_end(buf,&i,'-')		;head->range.end=jbl_string_get_uint_start_end(buf,&i,'\r');head->range.end?(head->range.end+=1):0	;break;//注意，range是闭区间，而jwl,jbl要求左闭右开区间
-			case JWL_HTTP_KEY_CONNECTION		:i=addr-buf->s;head->connection=__jwl_http_connection_scanner(buf->s+i,buf->s+buf->len,&addr);i=addr-buf->s;break;
-			
-			case JWL_HTTP_KEY_COOKIE			:break;
-			case JWL_HTTP_KEY_ACCEPT			:break;
-			case JWL_HTTP_KEY_ACCEPT_ENCODING	:break;
-			case JWL_HTTP_KEY_ACCEPT_LANGUAGE	:break;
-			case JWL_HTTP_KEY_CACHE_CONTROL		:break;
-			
-			
-			
-			default:break;
-		}
+	<head_body>		"User-Agent: "		=> head_ua		{head->ua				=jbl_string_free    (head->ua)									;goto yyc_head_ua;}
+	<head_ua>		[]									{head->ua				=jbl_string_add_char(head->ua,*YYCURSOR)						;++YYCURSOR;goto yyc_head_ua;}
+	<head_ua>		"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+	
+	<head_body>		"Referer: "			=> head_refer	{head->referer			=jbl_string_free    (head->referer)								;goto yyc_head_refer;}
+	<head_refer>	[]									{head->referer			=jbl_string_add_char(head->referer,*YYCURSOR)					;++YYCURSOR;goto yyc_head_refer;}
+	<head_refer>	"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+
+	<head_body>		"Etag: "			=> head_etag	{head->etag				=jbl_string_free    (head->etag)								;goto yyc_head_etag;}
+	<head_body>		"If-None-Match: "	=> head_etag	{head->etag				=jbl_string_free    (head->etag)								;goto yyc_head_etag;}
+	<head_etag>		[]									{head->etag				=jbl_string_add_char(head->etag,*YYCURSOR)						;++YYCURSOR;goto yyc_head_etag;}
+	<head_etag>		"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+	
+	<head_body>		"Connection: "		=> head_conn	{																						;goto yyc_head_conn;}
+	<head_conn>		"keep-alive"						{head->connection		=JWL_HTTP_CONNECTION_KEEP_ALIVE									;goto yyc_head_conn;}
+	<head_conn>		"close"								{head->connection		=JWL_HTTP_CONNECTION_CLOSE										;goto yyc_head_conn;}
+	<head_conn>		"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+	
+	<head_body>		"Range: bytes="		=> head_range_s	{head->range.start		=0																;goto yyc_head_range_s;}
+	<head_range_s>	"-"					=> head_range_e	{head->range.end		=0																;goto yyc_head_range_e;}
+	<head_range_s>	[0-9]								{head->range.start		=(head->range.start<<3)+(head->range.start<<1)+*(YYCURSOR-1)-'0';goto yyc_head_range_s;}
+	<head_range_s>	"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+	<head_range_e>	[0-9]								{head->range.end		=(head->range.end<<3)+(head->range.end<<1)+*(YYCURSOR-1)-'0'	;goto yyc_head_range_e;}
+	<head_range_e>	"\r\n"				=> head_body	{head->range.end		=(head->range.end)?(head->range.end+1):0						;goto yyc_head_body;}
+	
+	<head_body>		"Accept: "			=> head_accept	{																						;goto yyc_head_accept;}
+	<head_accept>	[]									{																						;++YYCURSOR;goto yyc_head_accept;}
+	<head_accept>	"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+
+	<head_body>		"Accept-Encoding: "	=> head_acen	{																						;goto yyc_head_acen;}
+	<head_acen>		[]									{																						;++YYCURSOR;goto yyc_head_acen;}
+	<head_acen>		"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+
+	<head_body>		"Accept-Language: "	=> head_aclan	{																						;goto yyc_head_aclan;}
+	<head_aclan>	[]									{																						;++YYCURSOR;goto yyc_head_aclan;}
+	<head_aclan>	"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+
+	<head_body>		"Cookie: "			=> head_cookie	{																						;goto yyc_head_cookie;}
+	<head_cookie>	[]									{																						;++YYCURSOR;goto yyc_head_cookie;}
+	<head_cookie>	"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+
+	<head_body>		"Cache-Control: "	=> head_checcon	{																						;goto yyc_head_checcon;}
+	<head_checcon>	[]									{																						;++YYCURSOR;goto yyc_head_checcon;}
+	<head_checcon>	"\r\n"				=> head_body	{																						;goto yyc_head_body;}
+
+
+
+
+	
+	<head_body>		[]									{																						;++YYCURSOR;goto yyc_head_body;}
+	<head_body>		"\r\n\r\n"							{if(start)*start=YYCURSOR-buf->s;return head;}
+	<head_body>		[\x00]								{if(start)*start=YYCURSOR-buf->s;return head;}
 		
-	}
-finish:;
-	if(start)*start=i;
-	
-	
+ */
+	#undef YYCTYPE	
+
+
 	return head;
 }
-
 
 
 #if JBL_STREAM_ENABLE==1
@@ -351,7 +326,7 @@ jwl_http_head* jwl_http_head_view_put(jwl_http_head* this,jbl_stream *out,jbl_ui
 	++tabs;
 	char * charset		[]={"unknow","UTF-8"};
 	char * method		[]={"unknow","get","post"};
-	char * protocol		[]={"unknow","HTTP"};
+	char * protocol		[]={"unknow","HTTP/1.1"};
 	char * connection	[]={"unknow","keep alive","close","upgrade"};
 	char * cache		[]={"unknow","no","max age,"};
 	char * type			[]={"response","request"};

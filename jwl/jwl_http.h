@@ -21,7 +21,6 @@
 #define JWL_HTTP_CHARSET_UNKNOW			0
 #define JWL_HTTP_CHARSET_UTF8			1
 
-
 typedef struct __jwl_http_head//response head 响应头
 {
 	jbl_gc			gc;
@@ -54,23 +53,10 @@ typedef struct __jwl_http_head//response head 响应头
 	
 	jbl_ht *		cookie;
 	jbl_ht *		v;
+	
+	
+	int cond;
 }jwl_http_head;
-typedef enum
-{
-	JWL_HTTP_KEY_UNDEFINED,
-	JWL_HTTP_KEY_END,
-	JWL_HTTP_KEY_UA,
-	JWL_HTTP_KEY_HOST,
-	JWL_HTTP_KEY_REFERER,
-	JWL_HTTP_KEY_ETAG,
-	JWL_HTTP_KEY_COOKIE,
-	JWL_HTTP_KEY_ACCEPT,
-	JWL_HTTP_KEY_ACCEPT_ENCODING,
-	JWL_HTTP_KEY_ACCEPT_LANGUAGE,
-	JWL_HTTP_KEY_CACHE_CONTROL,
-	JWL_HTTP_KEY_RANGE_BYTES,
-	JWL_HTTP_KEY_CONNECTION,
-}jwl_http_key;
 typedef enum
 {
 	JWL_HTTP_METHOD_UNKNOW,
@@ -80,7 +66,7 @@ typedef enum
 typedef enum
 {
 	JWL_HTTP_PROTOCOL_UNKNOW,
-	JWL_HTTP_PROTOCOL_HTTP,
+	JWL_HTTP_PROTOCOL_HTTP_1_1,
 	JWL_HTTP_PROTOCOL_HTTPS,
 }jwl_http_protocol;
 typedef enum
@@ -111,7 +97,11 @@ jwl_http_head *	jwl_http_head_set_etag				(jwl_http_head * this,jbl_string * eta
 
 jwl_http_head *	jwl_http_head_set_content_type		(jwl_http_head * this,jbl_string * content_type);
 jwl_http_head *	jwl_http_head_set_filename			(jwl_http_head * this,jbl_string * filename);
-//jwl_http_head *	jwl_http_head_set					(jwl_http_head * this,jbl_string * k, jbl_var *v);
+
+
+
+
+//jwl_http_head *	jwl_http_head_set				(jwl_http_head * this,jbl_string * k, jbl_var *v);
 #define			jwl_http_head_set_request(x)		(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置request标记
 #define			jwl_http_head_set_response(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//设置response标记
 #define			jwl_http_head_is_request(x)			(jbl_gc_is_user1((jwl_socket*)jbl_refer_pull(x)))		//获取request标记

@@ -14,48 +14,43 @@
 #include "jwl_ying.h"
 #include "jwl_socket.h"
 #include "jwl_http_content.h"
-
-#define JWL_HTTP_CACHE_UNKNOW			0
-#define JWL_HTTP_CACHE_NO				1
-#define JWL_HTTP_CACHE_MAX_AGE			2
-#define JWL_HTTP_CHARSET_UNKNOW			0
-#define JWL_HTTP_CHARSET_UTF8			1
-
+typedef struct __jwl_http_head_range 
+{
+		jbl_uint64 start;
+		jbl_uint64 end;	
+}jwl_http_head_range;
 typedef struct __jwl_http_head//response head 响应头
 {
-	jbl_gc			gc;
+	jbl_gc				gc;
 //response
-	jbl_uint32 		status:9;
-	jbl_uint32		charset:1;
+	jbl_uint32 			status:9;
+	jbl_uint32			charset:1;
 	
 //request
-	jbl_uint32		method:3;
-	jbl_uint32		protocol:2;
+	jbl_uint32			method:3;
+	jbl_uint32			protocol:2;
 //both	
-	jbl_uint32		connection:2;
-	jbl_uint32 		cache:2;
-	jbl_uint32 		cache_max_age;
-	struct{
-		jbl_uint64 start;
-		jbl_uint64 end;
-	}range;
-	jbl_string *	etag;
+	jbl_uint32			connection:2;
+	jbl_uint32 			cache:2;
+	jbl_uint32 			upgrade:1;
+	jbl_uint32 			cache_max_age;
+	jwl_http_head_range	range;
+	jbl_string *		etag;
 	
 //response
-	jbl_string *	content_type;
-	jbl_string *	filename;	
+	jbl_string *		content_type;
+	jbl_string *		filename;	
 //request
-	jbl_string *	url;
-	jbl_string *	host;
-	jbl_string *	ua;
-	jbl_string *	referer;
+	jbl_string *		url;
+	jbl_string *		host;
+	jbl_string *		ua;
+	jbl_string *		referer;
 	
 	
-	jbl_ht *		cookie;
-	jbl_ht *		v;
+	jbl_ht *			cookie;
+	jbl_ht *			v;
 	
-	
-	int cond;
+	int					cond;
 }jwl_http_head;
 typedef enum
 {
@@ -76,6 +71,22 @@ typedef enum
 	JWL_HTTP_CONNECTION_CLOSE,
 	JWL_HTTP_CONNECTION_UPGRADE,
 }jwl_http_connection;
+typedef enum
+{
+	JWL_HTTP_CACHE_UNKNOW,
+	JWL_HTTP_CACHE_NO,
+	JWL_HTTP_CACHE_MAX_AGE,
+}jwl_http_cache;
+typedef enum
+{
+	JWL_HTTP_CHARSET_UNKNOW,
+	JWL_HTTP_CHARSET_UTF8,
+}jwl_http_charset;
+typedef enum
+{
+	JWL_HTTP_UPGRADE_UNKNOW,
+	JWL_HTTP_UPGRADE_WEBSOCKET,
+}jwl_http_upgrade;
 jwl_http_head *	jwl_http_head_new			();
 jwl_http_head *	jwl_http_head_init			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_free			(jwl_http_head * this);
@@ -86,17 +97,43 @@ jwl_http_head *	jwl_http_head_extend		(jwl_http_head * this,jwl_http_head **pthi
 void			jwl_http_head_encode		(jbl_stream *stream,jwl_http_head *head,jbl_string_size_type size);
 jwl_http_head *	jwl_http_head_decode		(jbl_string *buf,jbl_string_size_type *start);
 
-jwl_http_head *	jwl_http_head_set_status			(jwl_http_head * this,jbl_uint16 status);
-jwl_http_head *	jwl_http_head_set_charset			(jwl_http_head * this,jbl_uint16 charset);
 
-jwl_http_head *	jwl_http_head_set_connection		(jwl_http_head * this,jbl_uint16 connection);
-jwl_http_head *	jwl_http_head_set_cache				(jwl_http_head * this,jbl_uint16 cache);
-jwl_http_head *	jwl_http_head_set_cache_max_age		(jwl_http_head * this,jbl_uint32 cache_max_age);
-jwl_http_head *	jwl_http_head_set_range				(jwl_http_head * this,jbl_uint64 start,jbl_uint64 end);
-jwl_http_head *	jwl_http_head_set_etag				(jwl_http_head * this,jbl_string * etag);
 
-jwl_http_head *	jwl_http_head_set_content_type		(jwl_http_head * this,jbl_string * content_type);
-jwl_http_head *	jwl_http_head_set_filename			(jwl_http_head * this,jbl_string * filename);
+jwl_http_head *		jwl_http_head_set_status			(jwl_http_head * this,jbl_uint32 status);
+jwl_http_head *		jwl_http_head_set_charset			(jwl_http_head * this,jbl_uint32 charset);
+jwl_http_head *		jwl_http_head_set_method			(jwl_http_head * this,jbl_uint32 method);
+jwl_http_head *		jwl_http_head_set_protocol			(jwl_http_head * this,jbl_uint32 protocol);
+jwl_http_head *		jwl_http_head_set_connection		(jwl_http_head * this,jbl_uint32 connection);
+jwl_http_head *		jwl_http_head_set_cache				(jwl_http_head * this,jbl_uint32 cache);
+jwl_http_head *		jwl_http_head_set_upgrade			(jwl_http_head * this,jbl_uint32 upgrade);
+jwl_http_head *		jwl_http_head_set_cache_max_age		(jwl_http_head * this,jbl_uint32 cache_max_age);
+jwl_http_head *		jwl_http_head_set_range				(jwl_http_head * this,jwl_http_head_range range);
+jwl_http_head *		jwl_http_head_set_etag				(jwl_http_head * this,jbl_string * etag);
+jwl_http_head *		jwl_http_head_set_content_type		(jwl_http_head * this,jbl_string * content_type);
+jwl_http_head *		jwl_http_head_set_filename			(jwl_http_head * this,jbl_string * filename);
+jwl_http_head *		jwl_http_head_set_url				(jwl_http_head * this,jbl_string * url);
+jwl_http_head *		jwl_http_head_set_host				(jwl_http_head * this,jbl_string * host);
+jwl_http_head *		jwl_http_head_set_ua				(jwl_http_head * this,jbl_string * ua);
+jwl_http_head *		jwl_http_head_set_referer			(jwl_http_head * this,jbl_string * referer);
+jwl_http_head *		jwl_http_head_set					(jwl_http_head * this,unsigned char * key,jbl_var* var);		
+
+jbl_uint32			jwl_http_head_get_status			(jwl_http_head * this);
+jbl_uint32			jwl_http_head_get_charget			(jwl_http_head * this);
+jbl_uint32			jwl_http_head_get_method			(jwl_http_head * this);
+jbl_uint32			jwl_http_head_get_protocol			(jwl_http_head * this);
+jbl_uint32			jwl_http_head_get_connection		(jwl_http_head * this);
+jbl_uint32			jwl_http_head_get_cache				(jwl_http_head * this);
+jbl_uint32			jwl_http_head_get_upgrade			(jwl_http_head * this);
+jbl_uint32			jwl_http_head_get_cache_max_age		(jwl_http_head * this);
+jwl_http_head_range	jwl_http_head_get_range				(jwl_http_head * this);
+jbl_string *		jwl_http_head_get_etag				(jwl_http_head * this);
+jbl_string *		jwl_http_head_get_content_type		(jwl_http_head * this);
+jbl_string *		jwl_http_head_get_filename			(jwl_http_head * this);
+jbl_string *		jwl_http_head_get_url				(jwl_http_head * this);
+jbl_string *		jwl_http_head_get_host				(jwl_http_head * this);
+jbl_string *		jwl_http_head_get_ua				(jwl_http_head * this);
+jbl_string *		jwl_http_head_get_referer			(jwl_http_head * this);
+jbl_var    *		jwl_http_head_get					(jwl_http_head * this,unsigned char * key);		
 
 
 

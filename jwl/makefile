@@ -18,16 +18,19 @@ ifeq ($(system),windows)
 JWL_EXLIB = -lwsock32
 endif
 
-jwl					:jwl/jwl_ying jwl/jwl_socket jwl/jwl_http
+jwl					:jwl/jwl_ying jwl/jwl_socket jwl/jwl_http jwl/jwl_websocket
 	ar rc tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jwl_*.o
 jwl/jwl_ying		:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ying.o    jwl$(H)jwl_ying.c   $(JWL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ying.o       jwl$(H)jwl_ying.c      $(JWL_EXLIB)
 jwl/jwl_socket		:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket.o  jwl$(H)jwl_socket.c $(JWL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket.o     jwl$(H)jwl_socket.c    $(JWL_EXLIB)
 jwl/jwl_http		:
 ifeq ($(system),linux)
 ifeq ($(findstring jwl,$(complain_re2c)),jwl)
 	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
 endif
 endif
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_http.o    jwl$(H)jwl_http.c   $(JWL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_http.o       jwl$(H)jwl_http.c      $(JWL_EXLIB)
+jwl/jwl_websocket   :
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_websocket.o  jwl$(H)jwl_websocket.c $(JWL_EXLIB)
+	

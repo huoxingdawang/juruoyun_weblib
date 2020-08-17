@@ -54,6 +54,9 @@ jwl_socket * jwl_socket_init(jwl_socket *this)
 	this->handle=-1;
 	this->ip=0;
 	this->port=0;
+#ifdef jwl_socket_payload
+	this->payload=jwl_socket_payload_NULL;
+#endif
 	return this;
 }
 inline jwl_socket *jwl_socket_copy(jwl_socket * this)
@@ -70,7 +73,12 @@ jwl_socket * jwl_socket_free(jwl_socket *this)
 		if(jbl_gc_is_ref(this))
 			jwl_socket_free((jwl_socket*)(((jbl_reference*)this)->ptr));
 		else
+		{
 			jwl_socket_close(this);
+#ifdef jwl_socket_payload
+			jwl_socket_payload_free(this->payload);
+#endif
+		}
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));
@@ -80,58 +88,63 @@ jwl_socket * jwl_socket_free(jwl_socket *this)
 	}
 	return NULL;
 }
-jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)
+jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port)
 {
 //分离
 	if(!this)this=jwl_socket_new();
-	if(this->handle!=-1)jbl_exception("SOCKET REUSE");
-	this->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	jwl_socket* thi=jbl_refer_pull(this);
+	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
+	thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	struct sockaddr_in skaddr;
 	skaddr.sin_family=AF_INET;
-	skaddr.sin_port=htons(port);
+	jbl_endian_to_big_uint16(&port,&skaddr.sin_port);
 	skaddr.sin_addr.s_addr=ip;	
-	if(bind(this->handle,((struct sockaddr *)&skaddr),sizeof(skaddr))==-1)
-		this=jwl_socket_close(this),jbl_exception("BIND FAILED");
-	if(listen(this->handle,1024)==-1)
-		this=jwl_socket_close(this),jbl_exception("LISTEN FAILED");
-	jwl_socket_set_host(this);
-	this->port=port;
-	this->ip=ip;
+	if(bind(thi->handle,((struct sockaddr *)&skaddr),sizeof(skaddr))==-1)
+		thi=jwl_socket_close(thi),jbl_exception("BIND FAILED");
+	if(listen(thi->handle,1024)==-1)
+		thi=jwl_socket_close(thi),jbl_exception("LISTEN FAILED");
+	jwl_socket_set_host(thi);
+	thi->port=port;
+	thi->ip=ip;
 	return this;
 }
-jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port)
+jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port)
 {
 //分离
-	if(!this)this=jwl_socket_new();
-	if(this->handle!=-1)jbl_exception("SOCKET REUSE");
-	this->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	if(!this)jbl_exception("NULL POINTER");
+	jwl_socket* thi=jbl_refer_pull(this);
+	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
+	thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	struct sockaddr_in skaddr;
 	skaddr.sin_family=AF_INET;
-	skaddr.sin_port=htons(port);
+	jbl_endian_to_big_uint16(&port,&skaddr.sin_port);
 	skaddr.sin_addr.s_addr=ip;
-	if(connect(this->handle,(struct sockaddr*)&skaddr,sizeof(skaddr))==-1)
-		this=jwl_socket_close(this),jbl_log(UC "CONNECT FAILED");
-	this->port=port;
-	this->ip=ip;
+	if(connect(thi->handle,(struct sockaddr*)&skaddr,sizeof(skaddr))==-1)
+		thi=jwl_socket_close(thi),jbl_log(UC "CONNECT FAILED");
+	thi->port=port;
+	thi->ip=ip;
 	return this;
 }
 inline jwl_socket * jwl_socket_close(jwl_socket *this)
 {
+	if(!this)return NULL;
+	jwl_socket* thi=jbl_refer_pull(this);
 #ifdef _WIN32
-	if(this)(this->handle==-1?0:closesocket(this->handle));
+	if(thi)(thi->handle==-1?0:closesocket(thi->handle));
 #elif defined(__APPLE__) || defined(__linux__)
-	if(this)(this->handle==-1?0:close(this->handle));
+	if(thi)(thi->handle==-1?0:close(thi->handle));
 #endif
-	jwl_socket_reset_host(this);
-	this->port=0;
-	this->ip=0;
-	this->handle=-1;
+	jwl_socket_reset_host(thi);
+	thi->port=0;
+	thi->ip=0;
+	thi->handle=-1;
 	return this;
 }
 inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 {
 	if(!this)return NULL;
-	if(!jwl_socket_is_host(this))jbl_exception("ACCEPT FROM UNHOST SOCKET");
+	jwl_socket* thi=jbl_refer_pull(this);
+	if(!jwl_socket_is_host(thi))jbl_exception("ACCEPT FROM UNHOST SOCKET");
 	struct sockaddr_in claddr;
 #ifdef _WIN32
 	int length=sizeof(claddr);
@@ -140,63 +153,32 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 	unsigned int length=sizeof(claddr);
 	int handle;
 #endif	
-	if((handle=accept(this->handle,(struct sockaddr*)&claddr,&length))==-1)
+	if((handle=accept(thi->handle,(struct sockaddr*)&claddr,&length))==-1)
 	{
 		jbl_log(UC "ACCEPT FAILED");
 		return NULL;
 	}
 	jwl_socket *client=jwl_socket_new();
 	client->handle=handle;
-	client->port=ntohs(claddr.sin_port);
-	client->ip=claddr.sin_addr.s_addr;	
+	jbl_endian_from_big_uint16(&claddr.sin_port,&client->port);
+	client->ip=claddr.sin_addr.s_addr;
 	return client;
 }
-//TODO 考虑移除
-jwl_socket * jwl_socket_send_safe(jwl_socket *this,jbl_string *data)
+#ifdef jwl_socket_payload
+jwl_socket * jwl_socket_set_payload(jwl_socket * this,jwl_socket_payload payload)
 {
-	if(!this)jbl_exception("NULL POINTER");
-	if(jwl_socket_is_host(this))jbl_exception("SEND FROM HOST SOCKET");	
-	if(!data)return this;
-	char buf[16];
-	unsigned long long n=jbl_string_get_length(data);
-	jbl_memory_copy(buf,&n,sizeof n);
-	if((send(this->handle,buf,16,0)==-1)||
-	    send(this->handle,(char*)jbl_string_get_chars(data),jbl_string_get_length(data),0)==-1)
-		jbl_log(UC "SEND FAILED");
+	if(!this)jbl_exception("NULL POINTER");	
+	jwl_socket* thi=jbl_refer_pull(this);
+	thi->payload=jwl_socket_payload_copy(payload);
 	return this;
 }
-jbl_string * jwl_socket_receive_safe(jwl_socket *this,jbl_string *data)
+jwl_socket_payload jwl_socket_get_payload(jwl_socket * this)
 {
-	if(!this)jbl_exception("NULL POINTER");
-	if(jwl_socket_is_host(this))jbl_exception("RECEIVE FROM HOST SOCKET");	
-    char buf[16];int ret;
-	unsigned long long n=0,i=0;
-	recv(this->handle,buf,16,0);
-	jbl_memory_copy(&n,buf,sizeof n);	
-	data=jbl_string_extend(data,n);
-	while(i<n)
-	{
-		ret=recv(this->handle,(char*)jbl_string_get_chars(data)+jbl_string_get_length(data),JWL_SOCKET_RECEIVE_BUF_LENGTH,0);
-		jbl_string_set_length(data,jbl_string_get_length(data)+ret);
-		i+=ret;
-	}
-	return data;
+	if(!this)jbl_exception("NULL POINTER");	
+	jwl_socket* thi=jbl_refer_pull(this);
+	return jwl_socket_payload_copy(thi->payload);
 }
-/*
-void jwl_socket_receive_length(jbl_socket_handle *this,jbl_string *data,jbl_string_size_type length)
-{
-	jbl_string_extend(data,length);
-	for(jbl_string_size_type i=jbl_string_get_length(data);((length-(jbl_string_get_length(data)-i)))!=0;)
-	{	
-		int j=recv(*this,jbl_string_get_chars(data)+jbl_string_get_length(data),((length-(jbl_string_get_length(data)-i))>4096?4096:(length%4096)),0);
-		if(j==-1)
-			jbl_string_get_length(data)=i,jwl_exception(JWL_ERROR_SOCKET_RECEIVE_FAILED);
-		jbl_string_get_length(data)+=j;
-		if(j!=4096)
-			break;
-	}
-}
-*/
+#endif
 #if JBL_STREAM_ENABLE==1
 jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
@@ -215,6 +197,10 @@ jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 forma
 		tmp=jbl_string_free(tmp);
 		jbl_stream_push_chars(out,UC" port:");
 		jbl_stream_push_uint(out,thi->port);
+#ifdef jwl_socket_payload
+		jbl_stream_push_chars(out,UC" payload:");
+		jwl_socket_payload_view(out,thi->payload);
+#endif
 	}
 	jbl_stream_push_char(out,'\n');
 	return this;
@@ -276,7 +262,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 				}				
 			this->tmp[0].u+=j,nxt->en+=j;
 			jbl_stream_do(nxt,0);
-			if(j!=len)
+			if(j!=len&&this->tmp[1].u==-1)
 				break;
 		}
 		jbl_stream_do(nxt,flags);	

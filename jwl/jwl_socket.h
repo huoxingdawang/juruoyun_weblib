@@ -30,7 +30,10 @@ typedef struct __jwl_socket
 	int handle;
 #endif
 	jbl_uint64 ip;
-	jbl_uint32 port;
+	jbl_uint16 port;
+#ifdef jwl_socket_payload
+	jwl_socket_payload payload;
+#endif
 }jwl_socket;
 typedef struct __jwl_socket_poll_data
 {
@@ -53,53 +56,59 @@ typedef struct __jwl_socket_poll
 }jwl_socket_poll;
 
 
-void			jwl_socket_start			();													//启动socket
-jwl_socket *	jwl_socket_new				();													//新建一个socket
-jwl_socket *	jwl_socket_init				(jwl_socket *this);									//初始化一个socket
-jwl_socket *	jwl_socket_free				(jwl_socket *this);									//释放一个socket
-jwl_socket *	jwl_socket_copy				(jwl_socket * this);								//拷贝一个socket
-#define			jwl_socket_extend(this)		(this)
-jwl_socket *	jwl_socket_bind				(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);	//启动一个socket监听
-jwl_socket *	jwl_socket_connect			(jwl_socket *this,jbl_uint64 ip,jbl_uint32 port);	//发起一个socket连接
-jwl_socket *	jwl_socket_close			(jwl_socket *this);									//关闭一个socket请求
-jwl_socket *	jwl_socket_accept			(jwl_socket *this);									//接受一个socket请求
-jwl_socket *	jwl_socket_send_safe		(jwl_socket *this,jbl_string *data);				//安全发送
-jbl_string *	jwl_socket_receive_safe		(jwl_socket *this,jbl_string *data);				//安全接收
-#define			jwl_socket_if_equal(a,b)	(jbl_refer_pull(a)==jbl_refer_pull(b))
+void					jwl_socket_start			();													//启动socket
+jwl_socket *			jwl_socket_new				();													//新建一个socket
+jwl_socket *			jwl_socket_init				(jwl_socket *this);									//初始化一个socket
+jwl_socket *			jwl_socket_free				(jwl_socket *this);									//释放一个socket
+jwl_socket *			jwl_socket_copy				(jwl_socket * this);								//拷贝一个socket
+#define					jwl_socket_extend(this)		(this)
+jwl_socket *			jwl_socket_bind				(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port);	//启动一个socket监听
+jwl_socket *			jwl_socket_connect			(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port);	//发起一个socket连接
+jwl_socket *			jwl_socket_close			(jwl_socket *this);									//关闭一个socket请求
+jwl_socket *			jwl_socket_accept			(jwl_socket *this);									//接受一个socket请求
+#define					jwl_socket_if_equal(a,b)	(jbl_refer_pull(a)==jbl_refer_pull(b))
+#define					jwl_socket_get_ip(x)		(((jwl_socket*)jbl_refer_pull(x))->ip)		
+#define					jwl_socket_get_port(x)		(((jwl_socket*)jbl_refer_pull(x))->port)		
 
-#define			jwl_socket_set_host(x)			(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置host标记
-#define			jwl_socket_reset_host(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//删除host标记
-#define			jwl_socket_is_host(x)			(jbl_gc_is_user1((jwl_socket*)jbl_refer_pull(x)))		//获取host标记
+#ifdef jwl_socket_payload
+jwl_socket *			jwl_socket_set_payload		(jwl_socket * this,jwl_socket_payload payload);
+jwl_socket_payload		jwl_socket_get_payload		(jwl_socket * this);
+#endif
+
+#define					jwl_socket_set_host(x)			(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置host标记
+#define					jwl_socket_reset_host(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//删除host标记
+#define					jwl_socket_is_host(x)			(jbl_gc_is_user1((jwl_socket*)jbl_refer_pull(x)))		//获取host标记
 
 
 #if JBL_STREAM_ENABLE==1
-jwl_socket*		jwl_socket_view_put				(jwl_socket* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个socket
-#define			jwl_socket_view(x)				jwl_socket_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个socket
+jwl_socket*				jwl_socket_view_put				(jwl_socket* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个socket
+#define					jwl_socket_view(x)				jwl_socket_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个socket
 
 
-extern			const jbl_stream_operater	jwl_stream_socket_operators;
-jbl_stream *	jwl_socket_stream_new		(jwl_socket* socket);
-
+extern					const jbl_stream_operater			jwl_stream_socket_operators;
+jbl_stream *			jwl_socket_stream_new				(jwl_socket* socket);
+#define					jwl_socket_stream_set_received(x,y)	(((jbl_stream*)jbl_refer_pull(x))->tmp[0].u=(y))
+#define					jwl_socket_stream_set_total(x,y)	(((jbl_stream*)jbl_refer_pull(x))->tmp[1].u=(y))
 
 #if JBL_VAR_ENABLE==1
-jbl_var *		jwl_socket_Vstream_new		(jwl_socket* socket);
+jbl_var *				jwl_socket_Vstream_new		(jwl_socket* socket);
 #endif
 #endif
 
-jwl_socket_poll *	jwl_socket_poll_new				();													//新建一个socket
-jwl_socket_poll *	jwl_socket_poll_init			(jwl_socket_poll *this);									//初始化一个socket
-jwl_socket_poll *	jwl_socket_poll_free			(jwl_socket_poll *this);									//释放一个socket
-jwl_socket_poll *	jwl_socket_poll_copy			(jwl_socket_poll * this);								//拷贝一个socket
-#define				jwl_socket_poll_extend(this)	(this)
-jwl_socket_poll *	jwl_socket_poll_add				(jwl_socket_poll *this,jwl_socket* socket);
-jwl_socket_poll *	jwl_socket_poll_remove			(jwl_socket_poll *this,jwl_socket* socket);
-jwl_socket_poll * jwl_socket_poll_remove_closed(jwl_socket_poll *this);
-jwl_socket_poll *	jwl_socket_poll_wait			(jwl_socket_poll *this);
-jwl_socket      *	jwl_socket_poll_get				(jwl_socket_poll *this);
+jwl_socket_poll *		jwl_socket_poll_new				();													//新建一个socket
+jwl_socket_poll *		jwl_socket_poll_init			(jwl_socket_poll *this);									//初始化一个socket
+jwl_socket_poll *		jwl_socket_poll_free			(jwl_socket_poll *this);									//释放一个socket
+jwl_socket_poll *		jwl_socket_poll_copy			(jwl_socket_poll * this);								//拷贝一个socket
+#define					jwl_socket_poll_extend(this)	(this)
+jwl_socket_poll *		jwl_socket_poll_add				(jwl_socket_poll *this,jwl_socket* socket);
+jwl_socket_poll *		jwl_socket_poll_remove			(jwl_socket_poll *this,jwl_socket* socket);
+jwl_socket_poll * 		jwl_socket_poll_remove_closed	(jwl_socket_poll *this);
+jwl_socket_poll *		jwl_socket_poll_wait			(jwl_socket_poll *this);
+jwl_socket      *		jwl_socket_poll_get				(jwl_socket_poll *this);
 
 #if JBL_STREAM_ENABLE==1
-jwl_socket_poll*	jwl_socket_poll_view_put		(jwl_socket_poll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个socket
-#define				jwl_socket_poll_view(x)			jwl_socket_poll_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个socket
+jwl_socket_poll*		jwl_socket_poll_view_put		(jwl_socket_poll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个socket
+#define					jwl_socket_poll_view(x)			jwl_socket_poll_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个socket
 #endif
 
 

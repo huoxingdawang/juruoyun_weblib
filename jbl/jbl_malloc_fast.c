@@ -129,6 +129,9 @@ jbl_uint8				__jbl_free_huge				(void* ptr);								//该函数  会操作size�
 	jbl_uint64 __jbl_malloc_small_count[30];
 #endif
 jbl_malloc_heap_struct jbl_malloc_heap;
+#if JBL_MALLOC_COUNT==1
+jbl_malloc_size_type	jbl_malloc_used_size	(){return jbl_malloc_heap.size;}
+#endif
 /*******************************************************************************************/
 /*                            以下函数完成内存管理组件启动和停止                           */
 /*******************************************************************************************/

@@ -29,6 +29,7 @@ typedef struct __jbl_stream
 	{
 		void const *			p;
 		jbl_uint64				u;
+		jbl_uint8				c8[8];
 	}tmp[0];
 }jbl_stream;
 

@@ -36,7 +36,7 @@ ifeq ($(system),macos)
 	rm = rm -f
 	pre = macos_
 endif
-all:jbl jwl test2 webserver
+all:jbl jwl test2 webserver ip2region 
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
@@ -62,6 +62,9 @@ webserver:
 request:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o examples$(H)request.c	
 	$(CC) $(BITS) -o exes$(H)request tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+ip2region:
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region.o examples$(H)ip2region.c	
+	$(CC) $(BITS) -o exes$(H)ip2region tmp$(H)$(pre)ip2region.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 #   Copyright (c) [2020] juruoyun developer team
 #   Juruoyun basic lib is licensed under the Mulan PSL v1.
 #   You can use this software according to the terms and conditions of the Mulan PSL v1.
@@ -155,7 +158,7 @@ ifeq ($(system),windows)
 JWL_EXLIB = -lwsock32
 endif
 
-jwl					:jwl/jwl_ying jwl/jwl_socket jwl/jwl_http jwl/jwl_websocket
+jwl					:jwl/jwl_ying jwl/jwl_socket jwl/jwl_http jwl/jwl_websocket jwl/jwl_ip2region
 	ar rc tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jwl_*.o
 jwl/jwl_ying		:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ying.o       jwl$(H)jwl_ying.c      $(JWL_EXLIB)
@@ -170,4 +173,6 @@ endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_http.o       jwl$(H)jwl_http.c      $(JWL_EXLIB)
 jwl/jwl_websocket   :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_websocket.o  jwl$(H)jwl_websocket.c $(JWL_EXLIB)
-	
+jwl/jwl_ip2region   :
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ip2region.o  jwl$(H)jwl_ip2region.c $(JWL_EXLIB)
+		

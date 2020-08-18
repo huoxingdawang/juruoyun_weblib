@@ -14,8 +14,8 @@
 #include "../jbl/jbl_include.h"
 void			jwl_start();
 void			jwl_stop();
-jbl_uint64		jwl_get_binary_ip(jbl_string *this);
+jbl_uint32		jwl_get_binary_ip(jbl_string *this);
+jbl_uint32		jwl_get_binary_ip_chars(jbl_uint8 *s);
 jbl_string *	jwl_get_string_ip(jbl_uint64 ip,jbl_string *this);
-
 #endif
 #endif

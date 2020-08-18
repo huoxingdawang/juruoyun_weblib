@@ -17,5 +17,6 @@
 #include "jwl_socket.h"
 #include "jwl_websocket.h"
 #include "jwl_http.h"
+#include "jwl_ip2region.h"
 
 #endif

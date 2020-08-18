@@ -14,11 +14,7 @@ int main(int argc,char** argv)
 	jwl_start();
 	jbl_exception_add_exit_function(stop);	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");pf();
-	jbl_string *ip=jbl_string_add_chars(NULL,UC((argc>1)?argv[1]:"0.0.0.0"));
-	jbl_string *port=jbl_string_add_chars(NULL,UC((argc>2)?argv[2]:"1217"));
-	host=jwl_socket_bind(host,jwl_get_binary_ip(ip),jbl_string_get_uint(port));
-	ip=jbl_string_free(ip);
-	port=jbl_string_free(port);	
+	host=jwl_socket_bind(host,jwl_get_binary_ip_chars(UC((argc>1)?argv[1]:"0.0.0.0")),jbl_getuint64(UC((argc>2)?argv[2]:"1217")));
 	jwl_socket_view(host);pf();
 	
 	poll=jwl_socket_poll_new();
@@ -80,7 +76,9 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 //				jbl_string *res=jbl_rand_string(NULL,6,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
 				jbl_string *res=jbl_string_add_chars(NULL,UC"Receive from ip:");
 				res=jwl_get_string_ip(jwl_socket_get_ip(client),res);
-				res=jbl_string_add_chars(res,UC" port:");
+				res=jbl_string_add_char(res,'(');
+				res=jwl_ip2region(jwl_socket_get_ip(client),res);
+				res=jbl_string_add_chars(res,UC")port:");
 				res=jbl_string_add_uint(res,jwl_socket_get_port(client));
 				res=jbl_string_add_chars(res,UC",at ");
 				jbl_time * t1=jbl_time_now(NULL);

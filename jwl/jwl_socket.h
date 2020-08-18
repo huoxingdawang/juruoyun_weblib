@@ -29,7 +29,7 @@ typedef struct __jwl_socket
 #elif defined(__APPLE__) || defined(__linux__)
 	int handle;
 #endif
-	jbl_uint64 ip;
+	jbl_uint32 ip;
 	jbl_uint16 port;
 #ifdef jwl_socket_payload
 	jwl_socket_payload payload;
@@ -67,8 +67,8 @@ jwl_socket *			jwl_socket_init				(jwl_socket *this);									//初始化一个s
 jwl_socket *			jwl_socket_free				(jwl_socket *this);									//释放一个socket
 jwl_socket *			jwl_socket_copy				(jwl_socket * this);								//拷贝一个socket
 #define					jwl_socket_extend(this)		(this)
-jwl_socket *			jwl_socket_bind				(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port);	//启动一个socket监听
-jwl_socket *			jwl_socket_connect			(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port);	//发起一个socket连接
+jwl_socket *			jwl_socket_bind				(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port);	//启动一个socket监听
+jwl_socket *			jwl_socket_connect			(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port);	//发起一个socket连接
 jwl_socket *			jwl_socket_close			(jwl_socket *this);									//关闭一个socket请求
 jwl_socket *			jwl_socket_accept			(jwl_socket *this);									//接受一个socket请求
 #define					jwl_socket_if_equal(a,b)	(jbl_refer_pull(a)==jbl_refer_pull(b))

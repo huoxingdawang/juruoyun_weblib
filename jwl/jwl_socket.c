@@ -88,7 +88,7 @@ jwl_socket * jwl_socket_free(jwl_socket *this)
 	}
 	return NULL;
 }
-jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port)
+jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
 {
 //分离
 	if(!this)this=jwl_socket_new();
@@ -108,7 +108,7 @@ jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port)
 	thi->ip=ip;
 	return this;
 }
-jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint64 ip,jbl_uint16 port)
+jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
 {
 //分离
 	if(!this)jbl_exception("NULL POINTER");
@@ -451,7 +451,7 @@ jwl_socket * jwl_socket_poll_get(jwl_socket_poll *this)
 #ifdef _WIN32
 	for(jwl_socket_poll_data *jj=(thi->j)?thi->j->nxt:NULL;thi->j;thi->j=jj,jj=(thi->j)?thi->j->nxt:NULL)
 		if(FD_ISSET(((jwl_socket*)jbl_refer_pull(thi->j->socket))->handle,&thi->fd))
-		{jwl_socket_poll_data *jjj=thi->j;thi->j=jj,jj=(thi->j)?thi->j->nxt:NULL;return jwl_socket_copy(jjj->socket);}
+			{jwl_socket_poll_data *jjj=thi->j;thi->j=jj,jj=(thi->j)?thi->j->nxt:NULL;return jwl_socket_copy(jjj->socket);}
 #else
 	while(thi->event_len)
 	{

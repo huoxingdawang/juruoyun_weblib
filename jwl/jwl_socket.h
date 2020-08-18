@@ -46,12 +46,17 @@ typedef struct __jwl_socket_poll
 	jbl_uint16 len;
 	jwl_socket_poll_data *data;
 	
+#ifdef _WIN32
+	FD_SET fd;
+	jwl_socket_poll_data *j;
+#else
 	int handle;
 	int event_len;
 #ifdef __linux__
 	struct epoll_event	events[0];
 #elif __APPLE__
 	struct kevent 		events[0];	
+#endif
 #endif
 }jwl_socket_poll;
 

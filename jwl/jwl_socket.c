@@ -278,25 +278,31 @@ inline jwl_socket_poll * jwl_socket_poll_new()
 {
 	return jwl_socket_poll_init(jbl_malloc(sizeof(jwl_socket_poll)+
 #ifdef __linux__	
-	(sizeof(struct epoll_event)
+	(sizeof(struct epoll_event))
 #elif __APPLE__
-	(sizeof(struct kevent)
+	(sizeof(struct kevent))
+#elif _WIN32
+	0
 #endif	
-	*128)));	
+	*128));	
 }
 jwl_socket_poll * jwl_socket_poll_init(jwl_socket_poll *this)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	this->len=0;
 	this->data=NULL;
 	
-	this->len=0;
+#ifdef _WIN32
+	FD_ZERO(&this->fd);
+#else
 	this->event_len=0;
 #ifdef __linux__
 	if(-1==(this->handle=epoll_create1(0)))jbl_exception("POLL FAILED");
 #elif __APPLE__
 	if(-1==(this->handle=kqueue()))jbl_exception("POLL FAILED");
+#endif
 #endif
 	return this;
 }
@@ -354,6 +360,7 @@ jwl_socket_poll * jwl_socket_poll_add(jwl_socket_poll *this,jwl_socket* socket)
 	EV_SET(&ev,socket->handle,EVFILT_READ,EV_ADD|EV_ENABLE,0,0,NULL);
 	ev.udata=socket;
 	kevent(this->handle,&ev,1,NULL,0,NULL);
+#elif _WIN32
 #endif
 	return this;
 }
@@ -374,11 +381,12 @@ jwl_socket_poll * jwl_socket_poll_remove(jwl_socket_poll *this,jwl_socket* socke
 	if(!found)
 		jbl_exception("SOCKET NOT IN POLL");
 #ifdef __linux__
-	epoll_ctl(this->handle,EPOLL_CTL_DEL,found->socket->handle,NULL);	
+	epoll_ctl(this->handle,EPOLL_CTL_DEL,socket->handle,NULL);	
 #elif __APPLE__
 	struct kevent ev;
-	EV_SET(&ev,found->socket->handle,EVFILT_READ,EV_DELETE|EV_DISABLE,0,0,NULL);
+	EV_SET(&ev,socket->handle,EVFILT_READ,EV_DELETE|EV_DISABLE,0,0,NULL);
 	kevent(this->handle,&ev,1,NULL,0,NULL);
+#elif _WIN32
 #endif
 	jwl_socket_free(found->socket);
 	if(pre)	pre->nxt=found->nxt;
@@ -396,11 +404,12 @@ jwl_socket_poll * jwl_socket_poll_remove_closed(jwl_socket_poll *this)
 		{
 			jwl_socket_poll_data *j=i->nxt;
 #ifdef __linux__
-			epoll_ctl(this->handle,EPOLL_CTL_DEL,i->socket->handle,NULL);	
+			epoll_ctl(this->handle,EPOLL_CTL_DEL,((jwl_socket*)jbl_refer_pull(i->socket))->handle,NULL);	
 #elif __APPLE__
 			struct kevent ev;
-			EV_SET(&ev,i->socket->handle,EVFILT_READ,EV_DELETE|EV_DISABLE,0,0,NULL);
+			EV_SET(&ev,((jwl_socket*)jbl_refer_pull(i->socket))->handle,EVFILT_READ,EV_DELETE|EV_DISABLE,0,0,NULL);
 			kevent(this->handle,&ev,1,NULL,0,NULL);
+#elif _WIN32
 #endif
 			jwl_socket_free(i->socket);
 			if(pre)	pre->nxt=i->nxt;
@@ -416,12 +425,22 @@ jwl_socket_poll * jwl_socket_poll_remove_closed(jwl_socket_poll *this)
 jwl_socket_poll * jwl_socket_poll_wait(jwl_socket_poll *this)
 {
 	if(!this)jbl_exception("NULL POINTER");	
+#ifdef _WIN32
+	this=jwl_socket_poll_remove_closed(this);
+#endif
 	jwl_socket_poll * thi=jbl_refer_pull(this);
 	if(!thi->len)return this;
 #ifdef __linux__
 	if(-1==(thi->event_len=epoll_wait(thi->handle,thi->events,128,-1)))			jbl_exception("POLL FAILED");
 #elif __APPLE__
 	if(-1==(thi->event_len=kevent(thi->handle,NULL,0,thi->events,128,NULL)))	jbl_exception("POLL FAILED");
+#elif _WIN32
+	thi=jbl_refer_pull(this);
+	FD_ZERO(&thi->fd);
+	for(jwl_socket_poll_data *j=thi->data;j;j=j->nxt)
+		FD_SET(((jwl_socket*)jbl_refer_pull(j->socket))->handle,&thi->fd);
+	if(select(0,&thi->fd,NULL,NULL,NULL)==SOCKET_ERROR)							jbl_exception("POLL FAILED");
+	thi->j=thi->data;
 #endif
 	return this;
 }
@@ -429,6 +448,11 @@ jwl_socket * jwl_socket_poll_get(jwl_socket_poll *this)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	jwl_socket_poll * thi=jbl_refer_pull(this);
+#ifdef _WIN32
+	for(jwl_socket_poll_data *jj=(thi->j)?thi->j->nxt:NULL;thi->j;thi->j=jj,jj=(thi->j)?thi->j->nxt:NULL)
+		if(FD_ISSET(((jwl_socket*)jbl_refer_pull(thi->j->socket))->handle,&thi->fd))
+		{jwl_socket_poll_data *jjj=thi->j;thi->j=jj,jj=(thi->j)?thi->j->nxt:NULL;return jwl_socket_copy(jjj->socket);}
+#else
 	while(thi->event_len)
 	{
 #ifdef __linux__
@@ -440,6 +464,7 @@ jwl_socket * jwl_socket_poll_get(jwl_socket_poll *this)
 		if(-1==sock->handle)this=jwl_socket_poll_remove(this,socket); 
 		else				return jwl_socket_copy(socket);
 	}
+#endif
 	return NULL;
 }
 #if JBL_STREAM_ENABLE==1

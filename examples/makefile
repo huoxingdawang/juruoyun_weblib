@@ -42,7 +42,6 @@ clean:
 	$(rm) exes$(H)* /s /Q
 	$(rm) testfiles$(H)*.out /s
 	$(rm) testfiles$(H)*.ans /s
-	$(rm) testfiles$(H)*.html /s
 init:
 	mkdir tmp
 	mkdir exes

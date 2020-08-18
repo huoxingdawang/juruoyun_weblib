@@ -8,7 +8,7 @@
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
 CC = gcc
-BITS =
+BITS = -g
 EXLIB = $(JBL_EXLIB) $(JWL_EXLIB)
 complain_re2c = jwl
 ifeq ($(shell uname),Linux)
@@ -36,13 +36,12 @@ ifeq ($(system),macos)
 	rm = rm -f
 	pre = macos_
 endif
-all:jbl jwl socket_client socket_server test2 webserver
+all:jbl jwl test2 webserver
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
 	$(rm) testfiles$(H)*.out /s
 	$(rm) testfiles$(H)*.ans /s
-	$(rm) testfiles$(H)*.html /s
 init:
 	mkdir tmp
 	mkdir exes
@@ -57,12 +56,6 @@ run:
 test2:
 	$(CC) $(BITS) -c -o tmp$(H)$(pre)test2.o examples$(H)test2.c	
 	$(CC) $(BITS) -o exes$(H)test2 tmp$(H)$(pre)test2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
-socket_server:
-	$(CC) $(BITS) -c -o tmp$(H)$(pre)socket_server.o examples$(H)socket_server.c	
-	$(CC) $(BITS) -o exes$(H)socket_server tmp$(H)$(pre)socket_server.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
-socket_client:
-	$(CC) $(BITS) -c -o tmp$(H)$(pre)socket_client.o examples$(H)socket_client.c	
-	$(CC) $(BITS) -o exes$(H)socket_client tmp$(H)$(pre)socket_client.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 webserver:
 	$(CC) $(BITS) -c -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
 	$(CC) $(BITS) -o exes$(H)webserver tmp$(H)$(pre)webserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

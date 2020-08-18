@@ -30,7 +30,6 @@ int main(int argc,char** argv)
 	while(1)
 	{
 pl() ;
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 		poll=jwl_socket_poll_wait(poll);
 		jwl_socket *client=NULL;
 		while(NULL!=(client=jwl_socket_poll_get(poll)))
@@ -57,13 +56,9 @@ jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 					client=jwl_socket_free(client);
 					continue;
 				}
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				jbl_stream * websocket_stream=jwl_websocket_stream_new();
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				jbl_string *get=jbl_string_new();
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				jbl_stream *tmp=jbl_string_stream_new(get);
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				jbl_stream_connect(client_stream,websocket_stream);
 				jbl_stream_connect(websocket_stream,tmp);
 				while(!jwl_websocket_stream_finished(websocket_stream)&&jwl_websocket_stream_get_status(websocket_stream)!=JWL_WEBSOCKET_STATUS_CLOSE)
@@ -83,7 +78,6 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 //				jbl_string_view(get);
 
 //				jbl_string *res=jbl_rand_string(NULL,6,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				jbl_string *res=jbl_string_add_chars(NULL,"Receive from ip:");
 				res=jwl_get_string_ip(jwl_socket_get_ip(client),res);
 				res=jbl_string_add_chars(res," port:");
@@ -98,25 +92,18 @@ jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				res=jbl_string_add_chars(res," data:<br>");
 				res=jbl_string_add_string(res,get);
 				
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 //				jbl_string_view(res);
 				jbl_string *head=jwl_websocket_get_head(jbl_string_get_length(res),1,JWL_WEBSOCKET_STATUS_TEXT,NULL);
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				jbl_stream_push_string(client_stream,head);
 				jbl_stream_push_string(client_stream,res);
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				jbl_stream_do(client_stream,1);			
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				res=jbl_string_free(res);
 				head=jbl_string_free(head);
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				
 exit_of_websocket:;
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 				client=jwl_socket_free(client);
 				get=jbl_string_free(get);
 				client_stream=jbl_stream_free(client_stream);
-jbl_log(UC "Memory:%d",jbl_malloc_used_size());
 			}
 			else
 			{
@@ -174,25 +161,25 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 							"<a href=\"videobig\">videobig</a><br>"
 							"<a href=\"download\">download</a><br>"
 							"<a href=\"websocket.html\">websocket</a><br>"
+							"<a href=\"http://www.yhdm.tv/v/4466-1.html\">videoout</a><br>"
+							"<a href=\"http://111.30.158.158/vmtt.tc.qq.com/1098_d9b5d5438b47c14c899213c2c27cd941.f0.mp4?vkey=6704C21D9CACA82931587D2DBFE6825BAF46064206F39B3BB81B78529139D3EF7B80A4034695C9E26BD217FFBC29C0C5EEABE6ACCE9570942FD0D23DC1AFA2B6819CE6C73FFE78B83FD133F031650FB2BC5612A49171971C\">video out</a><br>"
 							"注意F5或刷新按钮会导致缓存失败，退化为304<br>"
 						);
 					}
 					else if(jbl_string_space_ship_chars(jbl_gc_minus(jwl_http_head_get_url(reqh)),"/favicon.ico")==0)
 					{
-						resh=jwl_http_head_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO)));
+						resh=jwl_http_head_set_status		(resh,200);
 						resh=jwl_http_head_set_cache		(resh,JWL_HTTP_CACHE_MAX_AGE);
+						resh=jwl_http_head_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_ICO)));
 						resh=jwl_http_head_set_cache_max_age(resh,36000);
 						resh=jwl_http_head_set_etag			(resh,jbl_gc_minus(jbl_string_cache_get(UC"456")));
 						if(jbl_string_space_ship_chars(jbl_gc_minus(jwl_http_head_get_etag(reqh)),"456")==0)
 							resh=jwl_http_head_set_status		(resh,304);				
 						else
 						{
-							resh=jwl_http_head_set_status		(resh,200);
 							FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//logo.ico","rb"));fclose(fp);
 						}
 					}
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
 					else if(jbl_string_space_ship_chars(jbl_gc_minus(jwl_http_head_get_url(reqh)),"/websocket.html")==0)
 					{
 						resh=jwl_http_head_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_HTML)));
@@ -221,8 +208,6 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 							FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles//js//jwb_websocket.js","rb"));fclose(fp);
 						}
 					}
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
 					else if(jbl_string_space_ship_chars(jbl_gc_minus(jwl_http_head_get_url(reqh)),"/pic")==0)
 					{
 						resh=jwl_http_head_set_content_type	(resh,jbl_gc_minus(jbl_string_cache_get(UC JWL_HTTP_CONTENT_TYPE_PNG)));
@@ -287,7 +272,7 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 							if(!video_big)
 								{FILE *fp;video_big=jbl_string_add_file(video_big,fp=fopen("testfiles/video_big.mp4","rb"));fclose(fp);}
 							res=jbl_string_copy(video_big);
-							if(jwl_http_head_get_range(reqh).start)
+							if(jwl_http_head_get_range(reqh).start||jwl_http_head_get_range(reqh).end)
 							{
 								if(jwl_http_head_get_range(reqh).start>jbl_string_get_length(res)||jwl_http_head_get_range(reqh).end>jbl_string_get_length(res))
 									resh=jwl_http_head_set_status		(resh,416),jbl_log(UC "[%d,%d) out of [%d,%d)",jwl_http_head_get_range(reqh).start,jwl_http_head_get_range(reqh).end,0LL,jbl_string_get_length(res)),res=jbl_string_free(res);

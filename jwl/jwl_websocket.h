@@ -33,8 +33,8 @@ extern			const jbl_stream_operater			jwl_stream_websocket_operators;
 jbl_stream *jwl_websocket_stream_new();
 jbl_var *jwl_websocket_Vstream_new();
 
-#define jwl_websocket_stream_finished(x) (((jbl_stream*)jbl_refer_pull(x))->tmp[0].u>=((jbl_stream*)jbl_refer_pull(x))->tmp[1].u)
-#define jwl_websocket_stream_get_status(x) (((jbl_stream*)jbl_refer_pull(x))->tmp[2].c8[5])
+#define jwl_websocket_stream_finished(x) (((jbl_stream*)jbl_refer_pull(x))->extra[0].u>=((jbl_stream*)jbl_refer_pull(x))->extra[1].u)
+#define jwl_websocket_stream_get_status(x) (((jbl_stream*)jbl_refer_pull(x))->extra[2].c8[5])
 
 #endif
 

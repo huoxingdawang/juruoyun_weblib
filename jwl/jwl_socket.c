@@ -211,8 +211,8 @@ jbl_stream *jwl_socket_stream_new(jwl_socket* socket)
 	if(-1==((jwl_socket*)jbl_refer_pull(socket))->handle)jbl_exception("NEW STREAM FROM CLOSED SOCKET");	
 	if(jwl_socket_is_host(socket))jbl_exception("NEW STREAM FROM HOST SOCKET");	
 	jbl_stream *this=jbl_stream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,2);
-	this->tmp[0].u=0;	//第0为表示当前接受的长度
-	this->tmp[1].u=-1;	//第1位表示当前要求总接收
+	this->extra[0].u=0;	//第0为表示当前接受的长度
+	this->extra[1].u=-1;	//第1位表示当前要求总接收
 	return this;
 }
 #if JBL_VAR_ENABLE==1
@@ -221,8 +221,8 @@ jbl_var *jwl_socket_Vstream_new(jwl_socket* socket)
 	if(!socket)jbl_exception("NULL POINTER");
 	if(jwl_socket_is_host(socket))jbl_exception("NEW STREAM FROM HOST SOCKET");	
 	jbl_stream *this=(jbl_stream *)jbl_Vstream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,2);
-	this->tmp[0].u=0;	//第0为表示当前接受的长度
-	this->tmp[1].u=-1;	//第1位表示当前要求总接收
+	this->extra[0].u=0;	//第0为表示当前接受的长度
+	this->extra[1].u=-1;	//第1位表示当前要求总接收
 	return (jbl_var *)this;
 }
 #endif
@@ -249,9 +249,9 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	}
 	else if(nxt)
 	{
-		while(this->tmp[0].u<this->tmp[1].u&&socket->handle!=-1)
+		while(this->extra[0].u<this->extra[1].u&&socket->handle!=-1)
 		{
-			jbl_stream_buf_size_type len=jbl_min((this->tmp[1].u-this->tmp[0].u),(nxt->size-nxt->en));
+			jbl_stream_buf_size_type len=jbl_min((this->extra[1].u-this->extra[0].u),(nxt->size-nxt->en));
 			int j;
 			for(jbl_uint8 i=0;i<10&&(j=recv(socket->handle,(char*)nxt->buf+nxt->en,len,0))==-1;++i,jbl_log(UC "Receive failed\terrno:%d retrying %d",errno,i))
 				if((errno!=EINTR&&errno!=EWOULDBLOCK&&errno!=EAGAIN))
@@ -260,9 +260,9 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 					jwl_socket_close(socket);
 					return;
 				}				
-			this->tmp[0].u+=j,nxt->en+=j;
+			this->extra[0].u+=j,nxt->en+=j;
 			jbl_stream_do(nxt,0);
-			if(j!=len&&this->tmp[1].u==-1)
+			if(j!=len&&this->extra[1].u==-1)
 				break;
 		}
 		jbl_stream_do(nxt,flags);	

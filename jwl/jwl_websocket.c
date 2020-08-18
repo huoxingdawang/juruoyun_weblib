@@ -83,9 +83,9 @@ jbl_uint64 __jwl_websocket_get_length(jbl_uint8 * s)
 jbl_stream *jwl_websocket_stream_new()
 {
 	jbl_stream *this=jbl_stream_new(&jwl_stream_websocket_operators,NULL,JBL_STREAM_EXCEED_LENGTH,NULL,3);
-	this->tmp[0].u=0;	//第0为表示当前接受的长度
-	this->tmp[1].u=-1;	//第1位表示当前要求总接收
-	this->tmp[2].c8[4]=0;
+	this->extra[0].u=0;	//第0为表示当前接受的长度
+	this->extra[1].u=-1;	//第1位表示当前要求总接收
+	this->extra[2].c8[4]=0;
 	return this;
 }
 
@@ -93,9 +93,9 @@ jbl_stream *jwl_websocket_stream_new()
 jbl_var *jwl_websocket_Vstream_new()
 {
 	jbl_stream *this=(jbl_stream *)jbl_Vstream_new(&jwl_stream_websocket_operators,NULL,JBL_STREAM_EXCEED_LENGTH,NULL,3);
-	this->tmp[0].u=0;	//第0为表示当前接受的长度
-	this->tmp[1].u=-1;	//第1位表示当前要求总接收
-	this->tmp[2].c8[4]=0;
+	this->extra[0].u=0;	//第0为表示当前接受的长度
+	this->extra[1].u=-1;	//第1位表示当前要求总接收
+	this->extra[2].c8[4]=0;
 	return (jbl_var *)this;
 }
 #endif
@@ -108,33 +108,33 @@ void __jwl_websocket_operator(jbl_stream* this,jbl_uint8 flags)
 	{
 		if(this->en==0)
 		{
-			if(this->tmp[0].u==this->tmp[1].u&&(flags&jbl_stream_force))
+			if(this->extra[0].u==this->extra[1].u&&(flags&jbl_stream_force))
 				jbl_stream_do(nxt,flags);
 			return;
 		}
 		jbl_stream_buf_size_type i=0;
-		if(this->tmp[2].c8[4]==0)//第一帧
+		if(this->extra[2].c8[4]==0)//第一帧
 		{
 			if((i=__jwl_websocket_get_data_start(this->buf))>=this->en)
 				return;
-			this->tmp[2].c8[5]=0X0F&this->buf[0];
-			if(this->tmp[2].c8[5]==JWL_WEBSOCKET_STATUS_CLOSE)return;
-			this->tmp[0].u=0;
-			this->tmp[1].u=__jwl_websocket_get_length(this->buf);
-			this->tmp[2].c8[4]=1;
-			__jwl_websocket_get_mask(this->buf,this->tmp[2].c8);
+			this->extra[2].c8[5]=0X0F&this->buf[0];
+			if(this->extra[2].c8[5]==JWL_WEBSOCKET_STATUS_CLOSE)return;
+			this->extra[0].u=0;
+			this->extra[1].u=__jwl_websocket_get_length(this->buf);
+			this->extra[2].c8[4]=1;
+			__jwl_websocket_get_mask(this->buf,this->extra[2].c8);
 		}
 		for(jbl_stream_buf_size_type len=this->en;i<len;++i)
 		{
-			nxt->buf[nxt->en]=this->buf[i]^this->tmp[2].c8[this->tmp[0].u%4];
-			++this->tmp[0].u;
+			nxt->buf[nxt->en]=this->buf[i]^this->extra[2].c8[this->extra[0].u%4];
+			++this->extra[0].u;
 			++nxt->en;
 			if((nxt->en)>=nxt->size)jbl_stream_do(nxt,0);
 		}
 		this->en=0;
-		if(this->tmp[0].u==this->tmp[1].u)
+		if(this->extra[0].u==this->extra[1].u)
 		{
-			this->tmp[2].c8[4]=0;
+			this->extra[2].c8[4]=0;
 			if((flags&jbl_stream_force))
 				jbl_stream_do(nxt,flags);
 		}

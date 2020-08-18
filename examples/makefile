@@ -54,11 +54,11 @@ run:
 
 #examples
 test2:
-	$(CC) $(BITS) -c -o tmp$(H)$(pre)test2.o examples$(H)test2.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)test2.o examples$(H)test2.c	
 	$(CC) $(BITS) -o exes$(H)test2 tmp$(H)$(pre)test2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 webserver:
-	$(CC) $(BITS) -c -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
 	$(CC) $(BITS) -o exes$(H)webserver tmp$(H)$(pre)webserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 request:
-	$(CC) $(BITS) -c -o tmp$(H)$(pre)request.o examples$(H)request.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o examples$(H)request.c	
 	$(CC) $(BITS) -o exes$(H)request tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

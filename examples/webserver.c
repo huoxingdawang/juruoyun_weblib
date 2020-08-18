@@ -78,18 +78,18 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 //				jbl_string_view(get);
 
 //				jbl_string *res=jbl_rand_string(NULL,6,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
-				jbl_string *res=jbl_string_add_chars(NULL,"Receive from ip:");
+				jbl_string *res=jbl_string_add_chars(NULL,UC"Receive from ip:");
 				res=jwl_get_string_ip(jwl_socket_get_ip(client),res);
-				res=jbl_string_add_chars(res," port:");
+				res=jbl_string_add_chars(res,UC" port:");
 				res=jbl_string_add_uint(res,jwl_socket_get_port(client));
-				res=jbl_string_add_chars(res,",at ");
+				res=jbl_string_add_chars(res,UC",at ");
 				jbl_time * t1=jbl_time_now(NULL);
 				res=jbl_time_to_string_format(t1,res,UC"Y-m-d H:i:s.u");
 				t1=jbl_time_free(t1);
-				res=jbl_string_add_chars(res,",");
+				res=jbl_string_add_char(res,',');
 				res=jbl_string_add_uint(res,jbl_string_get_length(get));
-				res=jbl_string_add_chars(res,"bytes intotal");
-				res=jbl_string_add_chars(res," data:<br>");
+				res=jbl_string_add_chars(res,UC"bytes intotal");
+				res=jbl_string_add_chars(res,UC" data:<br>");
 				res=jbl_string_add_string(res,get);
 				
 //				jbl_string_view(res);

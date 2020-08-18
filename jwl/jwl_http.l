@@ -353,7 +353,7 @@ jwl_http_head* jwl_http_head_decode(jbl_string *buf,jbl_string_size_type *start)
 	<head_cache>	"\r\n"				=> head_body	{																						;goto yyc_head_body;}
 
 
-	<head_body>		[]					=> special_key	{tmp_key				=jbl_string_free    (tmp_key)	;tmp_key=jbl_string_add_char(head->referer,*YYCURSOR)		;++YYCURSOR;		;goto yyc_special_key;}
+	<head_body>		[]					=> special_key	{tmp_key				=jbl_string_free    (tmp_key)	;tmp_key=jbl_string_add_char(tmp_key,*YYCURSOR)		;++YYCURSOR;		;goto yyc_special_key;}
 	<special_key>	[]									{tmp_key				=jbl_string_add_char(tmp_key,*YYCURSOR)		;++YYCURSOR;		;goto yyc_special_key;}
 	<special_key>	": "				=> special_var	{tmp_var				=jbl_var_free(tmp_var)			;tmp_var=jbl_Vstring_new();														;goto yyc_special_var;}
 	<special_var>	[]									{tmp_var				=jbl_V(jbl_string_add_char(jbl_Vstring(tmp_var),*YYCURSOR))		;++YYCURSOR;goto yyc_special_var;}
@@ -413,7 +413,7 @@ jwl_http_head* jwl_http_head_view_put(jwl_http_head* this,jbl_stream *out,jbl_ui
 		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"url          :");jbl_stream_push_string(out,thi->url)								;jbl_stream_push_char(out,'\n');	
 		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"host         :");jbl_stream_push_string(out,thi->host)								;jbl_stream_push_char(out,'\n');	
 		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"user agent   :");jbl_stream_push_string(out,thi->ua)								;jbl_stream_push_char(out,'\n');	
-		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"referer      :");jbl_stream_push_string(out,thi->referer)							;jbl_stream_push_char(out,'\n');	
+		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"referer      :");jbl_stream_push_string(out,thi->referer)							;jbl_stream_push_char(out,'\n');
 	}	
 	if(thi->v)
 		jbl_ht_foreach(thi->v,i)

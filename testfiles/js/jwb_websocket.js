@@ -68,7 +68,8 @@ jwb.websocket = new function()
 	};	
 	var callback=(data)=>
 	{
-		document.getElementById('output').innerHTML= data;
+		var div=document.createElement("div");document.getElementById('output').insertBefore(div,document.getElementById('output').firstElementChild)
+		div.innerHTML= data;
 	};
 	start();
 	this.send=(data,add_buf)=>

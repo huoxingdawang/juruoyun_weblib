@@ -94,9 +94,17 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 				
 //				jbl_string_view(res);
 				jbl_string *head=jwl_websocket_get_head(jbl_string_get_length(res),1,JWL_WEBSOCKET_STATUS_TEXT,NULL);
-				jbl_stream_push_string(client_stream,head);
-				jbl_stream_push_string(client_stream,res);
-				jbl_stream_do(client_stream,1);			
+				jwl_socket_poll_foreach(poll,i)
+					if(jwl_socket_get_payload(i->socket)==1)
+					{
+						jwl_socket * websoccket_send=jwl_socket_copy(i->socket);
+						jbl_stream * websocket_send_stream=jwl_socket_stream_new(jbl_refer(&websoccket_send));						
+						jbl_stream_push_string(websocket_send_stream,head);
+						jbl_stream_push_string(websocket_send_stream,res);
+						jbl_stream_do(websocket_send_stream,1);	
+						websoccket_send=jwl_socket_free(websoccket_send);
+						websocket_send_stream=jbl_stream_free(websocket_send_stream);
+					}
 				res=jbl_string_free(res);
 				head=jbl_string_free(head);
 				

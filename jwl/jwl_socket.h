@@ -105,7 +105,8 @@ jwl_socket_poll *		jwl_socket_poll_remove			(jwl_socket_poll *this,jwl_socket* s
 jwl_socket_poll * 		jwl_socket_poll_remove_closed	(jwl_socket_poll *this);
 jwl_socket_poll *		jwl_socket_poll_wait			(jwl_socket_poll *this);
 jwl_socket      *		jwl_socket_poll_get				(jwl_socket_poll *this);
-
+#define 				jwl_socket_poll_foreach(x,y)		for(jwl_socket_poll_data *(y)=((jwl_socket_poll *)jbl_refer_pull(x))->data;(y);(y)=(y)->nxt)	//枚举一个link list(不支持删除,会re)
+#define 				jwl_socket_poll_foreach_del(x,y,z)	for(jwl_socket_poll_data *(y)=((jwl_socket_poll *)jbl_refer_pull(x))->data,*(z)=((y)==NULL?NULL:(y)->nxt);(y);(y)=(z),(z)=((y)==NULL?NULL:(y)->nxt))	//枚举一个link list(支持删除操作)
 #if JBL_STREAM_ENABLE==1
 jwl_socket_poll*		jwl_socket_poll_view_put		(jwl_socket_poll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个socket
 #define					jwl_socket_poll_view(x)			jwl_socket_poll_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个socket

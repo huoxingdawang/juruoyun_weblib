@@ -54,7 +54,7 @@ jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void
 	this->en	=0;
 	this->buf	=((buf)?buf:(((jbl_uint8*)this)+(sizeof(jbl_uint64)*tmplen)+(sizeof(jbl_stream))));
 	this->nxt	=NULL;
-	while(tmplen--)this->tmp[tmplen].u=0;
+	while(tmplen--)this->extra[tmplen].u=0;
 	if(this->op->usb)this->op->usb(this);
 	return this;
 }

@@ -710,11 +710,11 @@ void __jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	this->en=0;
 	if(nxt)
 	{
-		while(this->tmp[0].u<str->len)
+		while(this->extra[0].u<str->len)
 		{
-			jbl_stream_buf_size_type len=jbl_min((str->len-this->tmp[0].u),(nxt->size-nxt->en));	
-			jbl_memory_copy(nxt->buf+nxt->en,str->s+this->tmp[0].u,len);
-			this->tmp[0].u+=len;
+			jbl_stream_buf_size_type len=jbl_min((str->len-this->extra[0].u),(nxt->size-nxt->en));	
+			jbl_memory_copy(nxt->buf+nxt->en,str->s+this->extra[0].u,len);
+			this->extra[0].u+=len;
 			nxt->en+=len;
 			jbl_stream_do(nxt,0);
 		}

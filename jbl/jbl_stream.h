@@ -16,6 +16,12 @@
 #include "jbl_gc.h"
 #include "jbl_exception.h"
 typedef struct __jbl_stream_operater jbl_stream_operater;
+typedef union
+{
+	void const *			p;
+	jbl_uint64				u;
+	jbl_uint8				c8[8];
+}jbl_stream_extra_struct;
 typedef struct __jbl_stream
 {
 	jbl_gc						gc;
@@ -25,12 +31,7 @@ typedef struct __jbl_stream
 	jbl_stream_buf_size_type					size;
 	void *						data;
 	unsigned char *				buf;
-	union
-	{
-		void const *			p;
-		jbl_uint64				u;
-		jbl_uint8				c8[8];
-	}tmp[0];
+	jbl_stream_extra_struct		extra[0];
 }jbl_stream;
 
 typedef struct __jbl_stream_operater
@@ -54,7 +55,7 @@ jbl_stream * 	jbl_stream_init						(jbl_stream *this,const jbl_stream_operater *
 jbl_stream * 	jbl_stream_copy						(jbl_stream* this);
 jbl_stream * 	jbl_stream_free						(jbl_stream* this);
 void			jbl_stream_do						(jbl_stream* this,jbl_uint8 flag);
-#define			jbl_stream_caculate_size(y)			((sizeof(jbl_stream))+(sizeof(jbl_uint64)*(y)))
+#define			jbl_stream_caculate_size(y)			((sizeof(jbl_stream))+(sizeof(jbl_stream_extra_struct)*(y)))
 #define 		jbl_stream_connect(this,that)		jbl_stream_disconnect(this),(((jbl_stream*)jbl_refer_pull(this)))->nxt=jbl_stream_copy(that)
 #define 		jbl_stream_disconnect(this)			(((jbl_stream*)jbl_refer_pull(this)))->nxt=jbl_stream_free((((jbl_stream*)jbl_refer_pull(this)))->nxt)
 #define 		jbl_stream_reset(this)				jbl_stream_disconnect(this),(((jbl_stream*)jbl_refer_pull(this)))->en=0,(((jbl_stream*)jbl_refer_pull(this)))->tmp=0

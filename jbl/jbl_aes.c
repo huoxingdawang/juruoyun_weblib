@@ -428,7 +428,7 @@ void __jbl_aes_128_cbc_seo(jbl_stream* this,jbl_uint8 flags)
 	if(!this)jbl_exception("NULL POINTER");
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);			
-	jbl_uint8 *vii=(jbl_uint8*)this->tmp[0].p;
+	jbl_uint8 *vii=(jbl_uint8*)this->extra[0].p;
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
 	if(nxt!=NULL)
 	{
@@ -454,7 +454,7 @@ void __jbl_aes_128_cbc_seo(jbl_stream* this,jbl_uint8 flags)
 			__jbl_aes_128_encode_16(key,s,nxt->buf+nxt->en),nxt->en+=16,i=this->en;
 			jbl_stream_do(nxt,flags);
 		}
-		this->tmp[0].p=vii;
+		this->extra[0].p=vii;
 		jbl_memory_copy(this->buf,this->buf+i,this->en-i);
 		this->en=this->en-i;
 	}
@@ -464,7 +464,7 @@ void __jbl_aes_128_cbc_sdo(jbl_stream* this,jbl_uint8 flags)
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);			
-	jbl_uint8 *vii=(jbl_uint8*)this->tmp[0].p;
+	jbl_uint8 *vii=(jbl_uint8*)this->extra[0].p;
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
 	if(nxt!=NULL)
 	{
@@ -481,7 +481,7 @@ void __jbl_aes_128_cbc_sdo(jbl_stream* this,jbl_uint8 flags)
 		}
 		if((flags&jbl_stream_force))
 			nxt->en-=nxt->buf[nxt->en-1],jbl_stream_do(nxt,flags);//处理末尾长度，下推流
-		jbl_memory_copy(this->buf+this->size,this->buf+i-16,16);this->tmp[0].p=this->buf+this->size;//把最后成功解码的16字节拷到最后面做下一次的vi
+		jbl_memory_copy(this->buf+this->size,this->buf+i-16,16);this->extra[0].p=this->buf+this->size;//把最后成功解码的16字节拷到最后面做下一次的vi
 		jbl_memory_copy(this->buf,this->buf+i,this->en-i);
 		this->en=this->en-i;
 	}
@@ -491,26 +491,26 @@ jbl_stream_operators_new(jbl_stream_aes_128_cbc_decode_operators,__jbl_aes_128_c
 inline jbl_stream * jbl_stream_aes_128_cbc_encode_new(jbl_aes_128_key *w,const unsigned char * v)
 {
 	jbl_stream *this=jbl_stream_new(&jbl_stream_aes_128_cbc_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,1);
-	this->tmp[0].p=v;
+	this->extra[0].p=v;
 	return this;
 }
 inline jbl_stream * jbl_stream_aes_128_cbc_decode_new(jbl_aes_128_key *w,const unsigned char * v)
 {
 	jbl_stream *this=jbl_stream_new(&jbl_stream_aes_128_cbc_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,1);
-	this->tmp[0].p=v;
+	this->extra[0].p=v;
 	return this;
 }
 #if JBL_VAR_ENABLE == 1
 inline jbl_var * jbl_Vstream_aes_128_cbc_encode_new(jbl_aes_128_key *w,const unsigned char * v)
 {
 	jbl_var *this=jbl_Vstream_new(&jbl_stream_aes_128_cbc_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,1);
-	((jbl_stream*)this)->tmp[0].p=v;
+	((jbl_stream*)this)->extra[0].p=v;
 	return this;
 }
 inline jbl_var * jbl_Vstream_aes_128_cbc_decode_new(jbl_aes_128_key *w,const unsigned char * v)
 {
 	jbl_var *this=jbl_Vstream_new(&jbl_stream_aes_128_cbc_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,1);
-	((jbl_stream*)this)->tmp[0].p=v;
+	((jbl_stream*)this)->extra[0].p=v;
 	return this;
 }
 #endif

@@ -41,6 +41,10 @@ typedef unsigned long long	jbl_uint64;
 
 jbl_int64	jbl_ceil				(long double i);	//上取整
 jbl_uint64	jbl_min2pow				(jbl_uint64 i);
+jbl_uint32 jbl_getuint32_raw(jbl_uint8*s);
+jbl_uint64 jbl_getuint64_raw(jbl_uint8*s);
+jbl_uint32 jbl_getuint64(jbl_uint8 *s);
+
 
 //jbl_uint8	jbl_get_uint64_length	(jbl_uint64 tmp);
 //jbl_uint8	jbl_get_int64_length	(jbl_int64 tmp);

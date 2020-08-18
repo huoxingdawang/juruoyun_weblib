@@ -43,6 +43,22 @@ inline jbl_uint64 jbl_min2pow(jbl_uint64 i)
 	for(;j<i;j<<=1);
 	return j;
 }
+inline jbl_uint32 jbl_getuint32_raw(jbl_uint8*s)
+{
+	return ((((jbl_uint32)s[0])&0x000000FF)|(((jbl_uint32)s[1]<<8)&0x0000FF00)|(((jbl_uint32)s[2]<<16)&0x00FF0000)|(((jbl_uint32)s[3]<<24)&0xFF000000));	
+}
+inline jbl_uint64 jbl_getuint64_raw(jbl_uint8*s)
+{
+	return ((((jbl_uint64)s[0])&0x00000000000000FF)|(((jbl_uint64)s[1]<<8)&0x000000000000FF00)|(((jbl_uint64)s[2]<<16)&0x0000000000FF0000)|(((jbl_uint64)s[3]<<24)&0x00000000FF000000)|(((jbl_uint64)s[4]<<32)&0x000000FF00000000)|(((jbl_uint64)s[5]<<40)&0x0000FF0000000000)|(((jbl_uint64)s[6]<<48)&0x00FF0000)|(((jbl_uint64)s[7]<<56)&0xFF00000000000000));	
+}
+inline jbl_uint32 jbl_getuint64(jbl_uint8 *s)
+{
+	jbl_uint8 c,i=0;
+	jbl_uint32 x;
+	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i);
+	for(x=c-'0',++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i);
+	return x;
+}
 /*
 jbl_uint8 jbl_get_uint64_length(jbl_uint64 tmp)
 {

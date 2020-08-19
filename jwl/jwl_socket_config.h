@@ -11,14 +11,16 @@
 #define __JWL_SOCKET_CONFIG_H
 #include "jwl_config.h"
 #if JWL_SOCKET_ENABLE==1
-#define	JWL_SOCKET_RECEIVE_BUF_LENGTH 1024
-#define	JWL_SOCKET_STREAM_BUF_LENGTH 1024*4
+#define	JWL_SOCKET_RECEIVE_BUF_LENGTH		1024
+#define	JWL_SOCKET_STREAM_BUF_LENGTH		1024*4
+#define	JWL_SOCKET_TRANSFER_MAX_TIME 		5			//单位是秒
 
-#define jwl_socket_payload		jbl_uint8
+#define jwl_socket_payload					jbl_uint8
 #define jwl_socket_payload_NULL	0	
-#define jwl_socket_payload_free(x)		(x=jwl_socket_payload_NULL)
-#define jwl_socket_payload_copy(x)		(x)
-#define jwl_socket_payload_view(x,y)	jbl_stream_push_uint(x,y)
+#define jwl_socket_payload_free(x)			(x=jwl_socket_payload_NULL)
+#define jwl_socket_payload_copy(x)			(x)
+#define jwl_socket_payload_view(x,y)		jbl_stream_push_uint(x,y)
+
 
 
 

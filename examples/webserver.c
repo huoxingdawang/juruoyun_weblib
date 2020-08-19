@@ -66,16 +66,13 @@ pl();
 				jbl_stream_disconnect(client_stream);//断开连接				
 				if(jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_CLOSE)
 				{
-					jbl_log(UC "websocket close");jbl_log_save();
+					jbl_log(UC "websocket close");
 					client=jwl_socket_close(client);
 					websocket_stream=jbl_stream_free(websocket_stream);
 					goto exit_of_websocket;
 				}
 				websocket_stream=jbl_stream_free(websocket_stream);
-jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
-//				jbl_string_view(get);
-
-//				jbl_string *res=jbl_rand_string(NULL,6,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
+//jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 				jbl_string *res=jbl_string_add_chars(NULL,UC"Receive from ip:");
 				res=jwl_get_string_ip(jwl_socket_get_ip(client),res);
 				res=jbl_string_add_char(res,'(');
@@ -92,7 +89,6 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 				res=jbl_string_add_chars(res,UC" data:<br>");
 				res=jbl_string_add_string(res,get);
 				
-//				jbl_string_view(res);
 				jbl_string *head=jwl_websocket_get_head(jbl_string_get_length(res),1,JWL_WEBSOCKET_STATUS_TEXT,NULL);
 				jwl_socket_poll_foreach(poll,i)
 					if(jwl_socket_get_payload(i->socket)==1)
@@ -134,7 +130,7 @@ pl();
 				tmp->data=NULL;
 				tmp=jbl_stream_free(tmp);
 				jbl_stream_disconnect(client_stream);//断开连接
-jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
+jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));
 				jwl_http_head * reqh=jwl_http_head_decode(get,NULL);
 				jwl_http_head_view(reqh);pf();
 				jbl_string *	res	=NULL;							//输出缓冲

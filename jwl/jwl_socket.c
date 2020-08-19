@@ -123,6 +123,16 @@ jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
 		thi=jwl_socket_close(thi),jbl_log(UC "CONNECT FAILED");
 	thi->port=port;
 	thi->ip=ip;
+#ifdef _WIN32
+	int timeout = JWL_SOCKET_TRANSFER_MAX_TIME*1000;
+	setsockopt(thi->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
+	setsockopt(thi->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+#elif defined(__APPLE__) || defined(__linux__)
+	struct timeval timeout={JWL_SOCKET_TRANSFER_MAX_TIME,0};
+	setsockopt(thi->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
+	setsockopt(thi->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+#endif
+
 	return this;
 }
 inline jwl_socket * jwl_socket_close(jwl_socket *this)
@@ -159,9 +169,18 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 		return NULL;
 	}
 	jwl_socket *client=jwl_socket_new();
-	client->handle=handle;
+	client->handle=handle;	
 	jbl_endian_from_big_uint16(&claddr.sin_port,&client->port);
 	client->ip=claddr.sin_addr.s_addr;
+#ifdef _WIN32
+	int timeout = JWL_SOCKET_TRANSFER_MAX_TIME*1000;
+	setsockopt(client->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
+	setsockopt(client->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+#elif defined(__APPLE__) || defined(__linux__)
+	struct timeval timeout={JWL_SOCKET_TRANSFER_MAX_TIME,0};
+	setsockopt(client->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
+	setsockopt(client->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+#endif	
 	return client;
 }
 #ifdef jwl_socket_payload

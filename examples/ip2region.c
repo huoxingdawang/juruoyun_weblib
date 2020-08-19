@@ -12,7 +12,7 @@ int main(int argc,char** argv)
 			ip=jbl_string_free(ip);
 			break;
 		}
-		jbl_string * s1=jwl_ip2region(jwl_get_binary_ip(ip),NULL);
+		jbl_string * s1=jwl_ip2region(jwl_get_binary_ip(ip,NULL),NULL);
 		jbl_string_view(s1);
 		s1=jbl_string_free(s1);
 		ip=jbl_string_free(ip);

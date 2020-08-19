@@ -20,10 +20,12 @@ void jwl_stop()
 {
 	jwl_ip2region_stop();
 }
-jbl_uint32 jwl_get_binary_ip(jbl_string *this)
+jbl_uint32 jwl_get_binary_ip(jbl_string *this,jbl_string_size_type *start)
 {
-	jbl_string_size_type i=0;
-	return (jbl_string_get_uint_start(this,&i))+(jbl_string_get_uint_start(this,&i)<<8)+(jbl_string_get_uint_start(this,&i)<<16)+(jbl_string_get_uint_start(this,&i)<<24);
+	jbl_string_size_type i=start?*start:0;
+	jbl_uint32 ip=(jbl_string_get_uint_start(this,&i))+(jbl_string_get_uint_start(this,&i)<<8)+(jbl_string_get_uint_start(this,&i)<<16)+(jbl_string_get_uint_start(this,&i)<<24);
+	if(start)*start=i;
+	return ip;
 }
 jbl_string * jwl_get_string_ip(jbl_uint64 ip,jbl_string *this)
 {

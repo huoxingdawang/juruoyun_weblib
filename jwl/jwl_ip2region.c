@@ -24,14 +24,14 @@ void jwl_ip2region_start()
 {
 	FILE *fp;__jwl_ip2region_data.db=jbl_string_add_file(NULL,fp=fopen(JWL_IP2REGION_DB_DIR,"rb"));fclose(fp);
 	jbl_uint8* buf=__jwl_ip2region_data.db->s;
-	__jwl_ip2region_data.firstindexptr =jbl_getuint32_raw(buf);
-	__jwl_ip2region_data.lastindexptr  =jbl_getuint32_raw(buf+4);
+	jbl_endian_copy_uint32(buf,&__jwl_ip2region_data.firstindexptr);
+	jbl_endian_copy_uint32(buf+4,&__jwl_ip2region_data.lastindexptr);
 	__jwl_ip2region_data.totalblocks   =(__jwl_ip2region_data.lastindexptr-__jwl_ip2region_data.firstindexptr)/JWL_IP2REGION_DB_INDEX_BLOCK_LENGTH+1;
+//	jbl_log(UC"ip2region database loaded successfully first index ptr:%d,last index ptr:%d,total blocks:%d",__jwl_ip2region_data.firstindexptr,__jwl_ip2region_data.lastindexptr,__jwl_ip2region_data.totalblocks);
 }
 void jwl_ip2region_stop()
 {
 	__jwl_ip2region_data.db=jbl_string_free(__jwl_ip2region_data.db);
-	
 }
 
 jbl_string* jwl_ip2region(jbl_uint32 ip_big,jbl_string*result)
@@ -40,23 +40,23 @@ jbl_string* jwl_ip2region(jbl_uint32 ip_big,jbl_string*result)
 	jbl_endian_swap_uint32(&ip_big,&ip);//ip2region的数据库ip是小端序,jwl_ying处理出的ip默认是大端序
 	
 	jbl_uint32 dptr=0;
-	for(int l=0,h=__jwl_ip2region_data.totalblocks;l<=h;)
+	for(jbl_uint32 l=0,h=__jwl_ip2region_data.totalblocks;l<=h;)
 	{
-		int m=(l+h)>>1;
+		jbl_uint32 m=(l+h)>>1;
 		jbl_uint8 *buf=__jwl_ip2region_data.db->s+__jwl_ip2region_data.firstindexptr+m*JWL_IP2REGION_DB_INDEX_BLOCK_LENGTH;
-		int sip=jbl_getuint32_raw(buf);
-		if(ip<sip)
+		jbl_uint32 lip,hip;
+		jbl_endian_copy_uint32(buf,&lip);
+		jbl_endian_copy_uint32(buf+4,&hip);
+		if(ip<lip)
 			h=m-1;
 		else
-			if(ip>jbl_getuint32_raw(buf+4))
+			if(ip>hip)
 				l=m+1;
 			else
-				{dptr=jbl_getuint32_raw(buf+8);break;}
+				{jbl_endian_copy_uint32(buf+8,&dptr);break;}
 	}
 	if(!dptr)return result;
-
-
-	int datalen = ((dptr >> 24) & 0xFF);
+	jbl_uint32 datalen = ((dptr >> 24) & 0xFF);
 	jbl_uint8 * buf=__jwl_ip2region_data.db->s+(dptr&0x00FFFFFF);
 
 //	city_id = jbl_getuint32_raw(buf);

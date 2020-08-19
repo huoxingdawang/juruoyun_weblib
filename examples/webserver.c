@@ -27,11 +27,13 @@ int main(int argc,char** argv)
 	{
 pl() ;
 		poll=jwl_socket_poll_wait(poll);
+pl() ;
 		jwl_socket *client=NULL;
 		while(NULL!=(client=jwl_socket_poll_get(poll)))
 		{
 			if(jwl_socket_if_equal(client,host))
 			{
+pl();
 				client=jwl_socket_free(client);
 				client=jwl_socket_accept(host);
 				poll=jwl_socket_poll_add(poll,client);
@@ -114,6 +116,7 @@ exit_of_websocket:;
 			else
 			{
 				puint(++count);pn();
+pl();
 				jbl_log(UC	"\n-----------------------------------------------------------------------------------------------------------------------------------\n"
 							"-----------------------------------------------------------------------------------------------------------------------------------\n"
 							"request:%d",count);
@@ -167,8 +170,6 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 							"<a href=\"videobig\">videobig</a><br>"
 							"<a href=\"download\">download</a><br>"
 							"<a href=\"websocket.html\">websocket</a><br>"
-							"<a href=\"http://www.yhdm.tv/v/4466-1.html\">videoout</a><br>"
-							"<a href=\"http://111.30.158.158/vmtt.tc.qq.com/1098_d9b5d5438b47c14c899213c2c27cd941.f0.mp4?vkey=6704C21D9CACA82931587D2DBFE6825BAF46064206F39B3BB81B78529139D3EF7B80A4034695C9E26BD217FFBC29C0C5EEABE6ACCE9570942FD0D23DC1AFA2B6819CE6C73FFE78B83FD133F031650FB2BC5612A49171971C\">video out</a><br>"
 							"注意F5或刷新按钮会导致缓存失败，退化为304<br>"
 						);
 					}
@@ -249,15 +250,16 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 						{
 							resh=jwl_http_head_set_status		(resh,200);
 							FILE *fp;res=jbl_string_add_file(res,fp=fopen("testfiles/test.mp4","rb"));fclose(fp);
-							if(jwl_http_head_get_range(reqh).start)
+							if(jwl_http_head_get_range(reqh).start||jwl_http_head_get_range(reqh).end)
 							{
 								if(jwl_http_head_get_range(reqh).start>jbl_string_get_length(res)||jwl_http_head_get_range(reqh).end>jbl_string_get_length(res))
 									resh=jwl_http_head_set_status		(resh,416),jbl_log(UC "[%d,%d) out of [%d,%d)",jwl_http_head_get_range(reqh).start,jwl_http_head_get_range(reqh).end,0LL,jbl_string_get_length(res)),res=jbl_string_free(res);
 								else
 								{
 									resh=jwl_http_head_set_status		(resh,206);
+									
 									res_start=jwl_http_head_get_range(reqh).start;
-									res_end=jbl_max(jwl_http_head_get_range(reqh).start+409600,jwl_http_head_get_range(reqh).end);
+									res_end=jwl_http_head_get_range(reqh).end?jwl_http_head_get_range(reqh).end:jwl_http_head_get_range(reqh).start+409600;
 									jbl_min_update(res_end,jbl_string_get_length(res));
 									resh=jwl_http_head_set_range		(resh,(jwl_http_head_range){res_start,res_end});
 								}
@@ -286,8 +288,7 @@ jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 								{
 									resh=jwl_http_head_set_status		(resh,206);
 									res_start=jwl_http_head_get_range(reqh).start;
-									res_end=jbl_max(jwl_http_head_get_range(reqh).start+409600,jwl_http_head_get_range(reqh).end);
-									jbl_min_update(res_end,jwl_http_head_get_range(reqh).start+4096000);
+									res_end=jwl_http_head_get_range(reqh).end?jwl_http_head_get_range(reqh).end:jwl_http_head_get_range(reqh).start+409600;
 									jbl_min_update(res_end,jbl_string_get_length(res));
 									resh=jwl_http_head_set_range		(resh,(jwl_http_head_range){res_start,res_end});
 								}

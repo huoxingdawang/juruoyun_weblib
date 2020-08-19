@@ -805,10 +805,19 @@ e:;
 	return jbl_Vdouble_set(NULL,(f?(-(((double)y/ji)+x)):(((double)y/ji)+x))*ji2);
 }
 #endif
-#if JBL_LL_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现字符串的切割操作                               */
 /*******************************************************************************************/
+#if JBL_LL_ENABLE==1
+jbl_string *jbl_string_delete(jbl_string *this,jbl_string_size_type start,jbl_string_size_type end)
+{
+	if(start>=end)return this;
+	jbl_string *thi;this=jbl_string_extend_to(this,0,1,&thi);jbl_string_hash_clear(thi);
+	jbl_min_update(end,thi->len);
+	for(jbl_string_size_type j=end,i=start;j<thi->len;thi->s[i]=thi->s[j],++j,++i);
+	thi->len-=(end-start);
+	return this;
+}
 jbl_ll * jbl_string_cut_start(jbl_string *this,jbl_ll *list,char cut,jbl_string_size_type start)
 {
 	if(!this)return list;

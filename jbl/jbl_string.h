@@ -195,6 +195,7 @@ jbl_var *			jbl_string_get_number_start					(jbl_string *this,jbl_string_size_ty
 /*******************************************************************************************/
 /*                            以下函数实现字符串的切割操作                               */
 /*******************************************************************************************/
+jbl_string *jbl_string_delete(jbl_string *this,jbl_string_size_type start,jbl_string_size_type end);
 #if JBL_LL_ENABLE==1
 jbl_ll*				jbl_string_cut_start						(jbl_string *this,jbl_ll *list,char cut,jbl_string_size_type start);	//从start开始用cut切割一个字符串
 #define				jbl_string_cut(x,y,z)						jbl_string_cut_start(x,y,z,0)											//用cut切割一个字符串

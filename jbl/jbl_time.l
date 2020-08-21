@@ -92,7 +92,8 @@ inline jbl_time * jbl_time_now(jbl_time *this)
 }
 void jbl_time_decode(jbl_time *this,jbl_time_decoded *tt)
 {
-	if(this==NULL)return;
+	if(!this)
+		{tt->year=tt->ms=tt->week=tt->dom=tt->day=tt->hour=tt->month=tt->minute=tt->second=tt->isleap=0;return;}
 	jbl_int64 ts=jbl_time_to_unix(this);
 	int days=0,dayTmp=0,secs=0;
 	if(jbl_time_time_zone==JBL_TIME_ZONE_ASIA_SHANGHAI)

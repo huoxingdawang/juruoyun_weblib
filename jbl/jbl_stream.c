@@ -14,6 +14,7 @@
 #endif
 #include <stdio.h>
 #include "jbl_string_cc.h"
+extern			const jbl_stream_operater			jbl_stream_file_operators;
 void jbl_stream_start()
 {
 	jbl_stream_stdout=jbl_stream_new(&jbl_stream_file_operators,JBL_STREAM_STDOUT,JBL_STREAM_EXCEED_LENGTH,NULL,0);

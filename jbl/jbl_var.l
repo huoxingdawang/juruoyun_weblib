@@ -194,6 +194,7 @@ re2c:yyfill:enable = 0;
 		"%c"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_CHAR;}
 		"%X"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_HEX;}
 		"%v"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_VAR;}
+		"%j"	{if(addr)*addr=YYCURSOR;return JBL_VAR_SCANNER_KEY_JSON;}
      */
 	#undef YYCTYPE
 	#undef YYFILL	

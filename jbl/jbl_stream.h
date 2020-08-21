@@ -87,7 +87,6 @@ char			jbl_stream_view_put_format			(const void *this,jbl_stream *out,jbl_uint8 
 char			jbl_stream_json_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
 #endif
 
-extern			const jbl_stream_operater			jbl_stream_file_operators;
 extern			jbl_stream *						jbl_stream_stdout;
 extern			jbl_stream *						jbl_stream_stdin;
 extern			jbl_stream *						jbl_stream_stdin_link;

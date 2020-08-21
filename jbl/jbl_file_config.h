@@ -13,7 +13,8 @@
 #if JBL_FILE_ENABLE==1
 #include "jbl_ying.h"
 
-
+#define	JBL_FILE_CACHE_GB2312NAME	1
+#define	JBL_FILE_STREAM_BUF_LENGTH	8192
 
 #endif
 #endif

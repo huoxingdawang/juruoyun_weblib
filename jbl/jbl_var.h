@@ -161,6 +161,7 @@ typedef enum
 	JBL_VAR_SCANNER_KEY_CHARS		,
 	JBL_VAR_SCANNER_KEY_HEX			,
 	JBL_VAR_SCANNER_KEY_VAR			,
+	JBL_VAR_SCANNER_KEY_JSON		,
 }jbl_var_scanner_key;
 jbl_var_scanner_key jbl_var_scanner	(unsigned char * YYCURSOR,unsigned char **addr);
 

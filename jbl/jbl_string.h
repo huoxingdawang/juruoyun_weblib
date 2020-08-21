@@ -98,6 +98,7 @@ void					jbl_string_print						(jbl_string *this,FILE * file);
 /*                            以下函数实现字符串的设置类操作                             */
 /*******************************************************************************************/
 #define					jbl_string_set_length(a,l)				(((jbl_string*)jbl_refer_pull(a))->len=l)								//设置一个字符串长度
+jbl_string *			jbl_string_set_tail						(jbl_string *this);														//设置一个字符串末尾0
 #define					jbl_string_set_length_force(a,l)		((a)->len=l)															//强制获取一个字符串长度，当字符串为NULL或引用类型时将直接导致RE
 /*******************************************************************************************/
 /*                            以下函数实现字符串的获取类操作                             */

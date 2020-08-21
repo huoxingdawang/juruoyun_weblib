@@ -186,7 +186,7 @@ jbl_string* jbl_string_to_gb2312_from_utf8(jbl_string* this,jbl_string* that)
 		jbl_uint32 uni=jbl_string_get_unicode_from_utf8_start(that,&i);
 		if(i==j)break;
 		uni=__jbl_string_utg(uni);
-		this=jbl_string_add_char(this,(uni>>8)&0XFF);
+		if((uni>>8))this=jbl_string_add_char(this,(uni>>8)&0XFF);
 		this=jbl_string_add_char(this,uni&0XFF);
 	}
 	return this;

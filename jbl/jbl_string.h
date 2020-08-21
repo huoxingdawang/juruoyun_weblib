@@ -89,10 +89,6 @@ jbl_string *			jbl_string_add_uint_length				(jbl_string *this,jbl_uint64 in,jbl
 jbl_string *			jbl_string_add_double_length			(jbl_string *this,double in,unsigned char len);							//添加一个浮点数，保留len位小数
 jbl_string *			jbl_string_add_hex						(jbl_string *this,jbl_uint64 in);										//把一个64位无符号整数以16进制形式添加(无前导0)
 jbl_string *			jbl_string_add_hex_8bits				(jbl_string *this,jbl_uint8 in);										//把一个 8位无符号整数以16进制形式添加(有前导0)
-//TOOD START 实现jbl_file后移除这两个函数
-#include <stdio.h>
-jbl_string *			jbl_string_add_file						(jbl_string *this,FILE * file);
-void					jbl_string_print						(jbl_string *this,FILE * file);
 //TODO END
 /*******************************************************************************************/
 /*                            以下函数实现字符串的设置类操作                             */

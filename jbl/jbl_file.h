@@ -23,26 +23,7 @@ typedef enum
 	JBL_FILE_RW,
 	JBL_FILE_WR,
 }jbl_file_handle_type;
-typedef struct __jbl_file
-{
-	jbl_gc					gc;		//gc结构
-	jbl_string *			dir;
-#if JBL_FILE_CACHE_GB2312NAME==1 && defined(_WIN32)
-	jbl_string *			dir_gb2312;
-#endif
-	FILE *					handle;
-	jbl_file_handle_type	type;
-	jbl_file_ct				ctid;
-	struct
-	{
-		jbl_uint64			size;
-#if JBL_TIME_ENABLE==1
-		jbl_time *			time_access;
-		jbl_time *			time_modify;
-		jbl_time *			time_creat;		
-#endif
-	}status;
-}jbl_file;
+typedef struct __jbl_file jbl_file;
 jbl_file *			jbl_file_new						();
 jbl_file *			jbl_file_init						(jbl_file* this);
 jbl_file *			jbl_file_free						(jbl_file *this);
@@ -52,6 +33,7 @@ jbl_file *			jbl_file_open_chars					(jbl_file *this,unsigned char * dir,jbl_fil
 jbl_file *			jbl_file_close						(jbl_file *this);
 jbl_file *			jbl_file_change_handle				(jbl_file *this,jbl_file_handle_type type);\
 jbl_string *		jbl_file_read						(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_uint64 end);
+jbl_file *			jbl_file_write						(jbl_file * this,jbl_string*out);
 jbl_file *			jbl_file_set_offset					(jbl_file * this,jbl_uint64 start);
 jbl_file *			jbl_file_update_status				(jbl_file *this);
 #define				jbl_file_get_dir(this)				(jbl_string_copy(((jbl_file*)jbl_refer_pull(this))->dir))

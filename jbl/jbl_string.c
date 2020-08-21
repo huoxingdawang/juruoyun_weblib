@@ -326,32 +326,6 @@ inline jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
 	thi->s[thi->len]=(hex[in&15])		,++thi->len;	
 	return this;
 }
-//TODO START 实现jbl_file后移除这两个函数
-#include <stdio.h>
-jbl_string* jbl_string_add_file(jbl_string *this,FILE * file)
-{
-	if(!file)jbl_exception("NULL POINTER");
-#ifdef _WIN64
-	_fseeki64(file,0L,SEEK_END);
-	jbl_string_size_type size=_ftelli64(file);	
-	_fseeki64(file,0L,SEEK_SET);
-#else
-	fseek(file,0L,SEEK_END);
-	jbl_string_size_type size=ftell(file);	
-	fseek(file,0L,SEEK_SET);
-#endif	
-	jbl_string *thi;this=jbl_string_extend_to(this,size,1,&thi);jbl_string_hash_clear(thi);
-	thi->len+=fread(thi->s+thi->len,1,size,file);
-	return this;
-}
-inline void jbl_string_print(jbl_string *this,FILE * file)
-{
-	if(!this)return;
-	if(!file)jbl_exception("NULL POINTER");
-	this=jbl_refer_pull(this);
-	fwrite(this->s,1,this->len,file);
-}
-//TODO END
 inline jbl_string* jbl_string_set_tail(jbl_string *this)
 {
 	if(!this)return NULL;

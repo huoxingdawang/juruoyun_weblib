@@ -244,7 +244,7 @@ jbl_string* jbl_ll_json_encode(const jbl_ll* this,jbl_string *out,jbl_uint8 form
 	jbl_uint8 format2=(format&4)|((format&1)<<2);
 	jbl_ll_foreach(this,i)
 	{
-		if(format){out=jbl_string_add_char(out,'\n');for(jbl_int32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);}//¸ñÊ½»¯µÄ\tºÍ\n
+		if(format){for(jbl_int32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);}//¸ñÊ½»¯µÄ\tºÍ\n
 		out=jbl_var_json_encode(i->v,out,format2|((i!=this->tail)<<1),tabs);
 
 	}	

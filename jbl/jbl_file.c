@@ -15,7 +15,27 @@
 #include "jbl_string_cc.h"
 #include "jbl_file_ct.h"
 #include <errno.h>
-
+#include <stdio.h>
+typedef struct __jbl_file
+{
+	jbl_gc					gc;		//gc结构
+	jbl_string *			dir;
+#if JBL_FILE_CACHE_GB2312NAME==1 && defined(_WIN32)
+	jbl_string *			dir_gb2312;
+#endif
+	FILE *					handle;
+	jbl_file_handle_type	type;
+	jbl_file_ct				ctid;
+	struct
+	{
+		jbl_uint64			size;
+#if JBL_TIME_ENABLE==1
+		jbl_time *			time_access;
+		jbl_time *			time_modify;
+		jbl_time *			time_creat;		
+#endif
+	}status;
+}jbl_file;
 jbl_file * jbl_file_new()
 {
 	return jbl_file_init(jbl_malloc(sizeof(jbl_file)));
@@ -190,6 +210,16 @@ jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_u
 	jbl_string *re;res=jbl_string_extend_to(res,end-start,1,&re);jbl_string_hash_clear(re);
 	re->len+=fread(re->s+re->len,1,end-start,thi->handle);
 	return res;
+}
+jbl_file * jbl_file_write(jbl_file * this,jbl_string*out)
+{
+	if(!this)jbl_exception("NULL POINTER");
+	this=jbl_file_change_handle(this,JBL_FILE_WRITE);
+	jbl_file *thi=jbl_refer_pull(this);
+	if(thi->type==JBL_FILE_READ||thi->type==JBL_FILE_CLOSE)jbl_exception("Unread able file");
+	out=jbl_refer_pull(out);
+	fwrite(out->s,1,out->len,this->handle);
+	return this;
 }
 inline jbl_file * jbl_file_set_offset(jbl_file * this,jbl_uint64 start)
 {

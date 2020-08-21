@@ -4,8 +4,10 @@ int main(int argc,char** argv)
 	jbl_start();
 	jwl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_string* origion_string;
-	FILE *fp;origion_string=jbl_string_add_file(NULL,fp=fopen("testfiles//ip.merge.txt","rb"));fclose(fp);
+	jbl_file * f1=jbl_file_open_chars(NULL,UC "testfiles//ip.merge.txt",JBL_FILE_READ);
+	jbl_string* origion_string=jbl_file_read(f1,NULL,0,-1);
+	jbl_file_free(f1);	
+	
 	jbl_ll * l1=jbl_string_cut(origion_string,NULL,'\r');//用\r切割，\n落在ip前面不用处理
 	origion_string=jbl_string_free(origion_string);
 	puint(l1->len);pn();
@@ -18,7 +20,7 @@ int main(int argc,char** argv)
 	
 	
 	
-	jbl_stream*out=jbl_stream_new(&jbl_stream_file_operators,fopen("testfiles//ip2region.db","wb"),1024*1024,NULL,0);
+	jbl_stream*out=jbl_file_stream_new(jbl_file_open_chars(NULL,UC "testfiles//ip2region.db",JBL_FILE_WRITE));
 	jbl_ll_foreach(l1,i)
 	{
 		if((out->size-out->en)<256)jbl_stream_do(out,0);

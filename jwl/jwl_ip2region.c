@@ -22,7 +22,10 @@ struct
 }__jwl_ip2region_data;
 void jwl_ip2region_start()
 {
-	FILE *fp;__jwl_ip2region_data.db=jbl_string_add_file(NULL,fp=fopen(JWL_IP2REGION_DB_DIR,"rb"));fclose(fp);
+	jbl_file * f1=jbl_file_open_chars(NULL,UC JWL_IP2REGION_DB_DIR,JBL_FILE_READ);
+	__jwl_ip2region_data.db=jbl_file_read(f1,NULL,0,-1);
+	jbl_file_free(f1);	
+	
 	jbl_uint8* buf=__jwl_ip2region_data.db->s;
 	jbl_endian_copy_uint32(buf,&__jwl_ip2region_data.firstindexptr);
 	jbl_endian_copy_uint32(buf+4,&__jwl_ip2region_data.lastindexptr);

@@ -253,7 +253,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	jwl_socket *socket=jbl_refer_pull((jwl_socket*)this->data);
 	if(this->en)
 	{
-		for(jbl_uint8 i=0;i<1&&socket->handle!=-1&&send(socket->handle,(char*)this->buf+this->en,this->en,0)==-1;++i)
+		for(jbl_uint8 i=0;i<1&&socket->handle!=-1&&send(socket->handle,(char*)this->buf,this->en,0)==-1;++i)
 		{
 			if((errno!=EINTR&&errno!=EWOULDBLOCK&&errno!=EAGAIN))
 			{

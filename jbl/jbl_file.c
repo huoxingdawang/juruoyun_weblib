@@ -16,26 +16,6 @@
 #include "jbl_file_ct.h"
 #include <errno.h>
 #include <stdio.h>
-typedef struct __jbl_file
-{
-	jbl_gc					gc;		//gc结构
-	jbl_string *			dir;
-#if JBL_FILE_CACHE_GB2312NAME==1 && defined(_WIN32)
-	jbl_string *			dir_gb2312;
-#endif
-	FILE *					handle;
-	jbl_file_handle_type	type;
-	jbl_file_ct				ctid;
-	struct
-	{
-		jbl_uint64			size;
-#if JBL_TIME_ENABLE==1
-		jbl_time *			time_access;
-		jbl_time *			time_modify;
-		jbl_time *			time_creat;		
-#endif
-	}status;
-}jbl_file;
 jbl_file * jbl_file_new()
 {
 	return jbl_file_init(jbl_malloc(sizeof(jbl_file)));
@@ -90,9 +70,11 @@ jbl_file* jbl_file_close(jbl_file *this)
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_file *thi=jbl_refer_pull(this);	
 	thi->dir					=jbl_string_free(thi->dir);
-	this->status.size			=0;
+	thi->status.size			=0;
 	thi->ctid					=JBL_FILE_CT_UNKNOW;
-	if(thi->handle||this->type!=JBL_FILE_CLOSE)fclose(thi->handle),thi->handle=NULL,this->type=JBL_FILE_CLOSE;
+	if(thi->handle)				fclose(thi->handle);
+	thi->handle					=NULL;
+	thi->type					=JBL_FILE_CLOSE;
 #if JBL_TIME_ENABLE==1
 	thi->status.time_access		=jbl_time_free(thi->status.time_access);
 	thi->status.time_modify		=jbl_time_free(thi->status.time_modify);
@@ -244,14 +226,14 @@ jbl_file* jbl_file_view_put(jbl_file* this,jbl_stream *out,jbl_uint8 format,jbl_
 	++tabs;
 	char * type		[]={"close","read","write","RW","WR"};
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"handle type  :");jbl_stream_push_chars(out,UC type[thi->type])								;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"dir          :");jbl_stream_push_string(out,this->dir)										;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"size         :");jbl_stream_push_uint(out,this->status.size)								;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"content type :");jbl_stream_push_chars(out,jbl_file_get_ct_chars_by_ctid(this->ctid))		;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"suffix       :");jbl_stream_push_chars(out,jbl_file_get_suffic_chars_by_ctid(this->ctid))	;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"dir          :");jbl_stream_push_string(out,thi->dir)										;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"size         :");jbl_stream_push_uint(out,thi->status.size)								;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"content type :");jbl_stream_push_chars(out,jbl_file_get_ct_chars_by_ctid(thi->ctid))		;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"suffix       :");jbl_stream_push_chars(out,jbl_file_get_suffic_chars_by_ctid(thi->ctid))	;jbl_stream_push_char(out,'\n');
 #if JBL_TIME_ENABLE==1
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_creat   :");jbl_stream_push_time(out,this->status.time_creat ,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_modify  :");jbl_stream_push_time(out,this->status.time_modify,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_access  :");jbl_stream_push_time(out,this->status.time_access,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_creat   :");jbl_stream_push_time(out,thi->status.time_creat ,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_modify  :");jbl_stream_push_time(out,thi->status.time_modify,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_access  :");jbl_stream_push_time(out,thi->status.time_access,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
 #endif
 
 	return this;

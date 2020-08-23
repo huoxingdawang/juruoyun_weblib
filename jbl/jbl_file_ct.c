@@ -9,6 +9,8 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_file_ct.h"
 #if JBL_FILE_ENABLE==1
+#include "jbl_log.h"
+#include "jbl_var.h"
 #define jbl_fctdst jbl_uint8			//juruoyun basic lib file content type data size type
 struct
 {
@@ -192,13 +194,32 @@ jbl_file_ct jbl_file_get_ct_by_name(jbl_string *name)
 			return ctd[j].type_id;
 		failed:;
 	}
+#if JBL_FILE_CT_DEBUG ==1 && JBL_VAR_ENABLE==1
+	jbl_log(UC "unknow content type%j",jbl_gc_minus(jbl_string_copy_as_var(name)));
+#endif
 	return JBL_FILE_CT_UNKNOW;
 }
 inline unsigned char *	jbl_file_get_ct_chars_by_ctid		(jbl_file_ct ctid)	{return ctd[ctid].content_type;}
 inline unsigned char *	jbl_file_get_suffic_chars_by_ctid	(jbl_file_ct ctid)	{return ctd[ctid].suffix;}
 inline jbl_string    *	jbl_file_get_ct_by_ctid				(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd[ctid].content_type);}
 inline jbl_string    *	jbl_file_get_suffic_by_ctid			(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd[ctid].suffix);}
-
-
+jbl_uint8 jbl_file_is_video(jbl_file_ct ctid)
+{
+	if(	(ctid==JBL_FILE_CT_FLV	)||
+		(ctid==JBL_FILE_CT_WEBM	)||
+		(ctid==JBL_FILE_CT_MP4	)
+		)
+		return 1;
+	return 0;
+}
+jbl_uint8 jbl_file_is_audio(jbl_file_ct ctid)
+{
+	if(	(ctid==JBL_FILE_CT_M3U	)||
+		(ctid==JBL_FILE_CT_WAV	)||
+		(ctid==JBL_FILE_CT_MP3	)
+		)
+		return 1;
+	return 0;
+}
 
 #endif

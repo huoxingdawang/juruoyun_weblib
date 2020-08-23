@@ -14,6 +14,7 @@
 #include "jbl_ying.h"
 #define JBL_LOG_MAX_LENGTH 1024
 #define JBL_LOG_DIR "jbl.log"
+#define JBL_LOG_DISABLE_STREAM_CACHE 1
 
 
 #endif

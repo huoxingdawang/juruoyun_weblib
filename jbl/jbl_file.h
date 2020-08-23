@@ -23,6 +23,26 @@ typedef enum
 	JBL_FILE_RW,
 	JBL_FILE_WR,
 }jbl_file_handle_type;
+typedef struct __jbl_file
+{
+	jbl_gc					gc;		//gc结构
+	jbl_string *			dir;
+#if JBL_FILE_CACHE_GB2312NAME==1 && defined(_WIN32)
+	jbl_string *			dir_gb2312;
+#endif
+	void *					handle;
+	jbl_file_handle_type	type;
+	jbl_file_ct				ctid;
+	struct
+	{
+		jbl_uint64			size;
+#if JBL_TIME_ENABLE==1
+		jbl_time *			time_access;
+		jbl_time *			time_modify;
+		jbl_time *			time_creat;		
+#endif
+	}status;
+}jbl_file;
 typedef struct __jbl_file jbl_file;
 jbl_file *			jbl_file_new						();
 jbl_file *			jbl_file_init						(jbl_file* this);
@@ -40,7 +60,7 @@ jbl_file *			jbl_file_update_status				(jbl_file *this);
 #define				jbl_file_get_handle(this)			(((jbl_file*)jbl_refer_pull(this))->handle)
 #define				jbl_file_get_handle_type(this)		(((jbl_file*)jbl_refer_pull(this))->type)
 #define				jbl_file_get_ct(this)				(((jbl_file*)jbl_refer_pull(this))->ctid)
-#define				jbl_file_get_size(this)				(((jbl_file*)jbl_refer_pull(this))->status->size)
+#define				jbl_file_get_size(this)				(((jbl_file*)jbl_refer_pull(this))->status.size)
 #define				jbl_file_get_time_access(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_access))
 #define				jbl_file_get_time_modify(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_modify))
 #define				jbl_file_get_time_creat(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_creat))

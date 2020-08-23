@@ -127,6 +127,9 @@ void jbl_log_save()
 		
 		jbl_stream_push_char(__jbl_logs.fs,'\n');
 	}
+#if JBL_LOG_DISABLE_STREAM_CACHE ==1
+	jbl_stream_do(__jbl_logs.fs,1);
+#endif
 #endif	
 	__jbl_logs.start&=(~0x02);
 	__jbl_logs.cnt=0;

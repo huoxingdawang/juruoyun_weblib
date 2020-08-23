@@ -166,6 +166,8 @@ unsigned char * jbl_file_get_ct_chars_by_ctid		(jbl_file_ct ctid);
 unsigned char * jbl_file_get_suffic_chars_by_ctid	(jbl_file_ct ctid);
 jbl_string    *	jbl_file_get_ct_by_ctid				(jbl_file_ct ctid);
 jbl_string    *	jbl_file_get_suffic_by_ctid			(jbl_file_ct ctid);
+jbl_uint8		jbl_file_is_video					(jbl_file_ct ctid);
+jbl_uint8		jbl_file_is_audio					(jbl_file_ct ctid);
 
 
 #endif

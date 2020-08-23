@@ -15,6 +15,7 @@
 
 #define	JBL_FILE_CACHE_GB2312NAME	1
 #define	JBL_FILE_STREAM_BUF_LENGTH	8192
+#define	JBL_FILE_CT_DEBUG			1
 
 #endif
 #endif

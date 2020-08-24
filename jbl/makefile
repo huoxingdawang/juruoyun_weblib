@@ -61,9 +61,19 @@ ifeq ($(findstring jbl,$(complain_re2c)),jbl)
 	re2c -o jbl$(H)jbl_time.c jbl$(H)jbl_time.l
 endif
 endif
+ifeq ($(system),macos)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_time.c jbl$(H)jbl_time.l
+endif
+endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_time.o       jbl$(H)jbl_time.c        $(JBL_EXLIB)
 jbl/jbl_var            :
 ifeq ($(system),linux)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_var.c jbl$(H)jbl_var.l
+endif
+endif
+ifeq ($(system),macos)
 ifeq ($(findstring jbl,$(complain_re2c)),jbl)
 	re2c -o jbl$(H)jbl_var.c jbl$(H)jbl_var.l
 endif

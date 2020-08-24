@@ -13,7 +13,7 @@
 #include "jwl_http.h"
 jbl_string * jwl_websocket_get_sec(jwl_http_head* head,jbl_string *res)
 {
-	if(jwl_http_head_get_connection(head)!=JWL_HTTP_CONNECTION_UPGRADE||jwl_http_head_get_upgrade(head)!=JWL_HTTP_UPGRADE_WEBSOCKET)return NULL;
+	if(!(jwl_http_head_get_connection(head)&JWL_HTTP_CONNECTION_UPGRADE)||jwl_http_head_get_upgrade(head)!=JWL_HTTP_UPGRADE_WEBSOCKET)return NULL;
 	jbl_var * sec=jwl_http_head_get(head,UC"Sec-WebSocket-Key");
 	sec=jbl_V(jbl_string_add_chars(jbl_Vstring(sec),UC"258EAFA5-E914-47DA-95CA-C5AB0DC85B11"));
 	jbl_string *tmp=jbl_sha1(jbl_Vstring(sec),NULL,true);
@@ -118,7 +118,8 @@ void __jwl_websocket_operator(jbl_stream* this,jbl_uint8 flags)
 			if((i=__jwl_websocket_get_data_start(this->buf))>=this->en)
 				return;
 			this->extra[2].c8[5]=0X0F&this->buf[0];
-			if(this->extra[2].c8[5]==JWL_WEBSOCKET_STATUS_CLOSE)return;
+			if(this->extra[2].c8[5]==JWL_WEBSOCKET_STATUS_CLOSE){this->extra[0].u=this->extra[1].u=0;return;}
+			if(this->extra[2].c8[5]==JWL_WEBSOCKET_STATUS_PING){this->extra[0].u=this->extra[1].u=0;return;}
 			this->extra[0].u=0;
 			this->extra[1].u=__jwl_websocket_get_length(this->buf);
 			this->extra[2].c8[4]=1;

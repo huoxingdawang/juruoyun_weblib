@@ -59,7 +59,7 @@ pl();
 				jbl_stream *tmp=jbl_string_stream_new(get);
 				jbl_stream_connect(client_stream,websocket_stream);
 				jbl_stream_connect(websocket_stream,tmp);
-				while(!jwl_websocket_stream_finished(websocket_stream)&&jwl_websocket_stream_get_status(websocket_stream)!=JWL_WEBSOCKET_STATUS_CLOSE)
+				while(!jwl_websocket_stream_finished(websocket_stream))
 					jbl_stream_do(client_stream,jbl_stream_force);
 				tmp->data=NULL;
 				tmp=jbl_stream_free(tmp);
@@ -68,43 +68,51 @@ pl();
 				{
 					jbl_log(UC "websocket close");
 					client=jwl_socket_close(client);
-					websocket_stream=jbl_stream_free(websocket_stream);
-					goto exit_of_websocket;
+				}
+				else if(jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_PING)
+				{
+					jbl_log(UC "websocket ping");
+					jbl_string *head=jwl_websocket_get_head(0,1,JWL_WEBSOCKET_STATUS_PONG,NULL);
+					jbl_stream_push_string(websocket_stream,head);
+					jbl_stream_do(websocket_stream,1);	
+					head=jbl_string_free(head);					
+				}
+				else if((jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_TEXT)||
+						(jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_BIN))
+				{
+//jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
+					jbl_string *res=jbl_string_add_chars(NULL,UC"Receive from ip:");
+					res=jwl_get_string_ip(jwl_socket_get_ip(client),res);
+					res=jbl_string_add_char(res,'(');
+					res=jwl_ip2region(jwl_socket_get_ip(client),res);
+					res=jbl_string_add_chars(res,UC")port:");
+					res=jbl_string_add_uint(res,jwl_socket_get_port(client));
+					res=jbl_string_add_chars(res,UC",at ");
+					jbl_time * t1=jbl_time_now(NULL);
+					res=jbl_time_to_string_format(t1,res,UC"Y-m-d H:i:s.u");
+					t1=jbl_time_free(t1);
+					res=jbl_string_add_char(res,',');
+					res=jbl_string_add_uint(res,jbl_string_get_length(get));
+					res=jbl_string_add_chars(res,UC"bytes intotal");
+					res=jbl_string_add_chars(res,UC" data:<br>");
+					res=jbl_string_add_string(res,get);
+					
+					jbl_string *head=jwl_websocket_get_head(jbl_string_get_length(res),1,JWL_WEBSOCKET_STATUS_TEXT,NULL);
+					jwl_socket_poll_foreach(poll,i)
+						if(jwl_socket_get_payload(i->socket)==1)
+						{
+							jwl_socket * websoccket_send=jwl_socket_copy(i->socket);
+							jbl_stream * websocket_send_stream=jwl_socket_stream_new(jbl_refer(&websoccket_send));						
+							jbl_stream_push_string(websocket_send_stream,head);
+							jbl_stream_push_string(websocket_send_stream,res);
+							jbl_stream_do(websocket_send_stream,1);	
+							websoccket_send=jwl_socket_free(websoccket_send);
+							websocket_send_stream=jbl_stream_free(websocket_send_stream);
+						}
+					res=jbl_string_free(res);
+					head=jbl_string_free(head);
 				}
 				websocket_stream=jbl_stream_free(websocket_stream);
-//jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
-				jbl_string *res=jbl_string_add_chars(NULL,UC"Receive from ip:");
-				res=jwl_get_string_ip(jwl_socket_get_ip(client),res);
-				res=jbl_string_add_char(res,'(');
-				res=jwl_ip2region(jwl_socket_get_ip(client),res);
-				res=jbl_string_add_chars(res,UC")port:");
-				res=jbl_string_add_uint(res,jwl_socket_get_port(client));
-				res=jbl_string_add_chars(res,UC",at ");
-				jbl_time * t1=jbl_time_now(NULL);
-				res=jbl_time_to_string_format(t1,res,UC"Y-m-d H:i:s.u");
-				t1=jbl_time_free(t1);
-				res=jbl_string_add_char(res,',');
-				res=jbl_string_add_uint(res,jbl_string_get_length(get));
-				res=jbl_string_add_chars(res,UC"bytes intotal");
-				res=jbl_string_add_chars(res,UC" data:<br>");
-				res=jbl_string_add_string(res,get);
-				
-				jbl_string *head=jwl_websocket_get_head(jbl_string_get_length(res),1,JWL_WEBSOCKET_STATUS_TEXT,NULL);
-				jwl_socket_poll_foreach(poll,i)
-					if(jwl_socket_get_payload(i->socket)==1)
-					{
-						jwl_socket * websoccket_send=jwl_socket_copy(i->socket);
-						jbl_stream * websocket_send_stream=jwl_socket_stream_new(jbl_refer(&websoccket_send));						
-						jbl_stream_push_string(websocket_send_stream,head);
-						jbl_stream_push_string(websocket_send_stream,res);
-						jbl_stream_do(websocket_send_stream,1);	
-						websoccket_send=jwl_socket_free(websoccket_send);
-						websocket_send_stream=jbl_stream_free(websocket_send_stream);
-					}
-				res=jbl_string_free(res);
-				head=jbl_string_free(head);
-				
-exit_of_websocket:;
 				client=jwl_socket_free(client);
 				get=jbl_string_free(get);
 				client_stream=jbl_stream_free(client_stream);

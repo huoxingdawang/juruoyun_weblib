@@ -30,6 +30,11 @@ ifeq ($(findstring jwl,$(complain_re2c)),jwl)
 	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
 endif
 endif
+ifeq ($(system),macos)
+ifeq ($(findstring jwl,$(complain_re2c)),jwl)
+	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
+endif
+endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_http.o       jwl$(H)jwl_http.c      $(JWL_EXLIB)
 jwl/jwl_websocket   :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_websocket.o  jwl$(H)jwl_websocket.c $(JWL_EXLIB)

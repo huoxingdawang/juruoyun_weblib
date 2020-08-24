@@ -130,9 +130,19 @@ ifeq ($(findstring jbl,$(complain_re2c)),jbl)
 	re2c -o jbl$(H)jbl_time.c jbl$(H)jbl_time.l
 endif
 endif
+ifeq ($(system),macos)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_time.c jbl$(H)jbl_time.l
+endif
+endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_time.o       jbl$(H)jbl_time.c        $(JBL_EXLIB)
 jbl/jbl_var            :
 ifeq ($(system),linux)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_var.c jbl$(H)jbl_var.l
+endif
+endif
+ifeq ($(system),macos)
 ifeq ($(findstring jbl,$(complain_re2c)),jbl)
 	re2c -o jbl$(H)jbl_var.c jbl$(H)jbl_var.l
 endif
@@ -169,6 +179,11 @@ jwl/jwl_socket		:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket.o     jwl$(H)jwl_socket.c    $(JWL_EXLIB)
 jwl/jwl_http		:
 ifeq ($(system),linux)
+ifeq ($(findstring jwl,$(complain_re2c)),jwl)
+	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
+endif
+endif
+ifeq ($(system),macos)
 ifeq ($(findstring jwl,$(complain_re2c)),jwl)
 	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
 endif

@@ -74,6 +74,7 @@ jwl_socket *			jwl_socket_accept			(jwl_socket *this);									//接受一个soc
 #define					jwl_socket_if_equal(a,b)	(jbl_refer_pull(a)==jbl_refer_pull(b))
 #define					jwl_socket_get_ip(x)		(((jwl_socket*)jbl_refer_pull(x))->ip)		
 #define					jwl_socket_get_port(x)		(((jwl_socket*)jbl_refer_pull(x))->port)		
+#define					jwl_socket_closed(x)		(((jwl_socket*)jbl_refer_pull(x))->handle==-1)		
 
 #ifdef jwl_socket_payload
 jwl_socket *			jwl_socket_set_payload		(jwl_socket * this,jwl_socket_payload payload);

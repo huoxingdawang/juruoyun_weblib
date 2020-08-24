@@ -72,6 +72,7 @@ jwb.websocket = new function()
 		div.innerHTML= data;
 	};
 	start();
+	this.start=start;
 	this.send=(data,add_buf)=>
 	{
 		console.log('Send Message: ',data);

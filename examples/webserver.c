@@ -157,7 +157,7 @@ jbl_string_view(get);pf();
 							break;
 					}
 					jwl_http_head_view(resh);pf();
-					jwl_http_head_encode(resh,client_stream,0);
+					jwl_http_head_encode(resh,client_stream);
 					jbl_stream_do(client_stream,1);		
 					resh=jwl_http_head_free(resh);
 				}
@@ -166,8 +166,10 @@ jbl_string_view(get);pf();
 					jwl_http_head *	resh=jwl_http_head_new();			//响应头
 					resh=jwl_http_head_set_response(resh);
 					resh=jwl_http_head_set_connection		(resh,JWL_HTTP_CONNECTION_KEEP_ALIVE);
+					resh=jwl_http_head_set_tren				(resh,JWL_HTTP_TREN_CHUNKED);
+					jbl_stream * http_stream=jwl_http_encode_stream_new(jbl_refer(&resh));
+					jbl_stream_connect(http_stream,client_stream);
 					jbl_stream *outs=NULL;
-					jbl_uint64 len=0;
 					if(reqh)
 					{
 						jbl_string * url=jwl_http_head_get_url(reqh);
@@ -187,27 +189,28 @@ jbl_string_view(get);pf();
 							resh=jwl_http_head_set_cache		(resh,JWL_HTTP_CACHE_NO);
 							resh=jwl_http_head_set_content_type	(resh,jbl_file_get_ct(f1));
 							resh=jwl_http_head_set_charset		(resh,JWL_HTTP_CHARSET_UTF8);
-							len=jbl_file_get_size(f1);
+							resh=jwl_http_head_set_length		(resh,jbl_file_get_size(f1));
 							jbl_file_view(f1);
 							
 							if(	jwl_http_head_get_range(reqh).start||jwl_http_head_get_range(reqh).end||
 								jbl_file_is_video(jbl_file_get_ct(f1))||
 								jbl_file_is_audio(jbl_file_get_ct(f1)))
 							{
-								if(jwl_http_head_get_range(reqh).start>len||jwl_http_head_get_range(reqh).end>len)
-									resh=jwl_http_head_set_status		(resh,416),jbl_log(UC "[%d,%d) out of [%d,%d)",jwl_http_head_get_range(reqh).start,jwl_http_head_get_range(reqh).end,0LL,len);
+								resh=jwl_http_head_set_tren				(resh,JWL_HTTP_TREN_UNKNOW);
+								if(jwl_http_head_get_range(reqh).start>jbl_file_get_size(f1)||jwl_http_head_get_range(reqh).end>jbl_file_get_size(f1))
+									resh=jwl_http_head_set_status		(resh,416),jbl_log(UC "[%d,%d) out of [%d,%d)",jwl_http_head_get_range(reqh).start,jwl_http_head_get_range(reqh).end,0LL,jbl_file_get_size(f1));
 								else
 								{
 									resh=jwl_http_head_set_status		(resh,206);
 									jbl_uint64 start=jwl_http_head_get_range(reqh).start;
 									jbl_uint64 end=jwl_http_head_get_range(reqh).end?jwl_http_head_get_range(reqh).end:jwl_http_head_get_range(reqh).start+409600;
-									jbl_min_update(end,len);
+									jbl_min_update(end,jbl_file_get_size(f1));
 									resh=jwl_http_head_set_range		(resh,(jwl_http_head_range){start,end});
 									jbl_file_stream_set_offset(outs,start);
 									jbl_file_stream_set_end(outs,end);
 								}
 							}								
-							jbl_stream_connect(outs,client_stream);
+							jbl_stream_connect(outs,http_stream);
 						}
 						f1=jbl_file_free(f1);
 						dir=jbl_string_free(dir);
@@ -217,7 +220,6 @@ jbl_string_view(get);pf();
 					if(jwl_http_head_get_status(resh))
 					{
 						jwl_http_head_view(resh);pf();
-						jwl_http_head_encode(resh,client_stream,len);
 						jbl_stream_do(outs,1);
 					}
 					else if(reqh)
@@ -240,14 +242,15 @@ jbl_string_view(get);pf();
 							" is right,send an email to develop group.<br>"
 							"<a href='/'>Click here to back</a><br><span style='color:white;'></a></div></body>"
 						);
+						resh=jwl_http_head_set_length(resh,jbl_string_get_length(res));						
 						jwl_http_head_view(resh);pf();
-						jwl_http_head_encode(resh,client_stream,jbl_string_get_length(res));
-						jbl_stream_push_string(client_stream,res);
+						jbl_stream_push_string(http_stream,res);
 						res=jbl_string_free(res);
 					}						
-					jbl_stream_do(client_stream,1);
+					jbl_stream_do(http_stream,1);
 					
 					outs=jbl_stream_free(outs);
+					http_stream=jbl_stream_free(http_stream);
 					resh=jwl_http_head_free(resh);
 				}
 				

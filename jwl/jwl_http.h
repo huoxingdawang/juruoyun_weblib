@@ -29,7 +29,9 @@ typedef struct __jwl_http_head//response head 响应头
 	jbl_uint32			connection:3;
 	jbl_uint32 			upgrade:1;
 	jbl_uint32 			cache:2;
+	jbl_uint32 			tren:6;
 	jbl_uint32 			cache_max_age;
+	jbl_uint64 			len;
 	jwl_http_head_range	range;
 	jbl_string *		url;
 	jbl_string *		etag;
@@ -80,6 +82,15 @@ typedef enum
 	JWL_HTTP_UPGRADE_UNKNOW,
 	JWL_HTTP_UPGRADE_WEBSOCKET,
 }jwl_http_upgrade;
+typedef enum
+{
+	JWL_HTTP_TREN_UNKNOW		=B0000_0000,
+	JWL_HTTP_TREN_CHUNKED		=B0000_0010,
+	JWL_HTTP_TREN_COMPRESS		=B0000_0100,
+	JWL_HTTP_TREN_DEFLATE		=B0000_1000,
+	JWL_HTTP_TREN_GZIP			=B0001_0000,
+	JWL_HTTP_TREN_IDENTITY		=B0010_0000,
+}jwl_http_tren;
 jwl_http_head *	jwl_http_head_new			();
 jwl_http_head *	jwl_http_head_init			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_free			(jwl_http_head * this);
@@ -87,7 +98,7 @@ jwl_http_head *	jwl_http_head_copy			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_extend		(jwl_http_head * this,jwl_http_head **pthi);
 
 
-void			jwl_http_head_encode		(jwl_http_head *head,jbl_stream *stream,jbl_string_size_type size);
+void			jwl_http_head_encode		(jwl_http_head *head,jbl_stream *stream);
 jwl_http_head *	jwl_http_head_decode		(jbl_string *buf,jbl_string_size_type *start);
 
 
@@ -100,6 +111,8 @@ jwl_http_head *		jwl_http_head_set_protocol			(jwl_http_head * this,jwl_http_pro
 jwl_http_head *		jwl_http_head_set_connection		(jwl_http_head * this,jwl_http_connection	connection);
 jwl_http_head *		jwl_http_head_set_cache				(jwl_http_head * this,jwl_http_cache		cache);
 jwl_http_head *		jwl_http_head_set_upgrade			(jwl_http_head * this,jwl_http_upgrade		upgrade);
+jwl_http_head *		jwl_http_head_set_tren				(jwl_http_head * this,jwl_http_tren			tren);
+jwl_http_head *		jwl_http_head_set_length			(jwl_http_head * this,jbl_uint64			len);
 jwl_http_head *		jwl_http_head_set_cache_max_age		(jwl_http_head * this,jbl_uint32			cache_max_age);
 jwl_http_head *		jwl_http_head_set_range				(jwl_http_head * this,jwl_http_head_range	range);
 jwl_http_head *		jwl_http_head_set_etag				(jwl_http_head * this,jbl_string * etag);
@@ -120,6 +133,8 @@ jwl_http_protocol	jwl_http_head_get_protocol			(jwl_http_head * this);
 jwl_http_connection	jwl_http_head_get_connection		(jwl_http_head * this);
 jwl_http_cache		jwl_http_head_get_cache				(jwl_http_head * this);
 jwl_http_upgrade	jwl_http_head_get_upgrade			(jwl_http_head * this);
+jwl_http_tren		jwl_http_head_get_tren				(jwl_http_head * this);
+jbl_uint64			jwl_http_head_get_length			(jwl_http_head * this);
 jbl_uint32			jwl_http_head_get_cache_max_age		(jwl_http_head * this);
 jwl_http_head_range	jwl_http_head_get_range				(jwl_http_head * this);
 jbl_string *		jwl_http_head_get_etag				(jwl_http_head * this);
@@ -146,6 +161,11 @@ jbl_var    *		jwl_http_head_get_cookie			(jwl_http_head * this,unsigned char * k
 #if JBL_STREAM_ENABLE==1
 jwl_http_head*			jwl_http_head_view_put				(jwl_http_head* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
 #define					jwl_http_head_view(x)				jwl_http_head_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
+extern					const jbl_stream_operater			jwl_http_encode_stream_operaters;
+jbl_stream *jwl_http_encode_stream_new(jwl_http_head* head);
+
+
+
 #endif
 
 #endif

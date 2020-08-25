@@ -145,6 +145,7 @@ a=[
 	["movie","video/x-sgi-movie"],
 	["ice","x-conference/x-cooltalk"],
 	["ico","image/x-icon"],
+	["json","application/json"],
 ];
 a=a.sort(function(a,b){return a[0].split('').reverse().join('').localeCompare(b[0].split('').reverse().join(''))});
 s1="";
@@ -153,13 +154,13 @@ a.forEach(function(a)
 {
 	if(a[0]=="")
 	{
-		s1+='JBL_FILE_CT_UNKNOW,\n';
-		s2+='{JBL_FILE_CT_UNKNOW,0,0,"",""},\n';
+		s1+='\tJBL_FILE_CT_UNKNOW,\n';
+		s2+='\t{JBL_FILE_CT_UNKNOW,0,0,"",""},\n';
 	}
 	else
 	{
-		s1+='JBL_FILE_CT_'+a[0].toLocaleUpperCase()+',\n';
-		s2+='{JBL_FILE_CT_'+a[0].toLocaleUpperCase()+','+a[1].length+','+a[0].length+',"'+a[1]+'","'+a[0]+'"},\n';
+		s1+='\t\tJBL_FILE_CT_'+a[0].toLocaleUpperCase()+',\n';
+		s2+='\t\t{JBL_FILE_CT_'+a[0].toLocaleUpperCase()+','+a[1].length+','+a[0].length+',"'+a[1]+'","'+a[0]+'"},\n';
 	}
 });
 

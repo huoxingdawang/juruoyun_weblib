@@ -24,10 +24,10 @@ struct
 		unsigned char	suffix[8];
 		
 		
-	}data[146];
+	}data[147];
 }
 __jbl_file_ct_data={
-	146,
+	147,
 	{
 		{JBL_FILE_CT_UNKNOW,0,0,"",""},
 		{JBL_FILE_CT_MP2,9,3,"audio/mp2","mp2"},
@@ -117,6 +117,7 @@ __jbl_file_ct_data={
 		{JBL_FILE_CT_PGN,23,3,"application/x-chess-pgn","pgn"},
 		{JBL_FILE_CT_IN,10,2,"text/plain","in"},
 		{JBL_FILE_CT_BIN,24,3,"application/octet-stream","bin"},
+		{JBL_FILE_CT_JSON,16,4,"application/json","json"},
 		{JBL_FILE_CT_ICO,12,3,"image/x-icon","ico"},
 		{JBL_FILE_CT_TEXINFO,21,7,"application/x-texinfo","texinfo"},
 		{JBL_FILE_CT_CPIO,18,4,"application/x-cpio","cpio"},

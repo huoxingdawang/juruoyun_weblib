@@ -111,7 +111,7 @@ jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
 jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
 {
 //分离
-	if(!this)jbl_exception("NULL POINTER");
+	if(!this)this=jwl_socket_new();
 	jwl_socket* thi=jbl_refer_pull(this);
 	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
 	thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
@@ -251,7 +251,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	this=jbl_refer_pull(this);
 	jbl_stream* nxt=jbl_refer_pull(this->nxt);
 	jwl_socket *socket=jbl_refer_pull((jwl_socket*)this->data);
-	if(this->en)
+	if(this->en&&((flags&jbl_stream_force)||(this->en>JWL_SOCKET_STREAM_BUF_LENGTH>>1)))
 	{
 		for(jbl_uint8 i=0;i<1&&socket->handle!=-1&&send(socket->handle,(char*)this->buf,this->en,0)==-1;++i)
 		{

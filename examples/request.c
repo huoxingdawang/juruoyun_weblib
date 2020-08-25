@@ -1,49 +1,64 @@
 #include "main.h"
-#define ip "192.168.1.2"
-int main()
+int main(int argc,char** argv)
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
-	jwl_start();	
-	jbl_string a;jbl_string_inits(1,&a);
-	jbl_var v;jbl_var_inits(1,&v);
-	jwl_http_request_head	request_head	;jwl_http_request_head_init(&request_head);
-	jwl_http_response_head	response_head	;jwl_http_response_head_init(&response_head);	
+	jwl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
+	jwl_socket *socket=jwl_socket_connect(NULL,jwl_get_binary_ip_chars(UC"27.221.57.108"),10009);
+//	jwl_socket *socket=jwl_socket_connect(NULL,jwl_get_binary_ip_chars(UC"127.0.0.1"),1217);
+	jwl_socket_view(socket);
+	jbl_stream * stream=jwl_socket_stream_new(jbl_refer(&socket));
+	socket=jwl_socket_free(socket);
+
+
+	jwl_http_head *	reqh=jwl_http_head_new();
+	reqh=jwl_http_head_set_request		(reqh);
+	reqh=jwl_http_head_set_method		(reqh,JWL_HTTP_METHOD_POST);
+	reqh=jwl_http_head_set_url			(reqh,jbl_gc_minus(jbl_string_cache_get(UC"/app/trades")));
+	reqh=jwl_http_head_set_host			(reqh,jbl_gc_minus(jbl_string_cache_get(UC"27.221.57.108:10009")));
+	reqh=jwl_http_head_set_cache		(reqh,JWL_HTTP_CACHE_NO);
+	reqh=jwl_http_head_set_protocol		(reqh,JWL_HTTP_PROTOCOL_HTTP_1_1);
+	reqh=jwl_http_head_set_connection	(reqh,JWL_HTTP_CONNECTION_CLOSE);
+	reqh=jwl_http_head_set_content_type	(reqh,JBL_FILE_CT_JSON);
+	reqh=jwl_http_head_set_charset		(reqh,JWL_HTTP_CHARSET_UTF8);
+
+	jwl_http_head_view(reqh);
+	jbl_string *s1=jbl_string_add_const(NULL,UC"{\"sno\":\"2017370201882530205\",\"userType\":\"0\",\"pageNum\":1,\"pageSize\":100}");
+	jwl_http_head_encode(reqh,stream,jbl_string_get_length(s1));
+	jbl_stream_push_string(stream,s1);
+	s1=jbl_string_free(s1);
+	jbl_stream_do(stream,jbl_stream_force);
+	pl();
 	
-	jwl_http_request_head_set_method(&request_head,JRY_WL_HTTP_METHOD_GET);
-	jwl_http_request_head_set_protocol(&request_head,JRY_WL_HTTP_PROTOCOL_HTTP);
-	jwl_http_request_head_set_connection(&request_head,JRY_WL_HTTP_CONNECTION_CLOSE);
-	jwl_http_request_head_set_cache(&request_head,JRY_WL_HTTP_CACHE_NO);
 	
-/*	jbl_string_equal_chars(&a,"/jry_wb/jry_wb_tools/jry_wb_get_ip_address.php?ip=112.224.67.110");jwl_http_request_head_set_url(&request_head,&a,move);
-	jbl_string_equal_chars(&a,"www.juruoyun.top");jwl_http_request_head_set_host(&request_head,&a,move);
-	jbl_string_equal_chars_light(&a,"60.205.219.36");
-	jbl_socket_handle sock;jwl_socket_init(&sock,jwl_get_binary_ip(&a),80,JRY_BL_SOCKET_MODE_CLIENT);
-*/
+	reqh=jwl_http_head_free(reqh);
 
-	jbl_string_equal_chars(&a,"/");jwl_http_request_head_set_url(&request_head,&a,move);
-	jbl_string_equal_chars(&a,"192.168.56.2");jwl_http_request_head_set_host(&request_head,&a,move);
-	jbl_string_equal_chars_light(&a,"192.168.56.2");
-	jbl_socket_handle sock;jwl_socket_init(&sock,jwl_get_binary_ip(&a),1217,JRY_BL_SOCKET_MODE_CLIENT);
-	
-	jwl_http_send_request_head(&sock,&request_head);
-	jbl_string_clear(&a);
-	jwl_socket_receive(&sock,&a);
-	jbl_string_view(&a,stderr);	
-	jbl_string_clear(&a);
-	jwl_socket_receive_length(&sock,&a,20029134);
-	printf("%lld\n",jbl_string_get_length(&a));
-	FILE * fp;
-	fp=fopen ("testfiles/tmp","wb");
-	jbl_string_print(&a,fp);
-	fclose(fp);	
-
-//	jbl_var_from_json(&v,&a);jbl_var_view(&v,stderr);
+	jbl_string *get=jbl_string_new();
+	jbl_stream *tmp=jbl_string_stream_new(jbl_refer(&get));
+	jbl_stream_connect(stream,tmp);
+	jbl_stream_do(stream,jbl_stream_force);
+	jbl_stream_disconnect(stream);//断开连接
+	tmp=jbl_stream_free(tmp);
+	stream=jbl_stream_free(stream);
+	jbl_string_view(get);
 
 
-	jwl_socket_close(&sock);
-	jwl_http_request_head_free(&request_head);
-	jbl_string_frees(1,&a);
-	jbl_var_frees(1,&v);
+
+
+
+
+
+	jwl_http_head * resh=jwl_http_head_decode(get,NULL);
+	jwl_http_head_view(resh);pf();
+	resh=jwl_http_head_free(resh);
+
+
+
+	get=jbl_string_free(get);
+
+
+
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
+	jwl_stop();		
 	jbl_stop();		
 }

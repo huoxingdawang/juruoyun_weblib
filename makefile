@@ -36,7 +36,7 @@ ifeq ($(system),macos)
 	rm = rm -f
 	pre = macos_
 endif
-all:jbl jwl test2 webserver ip2region 
+all:jbl jwl test2 webserver ip2region request
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q

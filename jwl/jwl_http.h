@@ -21,26 +21,19 @@ typedef struct __jwl_http_head_range
 typedef struct __jwl_http_head//response head 响应头
 {
 	jbl_gc				gc;
-//response
 	jbl_uint32 			status:9;
-	jbl_uint32			charset:1;
-	jbl_uint32			content_type:8;
-	
-//request
 	jbl_uint32			method:3;
+	jbl_uint32			content_type:8;
+	jbl_uint32			charset:1;
 	jbl_uint32			protocol:2;
-//both	
 	jbl_uint32			connection:3;
-	jbl_uint32 			cache:2;
 	jbl_uint32 			upgrade:1;
+	jbl_uint32 			cache:2;
 	jbl_uint32 			cache_max_age;
 	jwl_http_head_range	range;
-	jbl_string *		etag;
-	
-//response
-	jbl_string *		filename;	
-//request
 	jbl_string *		url;
+	jbl_string *		etag;
+	jbl_string *		filename;	
 	jbl_string *		host;
 	jbl_string *		ua;
 	jbl_string *		referer;
@@ -48,6 +41,7 @@ typedef struct __jwl_http_head//response head 响应头
 	
 	jbl_ht *			cookie;
 	jbl_ht *			v;
+	jbl_ht *			parameter;
 	
 	int					cond;
 }jwl_http_head;
@@ -93,7 +87,7 @@ jwl_http_head *	jwl_http_head_copy			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_extend		(jwl_http_head * this,jwl_http_head **pthi);
 
 
-void			jwl_http_head_encode		(jbl_stream *stream,jwl_http_head *head,jbl_string_size_type size);
+void			jwl_http_head_encode		(jwl_http_head *head,jbl_stream *stream,jbl_string_size_type size);
 jwl_http_head *	jwl_http_head_decode		(jbl_string *buf,jbl_string_size_type *start);
 
 
@@ -115,6 +109,8 @@ jwl_http_head *		jwl_http_head_set_host				(jwl_http_head * this,jbl_string * ho
 jwl_http_head *		jwl_http_head_set_ua				(jwl_http_head * this,jbl_string * ua);
 jwl_http_head *		jwl_http_head_set_referer			(jwl_http_head * this,jbl_string * referer);
 jwl_http_head *		jwl_http_head_set					(jwl_http_head * this,unsigned char * key,jbl_var* var);		
+jwl_http_head *		jwl_http_head_set_parameter			(jwl_http_head * this,unsigned char * key,jbl_var* var);		
+jwl_http_head *		jwl_http_head_set_cookie			(jwl_http_head * this,unsigned char * key,jbl_var* var);		
 
 jbl_uint32			jwl_http_head_get_status			(jwl_http_head * this);
 jwl_http_charset	jwl_http_head_get_charget			(jwl_http_head * this);
@@ -133,13 +129,15 @@ jbl_string *		jwl_http_head_get_host				(jwl_http_head * this);
 jbl_string *		jwl_http_head_get_ua				(jwl_http_head * this);
 jbl_string *		jwl_http_head_get_referer			(jwl_http_head * this);
 jbl_var    *		jwl_http_head_get					(jwl_http_head * this,unsigned char * key);		
+jbl_var    *		jwl_http_head_get_parameter			(jwl_http_head * this,unsigned char * key);		
+jbl_var    *		jwl_http_head_get_cookie			(jwl_http_head * this,unsigned char * key);		
 
 
 
 
 //jwl_http_head *	jwl_http_head_set				(jwl_http_head * this,jbl_string * k, jbl_var *v);
-#define			jwl_http_head_set_request(x)		(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置request标记
-#define			jwl_http_head_set_response(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//设置response标记
+#define			jwl_http_head_set_request(x)		(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)),x)	//设置request标记
+#define			jwl_http_head_set_response(x)		(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)),x)	//设置response标记
 #define			jwl_http_head_is_request(x)			(jbl_gc_is_user1((jwl_socket*)jbl_refer_pull(x)))		//获取request标记
 #define			jwl_http_head_is_response(x)		(!jbl_gc_is_user1((jwl_socket*)jbl_refer_pull(x)))		//获取response标记
 /*******************************************************************************************/

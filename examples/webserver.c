@@ -138,6 +138,7 @@ pl();
 				jbl_stream_disconnect(client_stream);//断开连接
 jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));
 jbl_log_save();
+jbl_string_view(get);pf();
 				jwl_http_head * reqh=jwl_http_head_decode(get,NULL);
 				jwl_http_head_view(reqh);pf();
 				get=jbl_string_free(get);
@@ -156,13 +157,14 @@ jbl_log_save();
 							break;
 					}
 					jwl_http_head_view(resh);pf();
-					jwl_http_head_encode(client_stream,resh,0);
+					jwl_http_head_encode(resh,client_stream,0);
 					jbl_stream_do(client_stream,1);		
 					resh=jwl_http_head_free(resh);
 				}
 				else
 				{
 					jwl_http_head *	resh=jwl_http_head_new();			//响应头
+					resh=jwl_http_head_set_response(resh);
 					resh=jwl_http_head_set_connection		(resh,JWL_HTTP_CONNECTION_KEEP_ALIVE);
 					jbl_stream *outs=NULL;
 					jbl_uint64 len=0;
@@ -204,8 +206,7 @@ jbl_log_save();
 									jbl_file_stream_set_offset(outs,start);
 									jbl_file_stream_set_end(outs,end);
 								}
-							}	
-							
+							}								
 							jbl_stream_connect(outs,client_stream);
 						}
 						f1=jbl_file_free(f1);
@@ -216,7 +217,7 @@ jbl_log_save();
 					if(jwl_http_head_get_status(resh))
 					{
 						jwl_http_head_view(resh);pf();
-						jwl_http_head_encode(client_stream,resh,len);
+						jwl_http_head_encode(resh,client_stream,len);
 						jbl_stream_do(outs,1);
 					}
 					else if(reqh)
@@ -240,11 +241,11 @@ jbl_log_save();
 							"<a href='/'>Click here to back</a><br><span style='color:white;'></a></div></body>"
 						);
 						jwl_http_head_view(resh);pf();
-						jwl_http_head_encode(client_stream,resh,jbl_string_get_length(res));
+						jwl_http_head_encode(resh,client_stream,jbl_string_get_length(res));
 						jbl_stream_push_string(client_stream,res);
 						res=jbl_string_free(res);
 					}						
-						
+					jbl_stream_do(client_stream,1);
 					
 					outs=jbl_stream_free(outs);
 					resh=jwl_http_head_free(resh);

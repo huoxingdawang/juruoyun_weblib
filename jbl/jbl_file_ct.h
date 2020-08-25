@@ -162,11 +162,12 @@ typedef enum
 	JBL_FILE_CT_EZ,
 	JBL_FILE_CT_XYZ,
 }jbl_file_ct;
-jbl_file_ct jbl_file_get_ct_by_name					(jbl_string *name);
+jbl_file_ct jbl_file_get_ctid_by_name					(jbl_string *name);
+jbl_file_ct jbl_file_get_ctid_by_ct(jbl_string *ct);
 unsigned char * jbl_file_get_ct_chars_by_ctid		(jbl_file_ct ctid);
-unsigned char * jbl_file_get_suffic_chars_by_ctid	(jbl_file_ct ctid);
+unsigned char * jbl_file_get_suffix_chars_by_ctid	(jbl_file_ct ctid);
 jbl_string    *	jbl_file_get_ct_by_ctid				(jbl_file_ct ctid);
-jbl_string    *	jbl_file_get_suffic_by_ctid			(jbl_file_ct ctid);
+jbl_string    *	jbl_file_get_suffix_by_ctid			(jbl_file_ct ctid);
 jbl_uint8		jbl_file_is_video					(jbl_file_ct ctid);
 jbl_uint8		jbl_file_is_audio					(jbl_file_ct ctid);
 

@@ -92,7 +92,7 @@ jbl_file* jbl_file_open(jbl_file *this,jbl_string * dir,jbl_file_handle_type typ
 	if(thi->dir)thi	=jbl_refer_pull(this=jbl_file_close(this));
 	thi->dir		=jbl_string_copy(dir);
 	thi->dir		=jbl_string_set_tail(thi->dir);	
-	thi->ctid		=jbl_file_get_ct_by_name(thi->dir);
+	thi->ctid		=jbl_file_get_ctid_by_name(thi->dir);
 #if defined(_WIN32) && JBL_FILE_CACHE_GB2312NAME==1
 	thi->dir_gb2312			=jbl_string_to_gb2312_from_utf8(NULL,thi->dir);
 	thi->dir_gb2312			=jbl_string_set_tail(thi->dir_gb2312);
@@ -229,7 +229,7 @@ jbl_file* jbl_file_view_put(jbl_file* this,jbl_stream *out,jbl_uint8 format,jbl_
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"dir          :");jbl_stream_push_string(out,thi->dir)										;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"size         :");jbl_stream_push_uint(out,thi->status.size)								;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"content type :");jbl_stream_push_chars(out,jbl_file_get_ct_chars_by_ctid(thi->ctid))		;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"suffix       :");jbl_stream_push_chars(out,jbl_file_get_suffic_chars_by_ctid(thi->ctid))	;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"suffix       :");jbl_stream_push_chars(out,jbl_file_get_suffix_chars_by_ctid(thi->ctid))	;jbl_stream_push_char(out,'\n');
 #if JBL_TIME_ENABLE==1
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_creat   :");jbl_stream_push_time(out,thi->status.time_creat ,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_modify  :");jbl_stream_push_time(out,thi->status.time_modify,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');

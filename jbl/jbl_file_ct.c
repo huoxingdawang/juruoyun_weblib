@@ -20,8 +20,8 @@ struct
 		jbl_uint8		type_id;
 		jbl_uint8		ctl:5;
 		jbl_uint8		sul:3;
-		unsigned char	content_type[32];
-		unsigned char	suffix[8];
+		unsigned char	ct[32];
+		unsigned char	su[8];
 		
 		
 	}data[147];
@@ -179,17 +179,17 @@ __jbl_file_ct_data={
 	}
 };
 #define ctd __jbl_file_ct_data.data
-jbl_file_ct jbl_file_get_ct_by_name(jbl_string *name)
+jbl_file_ct jbl_file_get_ctid_by_name(jbl_string *name)
 {
 	if(!name)return JBL_FILE_CT_UNKNOW;
-	jbl_string*nam=jbl_refer_pull(name);
-	if(nam->len==0)return JBL_FILE_CT_UNKNOW;
+	name=jbl_refer_pull(name);
+	if(name->len==0)return JBL_FILE_CT_UNKNOW;
 	for(jbl_fctdst j=0;j<__jbl_file_ct_data.size;++j)
 	{
-		if(name->len-ctd[j].sul<=1)
+		if(name->len-ctd[j].sul<1)
 			goto failed;
 		for(jbl_uint8 i=1;i<=ctd[j].sul;++i)
-			if(nam->len<i||name->s[name->len-i]!=ctd[j].suffix[ctd[j].sul-i])
+			if(name->len<i||name->s[name->len-i]!=ctd[j].su[ctd[j].sul-i])
 				goto failed;
 		if(name->s[name->len-ctd[j].sul-1]=='.')
 			return ctd[j].type_id;
@@ -200,10 +200,30 @@ jbl_file_ct jbl_file_get_ct_by_name(jbl_string *name)
 #endif
 	return JBL_FILE_CT_UNKNOW;
 }
-inline unsigned char *	jbl_file_get_ct_chars_by_ctid		(jbl_file_ct ctid)	{return ctd[ctid].content_type;}
-inline unsigned char *	jbl_file_get_suffic_chars_by_ctid	(jbl_file_ct ctid)	{return ctd[ctid].suffix;}
-inline jbl_string    *	jbl_file_get_ct_by_ctid				(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd[ctid].content_type);}
-inline jbl_string    *	jbl_file_get_suffic_by_ctid			(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd[ctid].suffix);}
+jbl_file_ct jbl_file_get_ctid_by_ct(jbl_string *ct)
+{
+	if(!ct)return JBL_FILE_CT_UNKNOW;
+	ct=jbl_refer_pull(ct);
+	if(ct->len==0)return JBL_FILE_CT_UNKNOW;
+	for(jbl_fctdst j=0;j<__jbl_file_ct_data.size;++j)
+	{
+		if(ct->len!=ctd[j].ctl)
+			goto failed;
+		for(jbl_uint8 i=1;i<=ctd[j].ctl;++i)
+			if(ct->len<i||ct->s[ct->len-i]!=ctd[j].ct[ctd[j].ctl-i])
+				goto failed;
+		return ctd[j].type_id;
+		failed:;
+	}
+#if JBL_FILE_CT_DEBUG ==1 && JBL_VAR_ENABLE==1
+	jbl_log(UC "unknow content type%j",jbl_gc_minus(jbl_string_copy_as_var(ct)));
+#endif
+	return JBL_FILE_CT_UNKNOW;
+}
+inline unsigned char *	jbl_file_get_ct_chars_by_ctid		(jbl_file_ct ctid)	{return ctd[ctid].ct;}
+inline unsigned char *	jbl_file_get_suffix_chars_by_ctid	(jbl_file_ct ctid)	{return ctd[ctid].su;}
+inline jbl_string    *	jbl_file_get_ct_by_ctid				(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd[ctid].ct);}
+inline jbl_string    *	jbl_file_get_suffix_by_ctid			(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd[ctid].su);}
 jbl_uint8 jbl_file_is_video(jbl_file_ct ctid)
 {
 	if(	(ctid==JBL_FILE_CT_FLV	)||

@@ -276,7 +276,8 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 	{
 		char * tren			[]={"","chunked","compress","deflate","gzip","identity"};
 		jbl_uint8 f=0;
-		jbl_stream_push_chars(stream,UC"Transfer-Encoding: ");
+		if(jwl_http_head_is_response(head))		jbl_stream_push_chars(stream,UC"Transfer-Encoding: ");
+		else									jbl_stream_push_chars(stream,UC"Accept-Encoding: ");
 		if(head->tren&JWL_HTTP_TREN_CHUNKED		){jbl_stream_push_chars(stream,UC tren[1]);f=1;}
 		if(head->tren&JWL_HTTP_TREN_COMPRESS	){if(f)jbl_stream_push_chars(stream,UC", ");jbl_stream_push_chars(stream,UC tren[2]);f=1;}
 		if(head->tren&JWL_HTTP_TREN_DEFLATE		){if(f)jbl_stream_push_chars(stream,UC", ");jbl_stream_push_chars(stream,UC tren[3]);f=1;}
@@ -284,8 +285,6 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 		if(head->tren&JWL_HTTP_TREN_IDENTITY	){if(f)jbl_stream_push_chars(stream,UC", ");jbl_stream_push_chars(stream,UC tren[5]);f=1;}
 		rn();
 	}	
-	
-	
 	
 	if(head->host&&jwl_http_head_is_request(head))
 		jbl_stream_push_chars(stream,UC"Host: ")							,jbl_stream_push_string(stream,head->host)				,rn();	
@@ -393,6 +392,7 @@ jwl_http_head* jwl_http_head_decode(jbl_string *buf,jbl_string_size_type *start)
 	<head_conn>		", "									{																						;goto yyc_head_conn;}
 	<head_conn>		"\r\n"					=> head_body	{																						;goto yyc_head_body;}
 
+	<head_body>		"Accept-Encoding:"" "*	=> head_tren	{																						;goto yyc_head_tren;}
 	<head_body>		"Transfer-Encoding:"" "*=> head_tren	{																						;goto yyc_head_tren;}
 	<head_tren>		"chunked"								{head->tren				|=JWL_HTTP_TREN_CHUNKED											;goto yyc_head_tren;}
 	<head_tren>		"compress"								{head->tren				|=JWL_HTTP_TREN_COMPRESS										;goto yyc_head_tren;}
@@ -417,9 +417,6 @@ jwl_http_head* jwl_http_head_decode(jbl_string *buf,jbl_string_size_type *start)
 	<head_accept>	[]										{																						;++YYCURSOR;goto yyc_head_accept;}
 	<head_accept>	"\r\n"					=> head_body	{																						;goto yyc_head_body;}
 
-	<head_body>		"Accept-Encoding:"" "*	=> head_acen	{																						;goto yyc_head_acen;}
-	<head_acen>		[]										{																						;++YYCURSOR;goto yyc_head_acen;}
-	<head_acen>		"\r\n"					=> head_body	{																						;goto yyc_head_body;}
 
 	<head_body>		"Accept-Language:"" "*	=> head_aclan	{																						;goto yyc_head_aclan;}
 	<head_aclan>	[]										{																						;++YYCURSOR;goto yyc_head_aclan;}

@@ -12,9 +12,10 @@
 #include "jbl_config.h"
 #if JBL_AES_128_ENABLE==1
 #include "jbl_ying.h"
-#define JBL_AES_128_CBC_ENABLE 1
-#define JBL_AES_128_ECB_ENABLE 1
-#define JBL_AES_128_FFMUL_TABLE_ENABLE 1
+#define JBL_AES_128_AESNI_ENABLE		0
+#define JBL_AES_128_FFMUL_TABLE_ENABLE	1
+#define JBL_AES_128_CBC_ENABLE			1
+#define JBL_AES_128_ECB_ENABLE			1
 #endif
 
 #endif

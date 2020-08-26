@@ -96,7 +96,7 @@ void __jbl_base64_seo(jbl_stream* this,jbl_uint8 flags)
 		jbl_stream_buf_size_type i=0,len=this->en;
 		while(len>2)
 		{
-			if((nxt->en+4)>nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+4)>=nxt->size)jbl_stream_do(nxt,0);
 			nxt->buf[nxt->en++]=(ent[s[i]>>2]),nxt->buf[nxt->en++]=(ent[((s[i]&0x03)<<4)+(s[i+1]>>4)]),nxt->buf[nxt->en++]=(ent[((s[i+1]&0x0f)<<2)+(s[i+2]>>6)]),nxt->buf[nxt->en++]=(ent[s[i+2]&0x3f]),i+=3,len-=3;
 		}
 		if((flags&jbl_stream_force))
@@ -127,7 +127,7 @@ void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
 		jbl_uint8 ch,bin=0;
 		while(i<len)
 		{
-			if((nxt->en+3)>nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+3)>=nxt->size)jbl_stream_do(nxt,0);
 			ch=this->buf[i];
 			if(ch=='=')
 			{

@@ -27,7 +27,12 @@
 /*******************************************************************************************/
 /*                            结构体定义                                                  */
 /*******************************************************************************************/
+#if JBL_AES_128_AESNI_ENABLE ==1
+typedef long long __m128i __attribute__ ((__vector_size__ (16), __may_alias__));
+typedef __m128i __jbl_aes_128_ex_key[20];		//aes128扩展完毕的key
+#else
 typedef unsigned char __jbl_aes_128_ex_key[11][4][4];		//aes128扩展完毕的key
+#endif
 typedef struct __jbl_aes_128_key
 {
 	jbl_gc gc;												//gc结构

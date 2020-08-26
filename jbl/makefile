@@ -18,6 +18,8 @@ jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bits
 	ar  rc tmp$(H)$(pre)jbl.a tmp$(H)$(pre)jbl_*.o
 jbl/jbl_aes            :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes.o         jbl$(H)jbl_aes.c         $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes_soft.o    jbl$(H)jbl_aes_soft.c    $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes_hard.o    jbl$(H)jbl_aes_hard.c    $(JBL_EXLIB) -maes
 jbl/jbl_array          :
 	$(CC) $(BITS) -c       -o tmp$(H)$(pre)jbl_array.o       jbl$(H)jbl_array.c       $(JBL_EXLIB)
 jbl/jbl_base64         :

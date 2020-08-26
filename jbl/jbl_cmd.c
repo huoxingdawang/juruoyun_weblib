@@ -25,4 +25,18 @@ jbl_string * jbl_execute_cmd(jbl_string *cmd,jbl_string *result)
 	}
 	return result;
 }
+jbl_string * jbl_execute_cmd_chars(unsigned char *cmd,jbl_string *result)
+{
+	if(cmd==NULL)jbl_exception("NULL POINTER");
+	FILE *ptr;
+	if((ptr=popen((char*)cmd,"r"))!=NULL)
+	{
+		jbl_string *thi;result=jbl_string_extend_to(result,1024,1,&thi);
+		while(fgets((char *)thi->s+thi->len,1024,ptr)!=NULL)
+			thi->len+=jbl_strlen(thi->s+thi->len),
+			result=jbl_string_extend_to(result,1024,1,&thi);
+		pclose(ptr);
+	}
+	return result;
+}
 #endif

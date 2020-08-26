@@ -13,6 +13,7 @@
 #if JBL_CMD_ENABLE==1
 #include "jbl_string.h"
 jbl_string *	jbl_execute_cmd		(jbl_string *cmd,jbl_string *result);	//执行一段cmd命令
+jbl_string *	jbl_execute_cmd_chars(unsigned char *cmd,jbl_string *result);
 
 
 

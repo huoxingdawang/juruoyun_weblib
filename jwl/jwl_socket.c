@@ -251,6 +251,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 			if(errno==ECONNRESET||errno==EPIPE||i>=7)
 			{
 				jbl_log(UC "Send failed\terrno:%d",errno);
+				this->stop=1;
 				jwl_socket_close(socket);
 				break;
 			}
@@ -285,7 +286,6 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 			jbl_log(UC "Receive success,data length:%d",j);			
 			nxt->en+=j;
 			jbl_stream_do(nxt,0);if(nxt->stop)return;
-			if(j!=len&&(!nxt->stop_enable))break;
 		}
 		jbl_stream_do(nxt,flags);	
 	}

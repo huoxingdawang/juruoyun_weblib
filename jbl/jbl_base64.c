@@ -91,19 +91,19 @@ void __jbl_base64_seo(jbl_stream* this,jbl_uint8 flags)
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);	
 	jbl_uint8 *s=this->buf;
-	if(nxt!=NULL)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=this->en;
 		while(len>2)
 		{
-			if((nxt->en+4)>=nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+4)>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 			nxt->buf[nxt->en++]=(ent[s[i]>>2]),nxt->buf[nxt->en++]=(ent[((s[i]&0x03)<<4)+(s[i+1]>>4)]),nxt->buf[nxt->en++]=(ent[((s[i+1]&0x0f)<<2)+(s[i+2]>>6)]),nxt->buf[nxt->en++]=(ent[s[i+2]&0x3f]),i+=3,len-=3;
 		}
 		if((flags&jbl_stream_force))
 		{
 			if(len>0)
 			{
-			if((nxt->en+4)>nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+4)>nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 				nxt->buf[nxt->en++]=(ent[s[i]>>2]);
 				if(len%3==1)
 					nxt->buf[nxt->en++]=(ent[(s[i]&0x03)<<4]),nxt->buf[nxt->en++]=('='),nxt->buf[nxt->en++]=('='),len-=1,i+=1;
@@ -111,9 +111,11 @@ void __jbl_base64_seo(jbl_stream* this,jbl_uint8 flags)
 					nxt->buf[nxt->en++]=(ent[((s[i]&0x03)<<4)+(s[i+1]>>4)]),nxt->buf[nxt->en++]=(ent[(s[i+1]&0x0f)<<2]),nxt->buf[nxt->en++]=('='),len-=2,i+=2;
 			}
 			jbl_stream_do(nxt,flags);
+			this->stop=1;
+			goto backup;
 		}
-		jbl_memory_copy(this->buf,this->buf+i,len);
-		this->en=len;
+backup:;
+		jbl_memory_copy(this->buf,this->buf+i,this->en=len);
 	}
 }
 void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
@@ -121,13 +123,13 @@ void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
 	if(this==NULL)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);		
-	if(nxt!=NULL)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=this->en;
 		jbl_uint8 ch,bin=0;
 		while(i<len)
 		{
-			if((nxt->en+3)>=nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+3)>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 			ch=this->buf[i];
 			if(ch=='=')
 			{
@@ -135,7 +137,7 @@ void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
 				{
 					if(i<len&&(flags&jbl_stream_force))
 						return jbl_exception("STREAM ERROR");
-					goto exit;
+					goto backup;
 				}
 				++i;
 				continue;
@@ -152,11 +154,10 @@ void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
 			}
 			++i;
 		}
-exit:
-		jbl_memory_copy(this->buf,this->buf+i,len-i);
-		this->en=len-i;		
 		if((flags&jbl_stream_force))
-			jbl_stream_do(nxt,flags);
+			jbl_stream_do(nxt,flags),this->stop=1;
+backup:;
+		jbl_memory_copy(this->buf,this->buf+i,this->en=len-i);
 	}
 }
 jbl_stream_operators_new(jbl_stream_base64_encode_operators,__jbl_base64_seo,NULL,NULL);

@@ -219,12 +219,12 @@ void __jbl_string_u8tgso(jbl_stream* this,jbl_uint8 flags)//utf8_to_gb2312_strea
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);	
 	jbl_uint8 *s=this->buf;
-	if(nxt)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=this->en;
 		for(;(i+6)<len;)
 		{
-			if((nxt->en+2)>nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+2)>nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 			jbl_uint8 j=0;
 			jbl_uint32 uni=__jbl_string_u8tu(s+i,&j,jbl_min(6,len-i));
 			if(j==0)break;
@@ -237,12 +237,14 @@ void __jbl_string_u8tgso(jbl_stream* this,jbl_uint8 flags)//utf8_to_gb2312_strea
 		{
 			for(;i<len;nxt->buf[nxt->en++]=s[i++])
 				if((nxt->en+1)>nxt->size)
-					jbl_stream_do(nxt,0);
+					{jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 			this->en=0;
 			jbl_stream_do(nxt,flags);
+//			this->stop=1;
+			goto backup;
 		}
-		else
-			jbl_memory_copy(this->buf,this->buf+i,this->en=len-i);
+backup:;
+		jbl_memory_copy(this->buf,this->buf+i,this->en=len-i);
 	}
 }
 void __jbl_string_gtu8so(jbl_stream* this,jbl_uint8 flags)//gb2312_to_utf8_stream_operater
@@ -251,7 +253,7 @@ void __jbl_string_gtu8so(jbl_stream* this,jbl_uint8 flags)//gb2312_to_utf8_strea
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);	
 	jbl_uint8 *s=this->buf;
-	if(nxt)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=this->en;
 		for(;i<len;)
@@ -260,13 +262,17 @@ void __jbl_string_gtu8so(jbl_stream* this,jbl_uint8 flags)//gb2312_to_utf8_strea
 			if((i+2)>len)break;
 			jbl_uint16 gb=(s[i]<<8)|s[i+1];i+=2;
 			gb=__jbl_string_gtu(gb);
-			if((nxt->en+6)>=nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+6)>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 			nxt->en+=__jbl_string_utu8(nxt->buf+nxt->en,gb);
 		}
 		if((flags&jbl_stream_force))
+		{
 			jbl_stream_do(nxt,flags);
-		jbl_memory_copy(this->buf,this->buf+i,len-i);
-		this->en=len-i;
+//			this->stop=1;
+			goto backup;
+		}
+backup:;
+		jbl_memory_copy(this->buf,this->buf+i,this->en=len-i);
 	}
 }
 jbl_stream_operators_new(jbl_stream_utf8_to_gb2312_operators,__jbl_string_u8tgso,NULL,NULL);

@@ -278,6 +278,7 @@ void __jbl_file_stream_operator(jbl_stream* this,jbl_uint8 flags)
 			fread((char*)nxt->buf+nxt->en,len,1,file->handle);
 			nxt->en+=len;this->extra[0].u+=len;
 			jbl_stream_do(nxt,0);
+			if(nxt->stop)return;
 		}
 		jbl_stream_do(nxt,flags);	
 	}

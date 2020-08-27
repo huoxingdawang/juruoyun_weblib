@@ -32,8 +32,6 @@ typedef struct __jbl_stream
 	void *						data;
 	unsigned char *				buf;
 	jbl_uint8					stop:1;
-	jbl_uint8					stop_enable:1;
-	jbl_uint8					stop_self:1;
 	jbl_stream_extra_struct		extra[0];
 }jbl_stream;
 

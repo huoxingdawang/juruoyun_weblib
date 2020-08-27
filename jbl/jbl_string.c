@@ -699,7 +699,7 @@ void __jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)
 			jbl_memory_copy(nxt->buf+nxt->en,str->s+this->extra[0].u,len);
 			this->extra[0].u+=len;
 			nxt->en+=len;
-			jbl_stream_do(nxt,0);
+			{jbl_stream_do(nxt,0);if(nxt->stop)return;}
 		}
 		jbl_stream_do(nxt,flags);
 	}
@@ -728,7 +728,7 @@ jbl_string*  jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,j
 		jbl_memory_copy(out->buf+out->en,thi->s+i,len);
 		i+=len;
 		out->en+=len;
-		jbl_stream_do(out,0);
+		{jbl_stream_do(out,0);if(1==out->stop)return this;}
 	}
 	return this;
 }

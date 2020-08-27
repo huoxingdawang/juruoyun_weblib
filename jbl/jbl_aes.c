@@ -120,28 +120,26 @@ void __jbl_aes_128_ecb_seo(jbl_stream* this,jbl_uint8 flags)
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);			
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
-	if(nxt!=NULL)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
-				if((nxt->en+16)>=nxt->size)	
-					jbl_stream_do(nxt,0);
+				if((nxt->en+16)>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 				__jbl_aes_128_encode_16(*key,this->buf+i,nxt->buf+nxt->en),nxt->en+=16,i+=16;
 			}
 		if((flags&jbl_stream_force))
 		{
-			if((nxt->en+16)>=nxt->size)
-				jbl_stream_do(nxt,0);
+			if((nxt->en+16)>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 			jbl_uint8 s[16];
 			for(jbl_uint8 j=0,x=(this->en==0?16:(16-(this->en&15)));j<16;s[j]=x,++j);
 			for(jbl_uint8 j=0;i<this->en;s[j]=this->buf[i],++i,++j);
 			__jbl_aes_128_encode_16(*key,s,nxt->buf+nxt->en),nxt->en+=16,i=this->en;
-			jbl_stream_do(nxt,flags);
+			jbl_stream_do(nxt,flags);this->stop=1;goto backup;
 		}
-		jbl_memory_copy(this->buf,this->buf+i,this->en-i);
-		this->en=this->en-i;
+backup:;
+		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}
 }
 void __jbl_aes_128_ecb_sdo(jbl_stream* this,jbl_uint8 flags)
@@ -150,20 +148,18 @@ void __jbl_aes_128_ecb_sdo(jbl_stream* this,jbl_uint8 flags)
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);			
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
-	if(nxt!=NULL)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
-				if(nxt->en+16>nxt->size)	
-					jbl_stream_do(nxt,0);
+				if(nxt->en+16>nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 				__jbl_aes_128_decode_16(*key,this->buf+i,nxt->buf+nxt->en),nxt->en+=16,i+=16;
 			}
-		if((flags&jbl_stream_force))
-			nxt->en-=nxt->buf[nxt->en-1],jbl_stream_do(nxt,flags);
-		jbl_memory_copy(this->buf,this->buf+i,this->en-i);
-		this->en=this->en-i;
+		if((flags&jbl_stream_force)){nxt->en-=nxt->buf[nxt->en-1];jbl_stream_do(nxt,flags);this->stop=1;goto backup;}
+backup:;
+		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}
 }
 jbl_stream_operators_new(jbl_stream_aes_128_ecb_encode_operators,__jbl_aes_128_ecb_seo,jbl_aes_128_key_free,NULL);
@@ -238,7 +234,7 @@ void __jbl_aes_128_cbc_seo(jbl_stream* this,jbl_uint8 flags)
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);			
 	jbl_uint8 *vii=(jbl_uint8*)this->extra[0].p;
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
-	if(nxt!=NULL)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
@@ -247,24 +243,26 @@ void __jbl_aes_128_cbc_seo(jbl_stream* this,jbl_uint8 flags)
 				for(jbl_uint8 j=0;j<16;this->buf[i+j]^=vii[j],++j);
 				__jbl_aes_128_encode_16(*key,this->buf+i,nxt->buf+nxt->en),nxt->en+=16,i+=16;
 				if((nxt->en+16)>=nxt->size)
-					jbl_memory_copy(this->buf+this->size,nxt->buf+nxt->en-16,16),vii=this->buf+this->size,jbl_stream_do(nxt,0);//备份vi并下推流
+					{jbl_memory_copy(this->buf+this->size,nxt->buf+nxt->en-16,16),vii=this->buf+this->size,jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}//备份vi并下推流
 				else
 					vii=nxt->buf+nxt->en-16;
 			}
 		if((flags&jbl_stream_force))
 		{
 			if((nxt->en+16)>nxt->size)
-				jbl_memory_copy(this->buf+this->size,nxt->buf+nxt->en-16,16),vii=this->buf+this->size,jbl_stream_do(nxt,0);//备份vi并下推流
+				{jbl_memory_copy(this->buf+this->size,nxt->buf+nxt->en-16,16),vii=this->buf+this->size,jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}//备份vi并下推流
 			jbl_uint8 s[16];
 			for(jbl_uint8 j=0,x=(this->en==0?16:(16-(this->en&15)));j<16;s[j]=x,++j);
 			for(jbl_uint8 j=0;i<this->en;s[j]=this->buf[i],++i,++j);
 			for(jbl_uint8 j=0;j<16;s[j]^=vii[j],++j);
 			__jbl_aes_128_encode_16(*key,s,nxt->buf+nxt->en),nxt->en+=16,i=this->en;
 			jbl_stream_do(nxt,flags);
+			this->stop=1;
+			goto backup;
 		}
+backup:;
 		this->extra[0].p=vii;
-		jbl_memory_copy(this->buf,this->buf+i,this->en-i);
-		this->en=this->en-i;
+		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}
 }
 void __jbl_aes_128_cbc_sdo(jbl_stream* this,jbl_uint8 flags)
@@ -274,24 +272,24 @@ void __jbl_aes_128_cbc_sdo(jbl_stream* this,jbl_uint8 flags)
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);			
 	jbl_uint8 *vii=(jbl_uint8*)this->extra[0].p;
 	__jbl_aes_128_ex_key *key=&(((jbl_aes_128_key*)jbl_refer_pull(this->data))->key);
-	if(nxt!=NULL)
+	if(nxt&&(!this->stop))
 	{
 		jbl_stream_buf_size_type i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 		{
 			while(i<len)
 			{
-				if(nxt->en+16>=nxt->size)jbl_stream_do(nxt,0);
+				if(nxt->en+16>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
 				__jbl_aes_128_decode_16(*key,this->buf+i,nxt->buf+nxt->en);
 				for(jbl_uint8 j=0;j<16;nxt->buf[nxt->en+j]^=vii[j],++j);
 				vii=this->buf+i,nxt->en+=16,i+=16;
 			}
 		}
 		if((flags&jbl_stream_force))
-			nxt->en-=nxt->buf[nxt->en-1],jbl_stream_do(nxt,flags);//处理末尾长度，下推流
+			{nxt->en-=nxt->buf[nxt->en-1],jbl_stream_do(nxt,flags),this->stop=1;goto backup;}//处理末尾长度，下推流
+backup:;
 		jbl_memory_copy(this->buf+this->size,this->buf+i-16,16);this->extra[0].p=this->buf+this->size;//把最后成功解码的16字节拷到最后面做下一次的vi
-		jbl_memory_copy(this->buf,this->buf+i,this->en-i);
-		this->en=this->en-i;
+		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}
 }
 jbl_stream_operators_new(jbl_stream_aes_128_cbc_encode_operators,__jbl_aes_128_cbc_seo,jbl_aes_128_key_free,jbl_aes_128_cbc_update_stream_buf);

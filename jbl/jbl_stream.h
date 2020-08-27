@@ -27,10 +27,13 @@ typedef struct __jbl_stream
 	jbl_gc						gc;
 	const jbl_stream_operater *	op;
 	struct __jbl_stream *		nxt;
-	jbl_stream_buf_size_type					en;
-	jbl_stream_buf_size_type					size;
+	jbl_stream_buf_size_type	en;
+	jbl_stream_buf_size_type	size;
 	void *						data;
 	unsigned char *				buf;
+	jbl_uint8					stop:1;
+	jbl_uint8					stop_enable:1;
+	jbl_uint8					stop_self:1;
 	jbl_stream_extra_struct		extra[0];
 }jbl_stream;
 
@@ -56,8 +59,8 @@ jbl_stream * 	jbl_stream_copy						(jbl_stream* this);
 jbl_stream * 	jbl_stream_free						(jbl_stream* this);
 void			jbl_stream_do						(jbl_stream* this,jbl_uint8 flag);
 #define			jbl_stream_caculate_size(y)			((sizeof(jbl_stream))+(sizeof(jbl_stream_extra_struct)*(y)))
-#define 		jbl_stream_connect(this,that)		jbl_stream_disconnect(this),(((jbl_stream*)jbl_refer_pull(this)))->nxt=jbl_stream_copy(that)
-#define 		jbl_stream_disconnect(this)			(((jbl_stream*)jbl_refer_pull(this)))->nxt=jbl_stream_free((((jbl_stream*)jbl_refer_pull(this)))->nxt)
+jbl_stream *	jbl_stream_connect					(jbl_stream* this,jbl_stream* next);
+jbl_stream *	jbl_stream_disconnect				(jbl_stream* this);
 #define 		jbl_stream_reset(this)				jbl_stream_disconnect(this),(((jbl_stream*)jbl_refer_pull(this)))->en=0,(((jbl_stream*)jbl_refer_pull(this)))->tmp=0
 		
 #define 		jbl_stream_force					B0000_0001

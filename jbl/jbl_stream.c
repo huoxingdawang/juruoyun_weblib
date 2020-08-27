@@ -31,8 +31,6 @@ void jbl_stream_start()
 	jbl_stream_stdin_link=jbl_stream_copy(jbl_stream_stdin);
 #elif __linux__
 	jbl_stream_stdin_link=jbl_stream_copy(jbl_stream_stdin);
-#else
-	jbl_stream_stdin_link=jbl_stream_copy(jbl_stream_stdin);
 #endif
 }
 void jbl_stream_stop()
@@ -53,6 +51,9 @@ jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void
 	this->data	=data;
 	this->size	=size;
 	this->en	=0;
+	this->stop	=0;
+	this->stop_enable	=0;
+	this->stop_self		=0;
 	this->buf	=((buf)?buf:(((jbl_uint8*)this)+(sizeof(jbl_uint64)*tmplen)+(sizeof(jbl_stream))));
 	this->nxt	=NULL;
 	while(tmplen--)this->extra[tmplen].u=0;
@@ -113,6 +114,23 @@ void jbl_stream_do(jbl_stream* this,jbl_uint8 flag)
 	if(!op)return;
 	op(this,flag);
 }
+jbl_stream * jbl_stream_connect(jbl_stream* this,jbl_stream* next)
+{
+	this=jbl_stream_disconnect(this);
+	jbl_stream* thi=jbl_refer_pull(this);
+	jbl_stream* nxt=jbl_refer_pull(next);
+	thi->stop_enable=thi->stop_self|nxt->stop_self;
+	thi->nxt=jbl_stream_copy(next);
+	return this;
+}
+inline jbl_stream * jbl_stream_disconnect(jbl_stream* this)
+{
+	jbl_stream* thi=jbl_refer_pull(this);
+	thi->nxt=jbl_stream_free(thi->nxt);
+	thi->stop_enable=thi->stop_self;
+	return this;
+}
+
 void jbl_stream_push_char(jbl_stream* this,unsigned char c)
 {
 	if(!this)jbl_exception("NULL POINTER");

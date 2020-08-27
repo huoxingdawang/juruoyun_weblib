@@ -93,8 +93,6 @@ jwl_socket*				jwl_socket_view_put				(jwl_socket* this,jbl_stream *out,jbl_uint
 
 extern					const jbl_stream_operater			jwl_stream_socket_operators;
 jbl_stream *			jwl_socket_stream_new				(jwl_socket* socket);
-#define					jwl_socket_stream_set_received(x,y)	(((jbl_stream*)jbl_refer_pull(x))->tmp[0].u=(y))
-#define					jwl_socket_stream_set_total(x,y)	(((jbl_stream*)jbl_refer_pull(x))->tmp[1].u=(y))
 
 #if JBL_VAR_ENABLE==1
 jbl_var *				jwl_socket_Vstream_new		(jwl_socket* socket);

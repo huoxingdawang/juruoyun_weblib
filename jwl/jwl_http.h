@@ -45,7 +45,15 @@ typedef struct __jwl_http_head//response head 响应头
 	jbl_ht *			v;
 	jbl_ht *			parameter;
 	
-	int					cond;
+	struct
+	{
+		jbl_uint8		cond;
+		jbl_uint8		state;		
+		jbl_uint8		ch;
+		unsigned char *	marker;
+		jbl_string    *	k;
+		jbl_var       *	v;
+	}yy;
 }jwl_http_head;
 typedef enum
 {
@@ -94,6 +102,7 @@ typedef enum
 jwl_http_head *	jwl_http_head_new			();
 jwl_http_head *	jwl_http_head_init			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_free			(jwl_http_head * this);
+jwl_http_head *	jwl_http_head_clear			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_copy			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_extend		(jwl_http_head * this,jwl_http_head **pthi);
 
@@ -162,7 +171,9 @@ jbl_var    *		jwl_http_head_get_cookie			(jwl_http_head * this,unsigned char * k
 jwl_http_head*			jwl_http_head_view_put				(jwl_http_head* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个hash table
 #define					jwl_http_head_view(x)				jwl_http_head_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个hash table
 extern					const jbl_stream_operater			jwl_http_encode_stream_operaters;
-jbl_stream *jwl_http_encode_stream_new(jwl_http_head* head);
+extern					const jbl_stream_operater			jwl_http_decode_stream_operaters;
+jbl_stream *			jwl_http_encode_stream_new			(jwl_http_head* head);
+jbl_stream *			jwl_http_decode_stream_new			(jwl_http_head* head);
 
 
 

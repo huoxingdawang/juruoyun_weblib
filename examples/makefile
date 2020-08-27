@@ -60,8 +60,10 @@ webserver:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
 	$(CC) $(BITS) -o exes$(H)webserver tmp$(H)$(pre)webserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 request:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o examples$(H)request.c	
-	$(CC) $(BITS) -o exes$(H)request tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o  examples$(H)request.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request2.o examples$(H)request2.c	
+	$(CC) $(BITS) -o exes$(H)request  tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)request2 tmp$(H)$(pre)request2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 ip2region:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region.o examples$(H)ip2region.c	
 	$(CC) $(BITS) -o exes$(H)ip2region tmp$(H)$(pre)ip2region.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

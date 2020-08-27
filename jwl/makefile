@@ -27,12 +27,12 @@ jwl/jwl_socket		:
 jwl/jwl_http		:
 ifeq ($(system),linux)
 ifeq ($(findstring jwl,$(complain_re2c)),jwl)
-	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
+	re2c -f -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
 endif
 endif
 ifeq ($(system),macos)
 ifeq ($(findstring jwl,$(complain_re2c)),jwl)
-	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
+	re2c -f -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
 endif
 endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_http.o       jwl$(H)jwl_http.c      $(JWL_EXLIB)

@@ -60,8 +60,10 @@ webserver:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
 	$(CC) $(BITS) -o exes$(H)webserver tmp$(H)$(pre)webserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 request:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o examples$(H)request.c	
-	$(CC) $(BITS) -o exes$(H)request tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o  examples$(H)request.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request2.o examples$(H)request2.c	
+	$(CC) $(BITS) -o exes$(H)request  tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)request2 tmp$(H)$(pre)request2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 ip2region:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region.o examples$(H)ip2region.c	
 	$(CC) $(BITS) -o exes$(H)ip2region tmp$(H)$(pre)ip2region.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
@@ -182,12 +184,12 @@ jwl/jwl_socket		:
 jwl/jwl_http		:
 ifeq ($(system),linux)
 ifeq ($(findstring jwl,$(complain_re2c)),jwl)
-	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
+	re2c -f -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
 endif
 endif
 ifeq ($(system),macos)
 ifeq ($(findstring jwl,$(complain_re2c)),jwl)
-	re2c -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
+	re2c -f -c jwl$(H)jwl_http.l -o jwl$(H)jwl_http.c
 endif
 endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_http.o       jwl$(H)jwl_http.c      $(JWL_EXLIB)

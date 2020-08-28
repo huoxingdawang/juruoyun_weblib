@@ -174,7 +174,10 @@ extern					const jbl_stream_operater			jwl_http_encode_stream_operaters;
 extern					const jbl_stream_operater			jwl_http_decode_stream_operaters;
 jbl_stream *			jwl_http_encode_stream_new			(jwl_http_head* head);
 jbl_stream *			jwl_http_decode_stream_new			(jwl_http_head* head);
-
+#if JBL_VAR_ENABLE==1
+jbl_var *				jwl_http_encode_Vstream_new			(jwl_http_head* head);
+jbl_var *				jwl_http_decode_Vstream_new			(jwl_http_head* head);
+#endif
 
 
 #endif

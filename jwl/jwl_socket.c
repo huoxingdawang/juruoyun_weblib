@@ -239,7 +239,7 @@ jbl_var *jwl_socket_Vstream_new(jwl_socket* socket)
 	return (jbl_var *)this;
 }
 #endif
-void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
+static void __jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
@@ -290,7 +290,7 @@ void jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 		jbl_stream_do(nxt,flags);	
 	}
 }
-jbl_stream_operators_new(jwl_stream_socket_operators,jwl_socket_stream_operater,jwl_socket_free,NULL);
+jbl_stream_operators_new(jwl_stream_socket_operators,__jwl_socket_stream_operater,jwl_socket_free,NULL);
 
 #endif
 

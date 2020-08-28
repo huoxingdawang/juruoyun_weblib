@@ -46,8 +46,8 @@ jbl_string * jwl_websocket_get_head(jbl_uint64 len,jbl_uint8 is_last,jwl_websock
 		head=jbl_string_add_chars_length(head,tmp,8);
 	return head;
 }
-jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s);
-inline jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s)
+static jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s);
+static inline jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s)
 {
 	if((s[1]&127)==126)
 		return 8;
@@ -55,7 +55,7 @@ inline jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s)
 		return 14;
 	return 6;
 }
-void __jwl_websocket_get_mask(jbl_uint8 *s,jbl_uint8 * mask)
+static void __jwl_websocket_get_mask(jbl_uint8 *s,jbl_uint8 * mask)
 {
 	s+=__jwl_websocket_get_data_start(s)-4;
 	mask[0]=s[0];
@@ -63,7 +63,7 @@ void __jwl_websocket_get_mask(jbl_uint8 *s,jbl_uint8 * mask)
 	mask[2]=s[2];
 	mask[3]=s[3];
 }
-jbl_uint64 __jwl_websocket_get_length(jbl_uint8 * s)
+static jbl_uint64 __jwl_websocket_get_length(jbl_uint8 * s)
 {
 	jbl_uint8 len1=(s[1]&127);
 	if(len1==126)
@@ -81,7 +81,7 @@ jbl_uint64 __jwl_websocket_get_length(jbl_uint8 * s)
 	return len1;
 }
 #if JBL_STREAM_ENABLE==1
-void __jwl_websocket_encode_operator(jbl_stream* this,jbl_uint8 flags)
+static void __jwl_websocket_encode_operator(jbl_stream* this,jbl_uint8 flags)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
@@ -113,7 +113,7 @@ void __jwl_websocket_encode_operator(jbl_stream* this,jbl_uint8 flags)
 	if(flags&jbl_stream_force)
 		this->stop=1,jbl_stream_do(nxt,flags);
 }
-void __jwl_websocket_decode_operator(jbl_stream* this,jbl_uint8 flags)
+static void __jwl_websocket_decode_operator(jbl_stream* this,jbl_uint8 flags)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);

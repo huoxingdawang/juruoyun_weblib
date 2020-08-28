@@ -29,12 +29,20 @@ jbl_string *	jwl_websocket_decode			(jbl_string* head);
 
 
 #if JBL_STREAM_ENABLE==1
-extern			const jbl_stream_operater			jwl_stream_websocket_operators;
-jbl_stream *jwl_websocket_stream_new();
-jbl_var *jwl_websocket_Vstream_new();
 
-#define jwl_websocket_stream_finished(x) (((jbl_stream*)jbl_refer_pull(x))->extra[0].u>=((jbl_stream*)jbl_refer_pull(x))->extra[1].u)
-#define jwl_websocket_stream_get_status(x) (((jbl_stream*)jbl_refer_pull(x))->extra[2].c8[5])
+extern			const jbl_stream_operater			jwl_stream_websocket_decode_operators;
+extern			const jbl_stream_operater			jwl_stream_websocket_encode_operators;
+#define 		jwl_websocket_encode_stream_new()	jbl_stream_new(&jwl_stream_websocket_encode_operators,NULL,JWL_WEBSOCKET_STREAM_BUF_LENGTH,NULL,1);
+#define 		jwl_websocket_decode_stream_new()	jbl_stream_new(&jwl_stream_websocket_decode_operators,NULL,JWL_WEBSOCKET_STREAM_BUF_LENGTH,NULL,3);
+#if JBL_VAR_ENABLE==1
+#define			jwl_websocket_encode_Vstream_new()	jbl_Vstream_new(&jwl_stream_websocket_encode_operators,NULL,JWL_WEBSOCKET_STREAM_BUF_LENGTH,NULL,1);
+#define			jwl_websocket_decode_Vstream_new()	jbl_Vstream_new(&jwl_stream_websocket_decode_operators,NULL,JWL_WEBSOCKET_STREAM_BUF_LENGTH,NULL,3);
+#endif
+
+
+#define			jwl_websocket_decode_stream_finished(x)		(((jbl_stream*)jbl_refer_pull(x))->extra[0].u>=((jbl_stream*)jbl_refer_pull(x))->extra[1].u)
+#define			jwl_websocket_decode_stream_get_status(x)	(((jbl_stream*)jbl_refer_pull(x))->extra[2].c8[5]&0X0F)
+#define			jwl_websocket_encode_stream_set_opcode(x,y)	(((jbl_stream*)jbl_refer_pull(x))->extra[0].c8[1]=(y))
 
 #endif
 

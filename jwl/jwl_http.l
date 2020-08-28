@@ -533,7 +533,7 @@ jwl_http_head* jwl_http_head_decode(jbl_string *buf,jbl_string_size_type *start)
 jbl_stream *jwl_http_encode_stream_new(jwl_http_head* head)
 {
 	if(!head)jbl_exception("NULL POINTER");
-	jbl_stream *this=jbl_stream_new(&jwl_http_encode_stream_operaters,head,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,1);
+	jbl_stream *this=jbl_stream_new(&jwl_http_encode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH,NULL,1);
 	return this;
 }
 void __jwl_http_encode_stream_operater(jbl_stream* this,jbl_uint8 flags)
@@ -542,7 +542,7 @@ void __jwl_http_encode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	this=jbl_refer_pull(this);
 	jbl_stream* nxt=jbl_refer_pull(this->nxt);
 	jwl_http_head *head=jbl_refer_pull((jwl_http_head*)this->data);
-	if(nxt&&((flags&jbl_stream_force)||(this->en>JWL_SOCKET_STREAM_BUF_LENGTH>>1))&&(!this->stop))
+	if(nxt&&((flags&jbl_stream_force)||(this->en>JWL_HTTP_STREAM_BUF_LENGTH>>1))&&(!this->stop))
 	{
 		if(!this->extra[0].c8[0])
 			jwl_http_head_encode(head,nxt),this->extra[0].c8[0]=1;
@@ -568,12 +568,10 @@ jbl_stream_operators_new(jwl_http_encode_stream_operaters,__jwl_http_encode_stre
 jbl_stream *jwl_http_decode_stream_new(jwl_http_head* head)
 {
 	if(!head)jbl_exception("NULL POINTER");
-	jbl_stream *this=jbl_stream_new(&jwl_http_decode_stream_operaters,head,JWL_SOCKET_STREAM_BUF_LENGTH+1,NULL,2);
-	this->extra[0].u=0;
-	this->extra[1].u=0;
+	jbl_stream *this=jbl_stream_new(&jwl_http_decode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH+1,NULL,2);
 	return this;
 }
-void __jwl_http_decode_stream_usf(jbl_stream* this){this->size=JWL_SOCKET_STREAM_BUF_LENGTH;}
+void __jwl_http_decode_stream_usf(jbl_stream* this){this->size=JWL_HTTP_STREAM_BUF_LENGTH;}
 void __jwl_http_decode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 {
 	if(!this)jbl_exception("NULL POINTER");	

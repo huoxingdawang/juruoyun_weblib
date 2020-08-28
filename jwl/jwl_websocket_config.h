@@ -12,6 +12,7 @@
 #include "jwl_config.h"
 #if JWL_WEBSOCKET_ENABLE==1
 #include "jwl_ying.h"
+#define	JWL_WEBSOCKET_STREAM_BUF_LENGTH		4096
 
 
 

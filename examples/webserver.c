@@ -45,27 +45,21 @@ pl();
 							"request:%d",count);
 				jwl_socket_view(client);
 				jbl_stream * client_stream=jwl_socket_stream_new(jbl_refer(&client));
-				if(!client_stream)
-				{
-					client=jwl_socket_free(client);
-					continue;
-				}
-				jbl_stream * websocket_stream=jwl_websocket_stream_new();
-				jbl_string *get=jbl_string_new();
-				jbl_stream *tmp=jbl_string_stream_new(get);
+				jbl_stream * websocket_stream=jwl_websocket_decode_stream_new();
+				jbl_string * get=jbl_string_new();
+				jbl_stream * tmp=jbl_string_stream_new(jbl_refer(&get));
 				jbl_stream_connect(client_stream,websocket_stream);
 				jbl_stream_connect(websocket_stream,tmp);
-				while(!jwl_websocket_stream_finished(websocket_stream))
-					jbl_stream_do(client_stream,jbl_stream_force);
-				tmp->data=NULL;
+				jbl_stream_do(client_stream,jbl_stream_force);
+				jbl_string_view(get);
 				tmp=jbl_stream_free(tmp);
-				jbl_stream_disconnect(client_stream);//断开连接				
-				if(jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_CLOSE)
+				jbl_stream_disconnect(client_stream);//断开连接	
+				if(jwl_websocket_decode_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_CLOSE)
 				{
 					jbl_log(UC "websocket close");
 					client=jwl_socket_close(client);
 				}
-				else if(jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_PING)
+				else if(jwl_websocket_decode_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_PING)
 				{
 					jbl_log(UC "websocket ping");
 					jbl_string *head=jwl_websocket_get_head(0,1,JWL_WEBSOCKET_STATUS_PONG,NULL);
@@ -73,8 +67,8 @@ pl();
 					jbl_stream_do(websocket_stream,1);	
 					head=jbl_string_free(head);					
 				}
-				else if((jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_TEXT)||
-						(jwl_websocket_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_BIN))
+				else if((jwl_websocket_decode_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_TEXT)||
+						(jwl_websocket_decode_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_BIN))
 				{
 //jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
 					jbl_string *res=jbl_string_add_chars(NULL,UC"Receive from ip:");
@@ -92,21 +86,23 @@ pl();
 					res=jbl_string_add_chars(res,UC"bytes intotal");
 					res=jbl_string_add_chars(res,UC" data:<br>");
 					res=jbl_string_add_string(res,get);
-					
-					jbl_string *head=jwl_websocket_get_head(jbl_string_get_length(res),1,JWL_WEBSOCKET_STATUS_TEXT,NULL);
+					res=jbl_string_add_chars(res,UC"<br>ex:<br>");
+					res=jbl_rand_string(res,4096,UC jbl_rand_dict_small jbl_rand_dict_big jbl_rand_dict_number jbl_rand_dict_symbol);
 					jwl_socket_poll_foreach(poll,i)
 						if(jwl_socket_get_payload(i->socket)==1)
 						{
-							jwl_socket * websoccket_send=jwl_socket_copy(i->socket);
-							jbl_stream * websocket_send_stream=jwl_socket_stream_new(jbl_refer(&websoccket_send));						
-							jbl_stream_push_string(websocket_send_stream,head);
-							jbl_stream_push_string(websocket_send_stream,res);
-							jbl_stream_do(websocket_send_stream,1);	
-							websoccket_send=jwl_socket_free(websoccket_send);
-							websocket_send_stream=jbl_stream_free(websocket_send_stream);
+							jwl_socket * socket_send=jwl_socket_copy(i->socket);
+							jbl_stream * socket_send_stream=jwl_socket_stream_new(jbl_refer(&socket_send));						
+							jbl_stream * wbesocket_send_stream=jwl_websocket_encode_stream_new();
+							jwl_websocket_encode_stream_set_opcode(wbesocket_send_stream,JWL_WEBSOCKET_STATUS_BIN);
+							jbl_stream_connect(wbesocket_send_stream,socket_send_stream);
+							jbl_stream_push_string(wbesocket_send_stream,res);
+							jbl_stream_do(wbesocket_send_stream,1);	
+							socket_send=jwl_socket_free(socket_send);
+							socket_send_stream=jbl_stream_free(socket_send_stream);
+							wbesocket_send_stream=jbl_stream_free(wbesocket_send_stream);
 						}
 					res=jbl_string_free(res);
-					head=jbl_string_free(head);
 				}
 				websocket_stream=jbl_stream_free(websocket_stream);
 				get=jbl_string_free(get);
@@ -257,7 +253,6 @@ pl();
 				get=jbl_string_free(get);
 				reqh=jwl_http_head_free(reqh);
 				client_stream=jbl_stream_free(client_stream);
-//				client=jwl_socket_close(client);
 			}
 		}
 	}

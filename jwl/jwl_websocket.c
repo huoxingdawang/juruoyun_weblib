@@ -32,7 +32,7 @@ jwl_http_head * jwl_websocket_set_response_head(jwl_http_head* response,jwl_http
 }
 jbl_string * jwl_websocket_get_head(jbl_uint64 len,jbl_uint8 is_last,jwl_websocket_status opcode,jbl_string* head)
 {
-	head=jbl_string_add_char(head,((jbl_uint16)is_last<<7)|(opcode&0X0F));
+	head=jbl_string_add_char(head,((is_last?0X80:0X00)|(opcode&0X0F)));
 	jbl_uint8 tmp[8];
 	if(len<=125)
 		head=jbl_string_add_char(head,len);
@@ -46,7 +46,8 @@ jbl_string * jwl_websocket_get_head(jbl_uint64 len,jbl_uint8 is_last,jwl_websock
 		head=jbl_string_add_chars_length(head,tmp,8);
 	return head;
 }
-jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s)
+jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s);
+inline jbl_uint8 __jwl_websocket_get_data_start(jbl_uint8 *s)
 {
 	if((s[1]&127)==126)
 		return 8;
@@ -80,68 +81,80 @@ jbl_uint64 __jwl_websocket_get_length(jbl_uint8 * s)
 	return len1;
 }
 #if JBL_STREAM_ENABLE==1
-jbl_stream *jwl_websocket_stream_new()
-{
-	jbl_stream *this=jbl_stream_new(&jwl_stream_websocket_operators,NULL,JBL_STREAM_EXCEED_LENGTH,NULL,3);
-	this->extra[0].u=0;	//第0为表示当前接受的长度
-	this->extra[1].u=-1;	//第1位表示当前要求总接收
-	this->extra[2].c8[4]=0;
-	return this;
-}
-
-#if JBL_VAR_ENABLE==1
-jbl_var *jwl_websocket_Vstream_new()
-{
-	jbl_stream *this=(jbl_stream *)jbl_Vstream_new(&jwl_stream_websocket_operators,NULL,JBL_STREAM_EXCEED_LENGTH,NULL,3);
-	this->extra[0].u=0;	//第0为表示当前接受的长度
-	this->extra[1].u=-1;	//第1位表示当前要求总接收
-	this->extra[2].c8[4]=0;
-	return (jbl_var *)this;
-}
-#endif
-void __jwl_websocket_operator(jbl_stream* this,jbl_uint8 flags)
+void __jwl_websocket_encode_operator(jbl_stream* this,jbl_uint8 flags)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);
-	if(nxt)
+	if(nxt&&(!this->stop)&&this->en)
 	{
-		if(this->en==0)
+		jbl_stream_buf_size_type i=0,end=this->en-((flags&jbl_stream_force)?0:16);
+		if(!this->extra[0].c8[0])
 		{
-			if(this->extra[0].u==this->extra[1].u&&(flags&jbl_stream_force))
-				jbl_stream_do(nxt,flags);
-			return;
+			jbl_string *head=jwl_websocket_get_head(end,flags&jbl_stream_force,this->extra[0].c8[1],NULL);
+			jbl_stream_push_string(nxt,head);
+			jbl_string_free(head);
+			if(1==(this->stop=nxt->stop))return;
+			this->extra[0].c8[0]=1;
+			this->extra[0].c8[1]=JWL_WEBSOCKET_STATUS_EXTRA;
 		}
+		for(;i<end;)
+		{
+			jbl_stream_buf_size_type len=jbl_min(end-i,nxt->size-nxt->en);	
+			jbl_memory_copy(nxt->buf+nxt->en,this->buf+i,len);
+			i+=len;
+			nxt->en+=len;
+			jbl_stream_do(nxt,0);
+			if(1==(this->stop=nxt->stop))return;
+		}
+		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
+		this->extra[0].c8[0]=0;
+	}
+	if(flags&jbl_stream_force)
+		this->stop=1,jbl_stream_do(nxt,flags);
+}
+void __jwl_websocket_decode_operator(jbl_stream* this,jbl_uint8 flags)
+{
+	if(!this)jbl_exception("NULL POINTER");	
+	this=jbl_refer_pull(this);
+	jbl_stream *nxt=jbl_refer_pull(this->nxt);
+	if(nxt&&(!this->stop)&&this->en)
+	{
 		jbl_stream_buf_size_type i=0;
 		if(this->extra[2].c8[4]==0)//第一帧
 		{
 			if((i=__jwl_websocket_get_data_start(this->buf))>=this->en)
 				return;
-			this->extra[2].c8[5]=0X0F&this->buf[0];
-			if(this->extra[2].c8[5]==JWL_WEBSOCKET_STATUS_CLOSE){this->extra[0].u=this->extra[1].u=0;return;}
-			if(this->extra[2].c8[5]==JWL_WEBSOCKET_STATUS_PING){this->extra[0].u=this->extra[1].u=0;return;}
-			this->extra[0].u=0;
+			this->extra[2].c8[5]=this->buf[0];
+			if((this->extra[2].c8[5]&0X0F)==JWL_WEBSOCKET_STATUS_CLOSE){this->extra[0].u=this->extra[1].u=0;return;}
+			if((this->extra[2].c8[5]&0X0F)==JWL_WEBSOCKET_STATUS_PING){this->extra[0].u=this->extra[1].u=0;return;}
 			this->extra[1].u=__jwl_websocket_get_length(this->buf);
 			this->extra[2].c8[4]=1;
 			__jwl_websocket_get_mask(this->buf,this->extra[2].c8);
 		}
 		for(jbl_stream_buf_size_type len=this->en;i<len;++i)
 		{
+			if(nxt->en>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))return;}
 			nxt->buf[nxt->en]=this->buf[i]^this->extra[2].c8[this->extra[0].u%4];
 			++this->extra[0].u;
 			++nxt->en;
-			if((nxt->en)>=nxt->size)jbl_stream_do(nxt,0);
 		}
 		this->en=0;
 		if(this->extra[0].u==this->extra[1].u)
 		{
 			this->extra[2].c8[4]=0;
-			if((flags&jbl_stream_force))
+			if(this->extra[2].c8[5]&B1000_0000)
+			{
+				this->stop=1;
 				jbl_stream_do(nxt,flags);
+				return;
+			}
 		}
+		jbl_stream_do(nxt,0);
 	}
 }
-jbl_stream_operators_new(jwl_stream_websocket_operators,__jwl_websocket_operator,NULL,NULL);
+jbl_stream_operators_new(jwl_stream_websocket_encode_operators,__jwl_websocket_encode_operator,NULL,NULL);
+jbl_stream_operators_new(jwl_stream_websocket_decode_operators,__jwl_websocket_decode_operator,NULL,NULL);
 #endif
 
 

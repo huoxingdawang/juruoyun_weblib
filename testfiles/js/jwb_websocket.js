@@ -31,8 +31,13 @@ jwb.websocket = new function()
 			};
 			socket.onmessage=(evt)=>
 			{
-				console.log( "Received Message: " + evt.data+"\nlength="+evt.data.length);
-				callback(evt.data);
+				var reader=new FileReader();
+				reader.addEventListener("loadend",function()
+				{
+					console.log( "Received Message: " + reader.result+"\nlength="+reader.result.length);
+					callback(reader.result);
+				});
+				reader.readAsText(evt.data);
 			};
 			socket.onclose=(evt)=>
 			{

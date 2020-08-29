@@ -32,6 +32,7 @@ typedef struct __jwl_http_head//response head 响应头
 	jbl_uint32 			tren:6;
 	jbl_uint32 			cache_max_age;
 	jbl_uint64 			len;
+	jbl_uint64 			total_len;
 	jwl_http_head_range	range;
 	jbl_string *		url;
 	jbl_string *		etag;
@@ -61,6 +62,10 @@ typedef enum
 	JWL_HTTP_METHOD_GET,
 	JWL_HTTP_METHOD_POST,
 }jwl_http_method;
+typedef enum
+{
+	JWL_HTTP_STATUS_PROXY=1,
+}jwl_http_status;
 typedef enum
 {
 	JWL_HTTP_PROTOCOL_UNKNOW,
@@ -122,6 +127,7 @@ jwl_http_head *		jwl_http_head_set_cache				(jwl_http_head * this,jwl_http_cache
 jwl_http_head *		jwl_http_head_set_upgrade			(jwl_http_head * this,jwl_http_upgrade		upgrade);
 jwl_http_head *		jwl_http_head_set_tren				(jwl_http_head * this,jwl_http_tren			tren);
 jwl_http_head *		jwl_http_head_set_length			(jwl_http_head * this,jbl_uint64			len);
+jwl_http_head *		jwl_http_head_set_total_length		(jwl_http_head * this,jbl_uint64			len);
 jwl_http_head *		jwl_http_head_set_cache_max_age		(jwl_http_head * this,jbl_uint32			cache_max_age);
 jwl_http_head *		jwl_http_head_set_range				(jwl_http_head * this,jwl_http_head_range	range);
 jwl_http_head *		jwl_http_head_set_etag				(jwl_http_head * this,jbl_string * etag);
@@ -144,6 +150,7 @@ jwl_http_cache		jwl_http_head_get_cache				(jwl_http_head * this);
 jwl_http_upgrade	jwl_http_head_get_upgrade			(jwl_http_head * this);
 jwl_http_tren		jwl_http_head_get_tren				(jwl_http_head * this);
 jbl_uint64			jwl_http_head_get_length			(jwl_http_head * this);
+jbl_uint64			jwl_http_head_get_total_length		(jwl_http_head * this);
 jbl_uint32			jwl_http_head_get_cache_max_age		(jwl_http_head * this);
 jwl_http_head_range	jwl_http_head_get_range				(jwl_http_head * this);
 jbl_string *		jwl_http_head_get_etag				(jwl_http_head * this);

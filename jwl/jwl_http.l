@@ -21,12 +21,11 @@ jwl_http_head *jwl_http_head_init(jwl_http_head * this)
 	this->status		=0;
 	this->charset		=0;	
 	this->content_type	=0;
-	
 	this->method		=0;
 	this->protocol		=0;
 	this->len			=0;
+	this->total_len		=0;
 	this->tren			=0;
-	
 	this->connection	=0;
 	this->cache			=0;
 	this->upgrade		=0;
@@ -34,15 +33,11 @@ jwl_http_head *jwl_http_head_init(jwl_http_head * this)
 	this->range.start	=0;	
 	this->range.end		=0;	
 	this->etag			=NULL;
-
-//jbl_string
 	this->filename		=NULL;
-
 	this->url			=NULL;
 	this->host			=NULL;
 	this->ua			=NULL;
 	this->referer		=NULL;
-//jbl_ht
 	this->cookie		=NULL;
 	this->v				=NULL;	
 	this->parameter		=NULL;	
@@ -93,12 +88,11 @@ jwl_http_head *jwl_http_head_clear(jwl_http_head * this)
 	thi->status			=0;
 	thi->charset		=0;	
 	thi->content_type	=0;
-	
 	thi->method			=0;
 	thi->protocol		=0;
 	thi->len			=0;
+	thi->total_len		=0;
 	thi->tren			=0;
-	
 	thi->connection		=0;
 	thi->cache			=0;
 	thi->upgrade		=0;
@@ -113,10 +107,10 @@ jwl_http_head *jwl_http_head_clear(jwl_http_head * this)
 	thi->filename		=jbl_string_free(thi->filename);
 	thi->url			=jbl_string_free(thi->url);
 	thi->host			=jbl_string_free(thi->host);
-	thi->ua			=jbl_string_free(thi->ua);
+	thi->ua				=jbl_string_free(thi->ua);
 	thi->referer		=jbl_string_free(thi->referer);
 	thi->v				=jbl_ht_free	(thi->v);
-	thi->cookie		=jbl_ht_free	(thi->cookie);
+	thi->cookie			=jbl_ht_free	(thi->cookie);
 	thi->parameter		=jbl_ht_free	(thi->parameter);
 
 	thi->yy.k			=jbl_string_free(thi->yy.k);
@@ -151,6 +145,7 @@ inline jwl_http_head *jwl_http_head_extend(jwl_http_head * this,jwl_http_head **
 	tmp->protocol		=this->protocol;
 	tmp->connection		=this->connection;
 	tmp->len			=this->len;
+	tmp->total_len		=this->total_len;
 	tmp->tren			=this->tren;
 	tmp->cache			=this->cache;
 	tmp->upgrade		=this->upgrade;
@@ -190,6 +185,7 @@ jwl_http_head *		jwl_http_head_set_cache			(jwl_http_head * this,jwl_http_cache	
 jwl_http_head *		jwl_http_head_set_upgrade		(jwl_http_head * this,jwl_http_upgrade		upgrade)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);thi->upgrade		=upgrade  		;return this;}
 jwl_http_head *		jwl_http_head_set_tren			(jwl_http_head * this,jwl_http_tren			tren)			{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);thi->tren			=tren  			;return this;}
 jwl_http_head *		jwl_http_head_set_length		(jwl_http_head * this,jbl_uint64			len)			{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);thi->len			=len			;return this;}
+jwl_http_head *		jwl_http_head_set_total_length	(jwl_http_head * this,jbl_uint64			total_len)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);thi->total_len		=total_len		;return this;}
 jwl_http_head *		jwl_http_head_set_cache_max_age	(jwl_http_head * this,jbl_uint32			cache_max_age)	{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);thi->cache_max_age	=cache_max_age	;return this;}
 jwl_http_head *		jwl_http_head_set_range			(jwl_http_head * this,jwl_http_head_range	range)			{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);thi->range			=range			;return this;}
 jwl_http_head *		jwl_http_head_set_etag			(jwl_http_head * this,jbl_string *	etag)					{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);jbl_string_free(thi->etag)			;thi->etag			=jbl_string_copy(etag)							;return this;}
@@ -212,6 +208,7 @@ jwl_http_cache		jwl_http_head_get_cache			(jwl_http_head * this){if(!this)return
 jwl_http_upgrade	jwl_http_head_get_upgrade		(jwl_http_head * this){if(!this)return 0;this=jbl_refer_pull(this);return this->upgrade;}
 jwl_http_tren		jwl_http_head_get_tren			(jwl_http_head * this){if(!this)return 0;this=jbl_refer_pull(this);return this->tren;}
 jbl_uint64			jwl_http_head_get_length		(jwl_http_head * this){if(!this)return 0;this=jbl_refer_pull(this);return this->len;}
+jbl_uint64			jwl_http_head_get_total_length	(jwl_http_head * this){if(!this)return 0;this=jbl_refer_pull(this);return this->total_len;}
 jbl_uint32			jwl_http_head_get_cache_max_age	(jwl_http_head * this){if(!this)return 0;this=jbl_refer_pull(this);return this->cache_max_age;}
 jwl_http_head_range	jwl_http_head_get_range			(jwl_http_head * this){if(!this)return (jwl_http_head_range){0,0};this=jbl_refer_pull(this);return this->range;}
 jbl_string *		jwl_http_head_get_etag			(jwl_http_head * this){if(!this)return NULL;this=jbl_refer_pull(this);return jbl_string_copy(this->etag);}
@@ -223,9 +220,6 @@ jbl_string *		jwl_http_head_get_referer		(jwl_http_head * this){if(!this)return 
 jbl_var    *		jwl_http_head_get				(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->v)			return NULL;return jbl_ht_get_chars(this->v,key);}
 jbl_var    *		jwl_http_head_get_parameter		(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->parameter)	return NULL;return jbl_ht_get_chars(this->parameter,key);}
 jbl_var    *		jwl_http_head_get_cookie		(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->cookie)		return NULL;return jbl_ht_get_chars(this->cookie,key);}
-
-
-
 
 
 void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
@@ -246,6 +240,14 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 			case 404:	jbl_stream_push_chars(stream,UC" Not Found")		;break;
 			case 416:	jbl_stream_push_chars(stream,UC" Range Not Satisfiable")		;break;
 		}
+	}
+	else if(jwl_http_head_is_request(head)&&head->status==JWL_HTTP_STATUS_PROXY)
+	{
+		jbl_stream_push_chars(stream,UC"CONNECT ");
+		jbl_stream_push_string(stream,head->host);
+		jbl_stream_push_chars(stream,UC" HTTP/1.1\r\n\r\n");
+		jbl_stream_do(stream,jbl_stream_force);
+		return;
 	}
 	else
 	{
@@ -307,13 +309,9 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 	}
 	if(!(head->tren&JWL_HTTP_TREN_CHUNKED))
 	{
+		jbl_stream_push_chars(stream,UC"Content-Length: ")						,jbl_stream_push_uint(stream,head->len)					,rn();
 		if(head->status==206&&jwl_http_head_is_response(head))
-		{
-			jbl_stream_push_chars(stream,UC"Content-Length: ")					,jbl_stream_push_uint(stream,(head->range.end?head->range.end:head->len)-head->range.start)	,rn();//注意，range是闭区间，而jwl,jbl要求左闭右开区间
-			jbl_stream_push_chars(stream,UC"Content-Range: bytes ")				,jbl_stream_push_uint(stream,head->range.start)			,jbl_stream_push_char(stream,'-')	,jbl_stream_push_uint(stream,head->range.end?(head->range.end-1):0)	,jbl_stream_push_char(stream,'/')	,jbl_stream_push_uint(stream,head->len)	,rn();
-		}
-		else
-			jbl_stream_push_chars(stream,UC"Content-Length: ")					,jbl_stream_push_uint(stream,head->len)					,rn();
+			jbl_stream_push_chars(stream,UC"Content-Range: bytes ")				,jbl_stream_push_uint(stream,head->range.start)			,jbl_stream_push_char(stream,'-')	,jbl_stream_push_uint(stream,head->range.end?(head->range.end-1):0)	,jbl_stream_push_char(stream,'/')	,jbl_stream_push_uint(stream,head->total_len)	,rn();
 	}
 	if(jwl_http_head_is_request(head)&&(head->range.start||head->range.end))
 		jbl_stream_push_chars(stream,UC"Range: bytes=")							,jbl_stream_push_uint(stream,head->range.start)			,jbl_stream_push_char(stream,'-')	,jbl_stream_push_uint(stream,head->range.end?(head->range.end-1):0),rn();		
@@ -388,131 +386,134 @@ jwl_http_head* __jwl_http_head_decode(jwl_http_head * head,unsigned char* in,uns
 	re2c:define:YYFILL						="{upd;return head;}";
 	re2c:variable:yych						=hea->yy.ch;
 	<> :=> start
-	<start> 		"POST"									{upd;hea->method		=JWL_HTTP_METHOD_POST			;hea=jwl_http_head_set_request(hea)			;goto yyc_start		;}
-	<start> 		"GET"									{upd;hea->method		=JWL_HTTP_METHOD_GET			;hea=jwl_http_head_set_request(hea)			;goto yyc_start		;}
-	<start> 		"HTTP/1.1"				=> starts		{upd;hea->protocol		=JWL_HTTP_PROTOCOL_HTTP_1_1		;hea=jwl_http_head_set_response(hea)		;goto yyc_starts	;}
-	<start>			[]										{   ;																				;++YYCURSOR;upd	;goto yyc_starts	;}
-	<start>			" " 					=> url			{upd;hea->url			=jbl_string_free    (hea->url)												;goto yyc_url		;}
-	<starts>		" " 					=> status		{upd;hea->status		=0																			;goto yyc_status	;}
+	<start> 		"POST"										{upd;hea->method		=JWL_HTTP_METHOD_POST			;hea=jwl_http_head_set_request(hea)			;goto yyc_start		;}
+	<start> 		"GET"										{upd;hea->method		=JWL_HTTP_METHOD_GET			;hea=jwl_http_head_set_request(hea)			;goto yyc_start		;}
+	<start> 		"HTTP/1.1"					=> starts		{upd;hea->protocol		=JWL_HTTP_PROTOCOL_HTTP_1_1		;hea=jwl_http_head_set_response(hea)		;goto yyc_starts	;}
+	<start>			[]											{   ;																				;++YYCURSOR;upd	;goto yyc_starts	;}
+	<start>			" " 						=> url			{upd;hea->url			=jbl_string_free    (hea->url)												;goto yyc_url		;}
+	<starts>		" " 						=> status		{upd;hea->status		=0																			;goto yyc_status	;}
 	
-	<status>		[0-9]									{upd;hea->status		=((hea->status<<3)+(hea->status<<1)+*(YYCURSOR-1)-'0')						;goto yyc_status	;}
-	<status>		[]		 								{   ;																				;++YYCURSOR;upd	;goto yyc_status	;}
-	<status>		"\r\n" 					=> head_body	{upd;																								;goto yyc_head_body	;}
+	<status>		[0-9]										{upd;hea->status		=((hea->status<<3)+(hea->status<<1)+*(YYCURSOR-1)-'0')						;goto yyc_status	;}
+	<status>		[]		 									{   ;																				;++YYCURSOR;upd	;goto yyc_status	;}
+	<status>		"\r\n" 						=> head_body	{upd;																								;goto yyc_head_body	;}
 
-	<url>			[]										{   ;hea->url			=jbl_string_add_char(hea->url,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_url		;}
-	<url>			" " 					=> protocol		{upd;																								;goto yyc_protocol	;}
-	<url>			"?" 					=> parameter	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_parameter	;}
-	<parameter>		[]										{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_parameter	;}
-	<parameter>		" " 					=> protocol		{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_protocol	;}
-	<parameter>		"&" 					=> parameter	{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_parameter	;}
-	<parameter>		"="						=> parameterv	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_parameterv;}
-	<parameterv>	[]										{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_parameterv;}
-	<parameterv>	"&"						=> head_body	{upd;hea->parameter		=jbl_ht_insert(hea->parameter,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v);			;goto yyc_parameter	;}
-	<parameterv>	" " 					=> protocol		{upd;hea->parameter		=jbl_ht_insert(hea->parameter,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v);			;goto yyc_protocol	;}
+	<url>			[]											{   ;hea->url			=jbl_string_add_char(hea->url,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_url		;}
+	<url>			" " 						=> protocol		{upd;																								;goto yyc_protocol	;}
+	<url>			"?" 						=> parameter	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_parameter	;}
+	<parameter>		[]											{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_parameter	;}
+	<parameter>		" " 						=> protocol		{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_protocol	;}
+	<parameter>		"&" 						=> parameter	{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_parameter	;}
+	<parameter>		"="							=> parameterv	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_parameterv;}
+	<parameterv>	[]											{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_parameterv;}
+	<parameterv>	"&"							=> head_body	{upd;hea->parameter		=jbl_ht_insert(hea->parameter,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v);			;goto yyc_parameter	;}
+	<parameterv>	" " 						=> protocol		{upd;hea->parameter		=jbl_ht_insert(hea->parameter,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v);			;goto yyc_protocol	;}
 	
 	
-	<protocol>		"HTTP/1.1"								{upd;hea->protocol		=JWL_HTTP_PROTOCOL_HTTP_1_1													;goto yyc_protocol	;}
-	<protocol>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
+	<protocol>		"HTTP/1.1"									{upd;hea->protocol		=JWL_HTTP_PROTOCOL_HTTP_1_1													;goto yyc_protocol	;}
+	<protocol>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
 	
-	<head_body>		"Host:"" "*				=> head_host	{upd;hea->host			=jbl_string_free(hea->host)													;goto yyc_head_host	;}
-	<head_host>		[]										{   ;hea->host			=jbl_string_add_char(hea->host,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_host	;}
-	<head_host>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
+	<head_body>		"Host:"" "*					=> head_host	{upd;hea->host			=jbl_string_free(hea->host)													;goto yyc_head_host	;}
+	<head_host>		[]											{   ;hea->host			=jbl_string_add_char(hea->host,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_host	;}
+	<head_host>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
 	
-	<head_body>		"User-Agent:"" "*		=> head_ua		{upd;hea->ua			=jbl_string_free(hea->ua)													;goto yyc_head_ua	;}
-	<head_ua>		[]										{   ;hea->ua			=jbl_string_add_char(hea->ua,*YYCURSOR)						;++YYCURSOR;upd	;goto yyc_head_ua	;}
-	<head_ua>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
+	<head_body>		"User-Agent:"" "*			=> head_ua		{upd;hea->ua			=jbl_string_free(hea->ua)													;goto yyc_head_ua	;}
+	<head_ua>		[]											{   ;hea->ua			=jbl_string_add_char(hea->ua,*YYCURSOR)						;++YYCURSOR;upd	;goto yyc_head_ua	;}
+	<head_ua>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
 	
-	<head_body>		"Referer:"" "*			=> head_refer	{upd;hea->referer		=jbl_string_free(hea->referer)												;goto yyc_head_refer;}
-	<head_refer>	[]										{   ;hea->referer		=jbl_string_add_char(hea->referer,*YYCURSOR)				;++YYCURSOR;upd	;goto yyc_head_refer;}
-	<head_refer>	"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-
-	
-	<head_body>		"Etag:"" "*				=> head_etag	{upd;hea->etag			=jbl_string_free(hea->etag)													;goto yyc_head_etag	;}
-	<head_body>		"If-None-Match:"" "*	=> head_etag	{upd;hea->etag			=jbl_string_free(hea->etag)													;goto yyc_head_etag	;}
-	<head_etag>		[]										{   ;hea->etag			=jbl_string_add_char(hea->etag,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_etag	;}
-	<head_etag>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-	
-	<head_body>		"Connection:"" "*		=> head_conn	{upd;																								;goto yyc_head_conn	;}
-	<head_conn>		"keep-alive"							{upd;hea->connection	|=JWL_HTTP_CONNECTION_KEEP_ALIVE											;goto yyc_head_conn	;}
-	<head_conn>		"close"									{upd;hea->connection	|=JWL_HTTP_CONNECTION_CLOSE													;goto yyc_head_conn	;}
-	<head_conn>		"Upgrade"								{upd;hea->connection	|=JWL_HTTP_CONNECTION_UPGRADE												;goto yyc_head_conn	;}
-	<head_conn>		", "									{upd;																								;goto yyc_head_conn	;}
-	<head_conn>		[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_conn	;}
-	<head_conn>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-	
-	<head_body>		"Accept-Encoding:"" "*	=> head_tren	{upd;																								;goto yyc_head_tren	;}
-	<head_body>		"Transfer-Encoding:"" "*=> head_tren	{upd;																								;goto yyc_head_tren	;}
-	<head_tren>		"chunked"								{upd;hea->tren			|=JWL_HTTP_TREN_CHUNKED														;goto yyc_head_tren	;}
-	<head_tren>		"compress"								{upd;hea->tren			|=JWL_HTTP_TREN_COMPRESS													;goto yyc_head_tren	;}
-	<head_tren>		"deflate"								{upd;hea->tren			|=JWL_HTTP_TREN_DEFLATE														;goto yyc_head_tren	;}
-	<head_tren>		"gzip"									{upd;hea->tren			|=JWL_HTTP_TREN_GZIP														;goto yyc_head_tren	;}
-	<head_tren>		"identity"								{upd;hea->tren			|=JWL_HTTP_TREN_IDENTITY													;goto yyc_head_tren	;}
-	<head_tren>		", "									{upd;																								;goto yyc_head_tren	;}
-	<head_tren>		[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_tren	;}
-	<head_tren>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-
-	<head_body>		"Upgrade:"" "*			=> head_upgrade	{upd;																								;goto yyc_head_upgrade;}
-	<head_upgrade>	"websocket"								{upd;hea->upgrade		=JWL_HTTP_UPGRADE_WEBSOCKET													;goto yyc_head_upgrade;}
-	<head_upgrade>	[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_upgrade;}
-	<head_upgrade>	"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-	
-
-	<head_body>		"Range:"" "*"bytes="	=> head_range_s	{upd;hea->range.start	=0																			;goto yyc_head_range_s;}
-	<head_range_s>	"-"						=> head_range_e	{upd;hea->range.end		=0																			;goto yyc_head_range_e;}
-	<head_range_s>	[0-9]									{upd;hea->range.start	=(hea->range.start<<3)+(hea->range.start<<1)+*(YYCURSOR-1)-'0'				;goto yyc_head_range_s;}
-	<head_range_e>	[0-9]									{upd;hea->range.end		=(hea->range.end<<3)+(hea->range.end<<1)+*(YYCURSOR-1)-'0'					;goto yyc_head_range_e;}
-	<head_range_s>	[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_range_s;}
-	<head_range_e>	[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_range_e;}
-	<head_range_s>	"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-	<head_range_e>	"\r\n"					=> head_body	{upd;hea->range.end		=(hea->range.end)?(hea->range.end+1):0										;goto yyc_head_body	;}
-
-	<head_body>		"Cache-Control:"" "*	=> head_cache	{upd;																								;goto yyc_head_cache;}
-	<head_body>		"Pragma: "				=> head_cache	{upd;																								;goto yyc_head_cache;}
-	<head_cache>	"no-cache"								{upd;hea->cache			=JWL_HTTP_CACHE_NO															;goto yyc_head_cache;}
-	<head_cache>	[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_cache;}
-	<head_cache>	"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-
-
-	<head_body>		"Content-Type:"" "*		=> head_ct		{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_ct	;}
-	<head_ct>		[]										{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_ct	;}
-	<head_ct>		";"" "*"charset="		=> head_cs		{upd;hea->content_type	=jbl_file_get_ctid_by_ct(hea->yy.k);hea->yy.k=jbl_string_free(hea->yy.k)	;goto yyc_head_cs	;}
-	<head_ct>		"\r\n"					=> head_body	{upd;hea->content_type	=jbl_file_get_ctid_by_ct(hea->yy.k);hea->yy.k=jbl_string_free(hea->yy.k)	;goto yyc_head_body	;}
-	<head_cs>		"UTF-8"									{upd;hea->charset		=JWL_HTTP_CHARSET_UTF8														;goto yyc_head_cs	;}
-	<head_cs>		[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_cs	;}
-	<head_cs>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-
-	<head_body>		"Content-Length:"" "*	=> head_cl		{upd;hea->len			=0																			;goto yyc_head_cl	;}
-	<head_cl>		[0-9]									{upd;hea->len			=(hea->len<<3)+(hea->len<<1)+*(YYCURSOR-1)-'0'								;goto yyc_head_cl	;}
-	<head_cl>		[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_cl	;}
-	<head_cl>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-
-
-	<head_body>		"Cookie:"" "*			=> head_cookie	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_cookie;}
-	<head_cookie>	[]										{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_cookie;}
-	<head_cookie>	"="						=> head_cookiev	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_head_cookiev;}
-	<head_cookie>	"\r\n"					=> head_body	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_body	;}
-	<head_cookiev>	[]										{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_head_cookiev;}
-	<head_cookiev>	"; "					=> head_cookie	{upd;hea->cookie		=jbl_ht_insert(hea->cookie,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)		;goto yyc_head_cookie	;}
-	<head_cookiev>	"\r\n"					=> head_body	{upd;hea->cookie		=jbl_ht_insert(hea->cookie,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)		;goto yyc_head_body		;}
-
-
-	<head_body>		[]						=> special_key	{   ;hea->yy.k			=jbl_string_add_char(jbl_string_free(hea->yy.k),*YYCURSOR)	;++YYCURSOR;upd	;goto yyc_special_key;}
-	<special_key>	[]										{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_special_key;}
-	<special_key>	"\r\n"					=> head_body	{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_head_body	;}
-	<special_key>	":"" "*					=> special_var	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_special_var;}
-	<special_var>	[]										{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_special_var;}
-	<special_var>	"\r\n"					=> head_body	{upd;hea->v				=jbl_ht_insert(hea->v,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)			;goto yyc_head_body		;}
-
-	<head_body>		"Server:"" "*			=> head_ign		{upd;																								;goto yyc_head_ign	;}
-	<head_body>		"Accept:"" "*			=> head_ign		{upd;																								;goto yyc_head_ign	;}
-	<head_body>		"Accept-Language:"" "*	=> head_ign		{upd;																								;goto yyc_head_ign	;}
-	<head_ign>		[]										{   ;																				;++YYCURSOR;upd	;goto yyc_head_ign	;}
-	<head_ign>		"\r\n"					=> head_body	{upd;																								;goto yyc_head_body	;}
-
+	<head_body>		"Referer:"" "*				=> head_refer	{upd;hea->referer		=jbl_string_free(hea->referer)												;goto yyc_head_refer;}
+	<head_refer>	[]											{   ;hea->referer		=jbl_string_add_char(hea->referer,*YYCURSOR)				;++YYCURSOR;upd	;goto yyc_head_refer;}
+	<head_refer>	"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
 
 	
-	<head_body>		"\r\n"									{upd;hea->yy.cond=-1;return head;}
-	<*>				[\x00]									{return head;}
+	<head_body>		"Etag:"" "*					=> head_etag	{upd;hea->etag			=jbl_string_free(hea->etag)													;goto yyc_head_etag	;}
+	<head_body>		"If-None-Match:"" "*		=> head_etag	{upd;hea->etag			=jbl_string_free(hea->etag)													;goto yyc_head_etag	;}
+	<head_etag>		[]											{   ;hea->etag			=jbl_string_add_char(hea->etag,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_etag	;}
+	<head_etag>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+	
+	<head_body>		"Connection:"" "*			=> head_conn	{upd;																								;goto yyc_head_conn	;}
+	<head_conn>		"keep-alive"								{upd;hea->connection	|=JWL_HTTP_CONNECTION_KEEP_ALIVE											;goto yyc_head_conn	;}
+	<head_conn>		"close"										{upd;hea->connection	|=JWL_HTTP_CONNECTION_CLOSE													;goto yyc_head_conn	;}
+	<head_conn>		"Upgrade"									{upd;hea->connection	|=JWL_HTTP_CONNECTION_UPGRADE												;goto yyc_head_conn	;}
+	<head_conn>		", "										{upd;																								;goto yyc_head_conn	;}
+	<head_conn>		[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_conn	;}
+	<head_conn>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+	
+	<head_body>		"Accept-Encoding:"" "*		=> head_tren	{upd;																								;goto yyc_head_tren	;}
+	<head_body>		"Transfer-Encoding:"" "*	=> head_tren	{upd;																								;goto yyc_head_tren	;}
+	<head_tren>		"chunked"									{upd;hea->tren			|=JWL_HTTP_TREN_CHUNKED														;goto yyc_head_tren	;}
+	<head_tren>		"compress"									{upd;hea->tren			|=JWL_HTTP_TREN_COMPRESS													;goto yyc_head_tren	;}
+	<head_tren>		"deflate"									{upd;hea->tren			|=JWL_HTTP_TREN_DEFLATE														;goto yyc_head_tren	;}
+	<head_tren>		"gzip"										{upd;hea->tren			|=JWL_HTTP_TREN_GZIP														;goto yyc_head_tren	;}
+	<head_tren>		"identity"									{upd;hea->tren			|=JWL_HTTP_TREN_IDENTITY													;goto yyc_head_tren	;}
+	<head_tren>		", "										{upd;																								;goto yyc_head_tren	;}
+	<head_tren>		[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_tren	;}
+	<head_tren>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+
+	<head_body>		"Upgrade:"" "*				=> head_upgrade	{upd;																								;goto yyc_head_upgrade;}
+	<head_upgrade>	"websocket"									{upd;hea->upgrade		=JWL_HTTP_UPGRADE_WEBSOCKET													;goto yyc_head_upgrade;}
+	<head_upgrade>	[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_upgrade;}
+	<head_upgrade>	"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+	
+
+	<head_body>		"Range:"" "*"bytes="		=> head_range_s	{upd;hea->range.start	=0																			;goto yyc_head_range_s;}
+	<head_body>		"Content-Range:"" "*"bytes"	=> head_range_s	{upd;hea->range.start	=0																			;goto yyc_head_range_s;}
+	<head_range_s>	"-"							=> head_range_e	{upd;hea->range.end		=0																			;goto yyc_head_range_e;}
+	<head_range_e>	"/"							=> head_range_e	{upd;hea->total_len		=0																			;goto yyc_head_range_t;}
+	<head_range_s>	[0-9]										{upd;hea->range.start	=(hea->range.start<<3)+(hea->range.start<<1)+*(YYCURSOR-1)-'0'				;goto yyc_head_range_s;}
+	<head_range_e>	[0-9]										{upd;hea->range.end		=(hea->range.end<<3)+(hea->range.end<<1)+*(YYCURSOR-1)-'0'					;goto yyc_head_range_e;}
+	<head_range_t>	[0-9]										{upd;hea->total_len		=(hea->total_len<<3)+(hea->total_len<<1)+*(YYCURSOR-1)-'0'					;goto yyc_head_range_t;}
+	<head_range_s>	[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_range_s;}
+	<head_range_e>	[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_range_e;}
+	<head_range_t>	[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_range_t;}
+	<head_range_s>	"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+	<head_range_e>	"\r\n"						=> head_body	{upd;hea->range.end		=(hea->range.end)?(hea->range.end+1):0										;goto yyc_head_body	;}
+	<head_range_t>	"\r\n"						=> head_body	{upd;hea->range.end		=(hea->range.end)?(hea->range.end+1):0										;goto yyc_head_body	;}
+
+	<head_body>		"Cache-Control:"" "*		=> head_cache	{upd;																								;goto yyc_head_cache;}
+	<head_body>		"Pragma: "					=> head_cache	{upd;																								;goto yyc_head_cache;}
+	<head_cache>	"no-cache"									{upd;hea->cache			=JWL_HTTP_CACHE_NO															;goto yyc_head_cache;}
+	<head_cache>	[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_cache;}
+	<head_cache>	"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+
+
+	<head_body>		"Content-Type:"" "*			=> head_ct		{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_ct	;}
+	<head_ct>		[]											{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_ct	;}
+	<head_ct>		";"" "*"charset="			=> head_cs		{upd;hea->content_type	=jbl_file_get_ctid_by_ct(hea->yy.k);hea->yy.k=jbl_string_free(hea->yy.k)	;goto yyc_head_cs	;}
+	<head_ct>		"\r\n"						=> head_body	{upd;hea->content_type	=jbl_file_get_ctid_by_ct(hea->yy.k);hea->yy.k=jbl_string_free(hea->yy.k)	;goto yyc_head_body	;}
+	<head_cs>		"UTF-8"										{upd;hea->charset		=JWL_HTTP_CHARSET_UTF8														;goto yyc_head_cs	;}
+	<head_cs>		[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_cs	;}
+	<head_cs>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+
+	<head_body>		"Content-Length:"" "*		=> head_cl		{upd;hea->len			=0																			;goto yyc_head_cl	;}
+	<head_cl>		[0-9]										{upd;hea->len			=(hea->len<<3)+(hea->len<<1)+*(YYCURSOR-1)-'0'								;goto yyc_head_cl	;}
+	<head_cl>		[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_cl	;}
+	<head_cl>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+
+
+	<head_body>		"Cookie:"" "*				=> head_cookie	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_cookie;}
+	<head_cookie>	[]											{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_cookie;}
+	<head_cookie>	"="							=> head_cookiev	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_head_cookiev;}
+	<head_cookie>	"\r\n"						=> head_body	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_body	;}
+	<head_cookiev>	[]											{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_head_cookiev;}
+	<head_cookiev>	"; "						=> head_cookie	{upd;hea->cookie		=jbl_ht_insert(hea->cookie,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)		;goto yyc_head_cookie	;}
+	<head_cookiev>	"\r\n"						=> head_body	{upd;hea->cookie		=jbl_ht_insert(hea->cookie,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)		;goto yyc_head_body		;}
+
+
+	<head_body>		[]							=> special_key	{   ;hea->yy.k			=jbl_string_add_char(jbl_string_free(hea->yy.k),*YYCURSOR)	;++YYCURSOR;upd	;goto yyc_special_key;}
+	<special_key>	[]											{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_special_key;}
+	<special_key>	"\r\n"						=> head_body	{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_head_body	;}
+	<special_key>	":"" "*						=> special_var	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_special_var;}
+	<special_var>	[]											{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_special_var;}
+	<special_var>	"\r\n"						=> head_body	{upd;hea->v				=jbl_ht_insert(hea->v,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)			;goto yyc_head_body		;}
+
+	<head_body>		"Server:"" "*				=> head_ign		{upd;																								;goto yyc_head_ign	;}
+	<head_body>		"Accept:"" "*				=> head_ign		{upd;																								;goto yyc_head_ign	;}
+	<head_body>		"Accept-Language:"" "*		=> head_ign		{upd;																								;goto yyc_head_ign	;}
+	<head_ign>		[]											{   ;																				;++YYCURSOR;upd	;goto yyc_head_ign	;}
+	<head_ign>		"\r\n"						=> head_body	{upd;																								;goto yyc_head_body	;}
+	
+	<head_body>		"\r\n"										{upd;hea->yy.cond=-1;return head;}
+	<*>				[\x00]										{return head;}
 		
  */
 	#undef YYCTYPE	
@@ -574,6 +575,7 @@ static void __jwl_http_encode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 			jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;
 		}
 		if((flags&jbl_stream_force)&&(head->tren&JWL_HTTP_TREN_CHUNKED))jbl_stream_push_chars(nxt,UC"0\r\n\r\n");
+		if(flags&jbl_stream_force)this->extra[0].c8[0]=0;
 		jbl_stream_do(nxt,flags);
 backup:;
 		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
@@ -588,7 +590,7 @@ static void __jwl_http_decode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	jbl_stream* nxt=jbl_refer_pull(this->nxt);
 	jbl_string_size_type i=0;
 	jwl_http_head *head=NULL;
-	if(!this->extra[0].c8[0])//头没搞完
+	if((!this->extra[0].c8[0])&&(!this->stop))//头没搞完
 	{
 		this->buf[this->en]=0;
 		this->data=__jwl_http_head_decode((jwl_http_head*)this->data,this->buf,this->buf+this->size,&i);
@@ -598,7 +600,7 @@ static void __jwl_http_decode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 		this->extra[0].c8[0]=1;
 		this->extra[0].c8[1]=0;
 		if(head->tren&JWL_HTTP_TREN_CHUNKED)head->len=0;
-		else if(head->len==0)this->stop=1;
+		else if(head->len==0)this->stop=1,this->extra[0].c8[0]=0,this->en=0;
 	}
 	else
 		head=jbl_refer_pull((jwl_http_head*)this->data);
@@ -624,6 +626,7 @@ start:;
 				{
 					this->stop=1;
 					jbl_stream_do(nxt,flags);
+					this->extra[0].c8[0]=0;
 					goto backup;
 				}
 			}
@@ -652,6 +655,7 @@ start:;
 				{
 					jbl_stream_do(nxt,flags);
 					this->stop=1;
+					this->extra[0].c8[0]=0;
 					goto backup;
 				}
 			}
@@ -678,18 +682,12 @@ jwl_http_head* jwl_http_head_view_put(jwl_http_head* this,jbl_stream *out,jbl_ui
 	char * cache		[]={"","no","max age,"};
 	char * upgrade		[]={"","websocket"};
 	char * tren			[]={"","chunked","compress","deflate","gzip","identity"};
-		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"type         :");jbl_stream_push_chars(out,UC type			[jwl_http_head_is_request(this)?1:0])	;jbl_stream_push_char(out,'\n');
-	if(jwl_http_head_is_request(this))
-	{
-		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"method       :");jbl_stream_push_chars(out,UC method		[thi->method])						;jbl_stream_push_char(out,'\n');	
-		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"url          :");jbl_stream_push_string(out,thi->url)											;jbl_stream_push_char(out,'\n');	
-	}
-	if(jwl_http_head_is_response(this))
-	{
-		for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"status       :");jbl_stream_push_uint(out,thi->status)											;jbl_stream_push_char(out,'\n');
-	}
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"type         :");jbl_stream_push_chars(out,UC type			[jwl_http_head_is_request(this)?1:0])	;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"method       :");jbl_stream_push_chars(out,UC method		[thi->method])						;jbl_stream_push_char(out,'\n');	
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"status       :");jbl_stream_push_uint(out,thi->status)											;jbl_stream_push_char(out,'\n');
 	
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"length       :");jbl_stream_push_uint(out,thi->len)											;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"total_length :");jbl_stream_push_uint(out,thi->total_len)										;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"protocol     :");jbl_stream_push_chars(out,UC protocol		[thi->protocol])					;jbl_stream_push_char(out,'\n');	
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"charset      :");jbl_stream_push_chars(out,UC charset		[thi->charset])						;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"upgrade      :");jbl_stream_push_chars(out,UC upgrade		[thi->upgrade])						;jbl_stream_push_char(out,'\n');	

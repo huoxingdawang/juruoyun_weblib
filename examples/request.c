@@ -14,7 +14,6 @@ int main(int argc,char** argv)
 	reqh=jwl_http_head_set_request		(reqh);
 	reqh=jwl_http_head_set_method		(reqh,JWL_HTTP_METHOD_POST);
 	reqh=jwl_http_head_set_url			(reqh,jbl_gc_minus(jbl_string_cache_get(UC"/app/trades")));
-	reqh=jwl_http_head_set_host			(reqh,jbl_gc_minus(jbl_string_cache_get(UC"27.221.57.108:10009")));
 	reqh=jwl_http_head_set_cache		(reqh,JWL_HTTP_CACHE_NO);
 	reqh=jwl_http_head_set_protocol		(reqh,JWL_HTTP_PROTOCOL_HTTP_1_1);
 	reqh=jwl_http_head_set_connection	(reqh,JWL_HTTP_CONNECTION_CLOSE);

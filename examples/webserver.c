@@ -122,19 +122,14 @@ pl();
 				jbl_stream    * get_stream=jbl_string_stream_new		(jbl_refer(&get));
 				do
 				{
-pl();
 					client_stream->stop=reqh_stream->stop=get_stream->stop=0;
 					get=jbl_string_clear(get);
 					reqh=jwl_http_head_clear(reqh);					
 					jbl_stream_connect(client_stream,reqh_stream);
 					jbl_stream_connect(reqh_stream,get_stream);
-pl();
 					jbl_stream_do(client_stream,jbl_stream_force);
-pl();
 					jbl_stream_disconnect(client_stream);
 					
-					if(!jwl_http_head_get_protocol(reqh))break;
-
 					if((!jwl_socket_closed(client))&&jwl_http_head_get_protocol(reqh))
 					{
 						jwl_http_head_view(reqh);pf();
@@ -196,10 +191,12 @@ pl();
 										resh=jwl_http_head_set_status		(resh,416),jbl_log(UC "[%d,%d) out of [%d,%d)",jwl_http_head_get_range(reqh).start,jwl_http_head_get_range(reqh).end,0LL,jbl_file_get_size(f1));
 									else
 									{
-										resh=jwl_http_head_set_status		(resh,206);
 										jbl_uint64 start=jwl_http_head_get_range(reqh).start;
 										jbl_uint64 end=jwl_http_head_get_range(reqh).end?jwl_http_head_get_range(reqh).end:jwl_http_head_get_range(reqh).start+1024*512;
 										jbl_min_update(end,jbl_file_get_size(f1));
+										resh=jwl_http_head_set_status		(resh,206);
+										resh=jwl_http_head_set_length		(resh,end-start);
+										resh=jwl_http_head_set_total_length	(resh,jbl_file_get_size(f1));
 										resh=jwl_http_head_set_range		(resh,(jwl_http_head_range){start,end});
 										jbl_file_stream_set_offset(outs,start);
 										jbl_file_stream_set_end(outs,end);

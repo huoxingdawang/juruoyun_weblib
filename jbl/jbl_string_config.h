@@ -28,10 +28,10 @@
 #define JBL_STRING_CACHE_NEW_VAR					1		//如果可能，新建字符串时使用var类型
 #define JBL_STRING_CACHE_DEBUG						0		//调试模式
 
-#define JBL_STRING_CODE_CHANGE_ENABLE				1		//jbl_string_cc.c
-#define JBL_STRING_CODE_CHANGE_DEBUG				1		//jbl_string_cc.c
-#define JBL_STRING_CODE_CHANGE_INNER_TABLE_ENABLE	1		//使用内联表
-#define JBL_STRING_CODE_CHANGE_OUT_TABLE_DIR		"tools/gb2312_utf8_table/jbl_string_code_change_gb2312_utf8_table.bin"		//加载表的地址
+#define JBL_STRING_CC_ENABLE						1		//jbl_string_cc.c
+#define JBL_STRING_CC_DEBUG							1		//jbl_string_cc.c
+#define JBL_STRING_CC_INNER_DB_ENABLE				0		//使用内联表
+#define JBL_STRING_CC_OUT_DB_DIR					"jbl/jbl_string_cc_table.db"		//加载表的地址
 
 #endif
 #endif

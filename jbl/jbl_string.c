@@ -766,9 +766,10 @@ jbl_var * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *sta
 	if(!this||!start)jbl_exception("NULL POINTER");	
 	jbl_string *thi=jbl_refer_pull(this);		
 	jbl_string_size_type i=*start;
+	unsigned char c,f;jbl_uint64 x=0;
+	jbl_uint64 ji=10,y=0;
 	if(i>=thi->len)
 		return NULL;
-	unsigned char c,f;jbl_uint64 x=0;
 	for(f=0;((c=thi->s[i])<'0'||c>'9')&&i<thi->len;f=c=='-',++i);
 	for(x=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	*start=i;
@@ -776,7 +777,7 @@ jbl_var * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *sta
 		goto e;
 	if(thi->s[i]!='.'||i==thi->len)
 		return (f?jbl_Vint_set(NULL,-x):jbl_Vuint_set(NULL,x));
-	jbl_uint64 ji=10,y;++i;
+	++i;
 	for(c=thi->s[i],y=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;y=(y<<3)+(y<<1)+c-'0',ji=(ji<<3)+(ji<<1),++i);
 	*start=i;
 	if(thi->s[i]=='e')

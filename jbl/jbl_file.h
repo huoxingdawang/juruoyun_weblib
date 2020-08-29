@@ -51,7 +51,7 @@ jbl_file *			jbl_file_copy						(jbl_file *that);
 jbl_file *			jbl_file_open						(jbl_file *this,jbl_string * dir,jbl_file_handle_type type);
 jbl_file *			jbl_file_open_chars					(jbl_file *this,unsigned char * dir,jbl_file_handle_type type);
 jbl_file *			jbl_file_close						(jbl_file *this);
-jbl_file *			jbl_file_change_handle				(jbl_file *this,jbl_file_handle_type type);\
+jbl_file *			jbl_file_change_handle				(jbl_file *this,jbl_file_handle_type type);
 jbl_string *		jbl_file_read						(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_uint64 end);
 jbl_file *			jbl_file_write						(jbl_file * this,jbl_string*out);
 jbl_file *			jbl_file_set_offset					(jbl_file * this,jbl_uint64 start);

@@ -10,7 +10,7 @@
 #ifndef __JBL_STRING_CC_H
 #define __JBL_STRING_CC_H
 #include "jbl_string_config.h"
-#if JBL_STRING_CODE_CHANGE_ENABLE==1
+#if JBL_STRING_CC_ENABLE==1
 #include "jbl_string.h"
 /*******************************************************************************************/
 /*                            以下函数完成字符串编码转换扩展组件启动和停止                         */

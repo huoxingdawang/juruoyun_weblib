@@ -295,6 +295,13 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 		if(head->connection&JWL_HTTP_CONNECTION_UPGRADE		){if(f)jbl_stream_push_chars(stream,UC", ");jbl_stream_push_chars(stream,UC connection[3]);f=1;}
 		rn();
 	}
+	if(head->connection==JWL_HTTP_CONNECTION_UPGRADE&&head->upgrade)
+	{
+		jbl_stream_push_chars(stream,UC"Upgrade: ");
+		char * upgrade[]={"","websocket"};
+		jbl_stream_push_chars(stream,UC upgrade[head->upgrade]);
+		rn();
+	}
 	if(head->etag&&jwl_http_head_is_response(head))
 		jbl_stream_push_chars(stream,UC"ETag: ")							,jbl_stream_push_string(stream,head->etag)				,rn();
 	if(head->etag&&jwl_http_head_is_request(head))
@@ -338,12 +345,6 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 	{
 		jbl_stream_push_chars(stream,UC"Server: "JWL_HTTP_RESPONSE_SERVER_NAME)														,rn();
 		jbl_stream_push_chars(stream,UC"Accept-Ranges: bytes")																		,rn();
-		if(head->connection==JWL_HTTP_CONNECTION_UPGRADE&&head->upgrade)
-		{
-			char * upgrade[]={"","websocket"};
-			jbl_stream_push_chars(stream,UC"Upgrade: ")							,jbl_stream_push_chars(stream,UC upgrade[head->upgrade])		,rn();
-		}
-			
 		if(head->filename)
 		{
 			jbl_stream_push_chars(stream,UC"Content-Disposition: attachment; filename=\"");

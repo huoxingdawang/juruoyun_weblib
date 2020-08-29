@@ -167,6 +167,7 @@ jbl_string*				jbl_string_view_put						(jbl_string* this,jbl_stream *out,jbl_ui
 /*******************************************************************************************/
 /*                            以下函数实现字符串的STREAM操作                             */
 /*******************************************************************************************/
+void jbl_string_update_stream_buf(jbl_stream* this);
 extern const 			jbl_stream_operater						jbl_stream_string_operators;											//string的流处理器
 jbl_stream *			jbl_string_stream_new					(jbl_string *str);														//新建一个字符串流(不进行复制操作)
 #define					jbl_string_stream_free(a)				jbl_stream_free(a)														//释放一个字符串流

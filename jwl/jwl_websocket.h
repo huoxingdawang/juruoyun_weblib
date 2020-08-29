@@ -24,7 +24,7 @@ typedef enum
 }jwl_websocket_status;
 jbl_string *	jwl_websocket_get_sec			(jwl_http_head* head,jbl_string *res);
 jwl_http_head *	jwl_websocket_set_response_head	(jwl_http_head* response,jwl_http_head* request);
-jbl_string *	jwl_websocket_get_head			(jbl_uint64 len,jbl_uint8 is_last,jwl_websocket_status opcode,jbl_string* head);
+jbl_string *	jwl_websocket_get_head			(jbl_uint64 len,jbl_uint8 is_last,jbl_uint8 need_mask,jwl_websocket_status opcode,jbl_string* head);
 jbl_string *	jwl_websocket_decode			(jbl_string* head);
 
 
@@ -42,7 +42,8 @@ extern			const jbl_stream_operater			jwl_stream_websocket_encode_operators;
 
 #define			jwl_websocket_decode_stream_finished(x)		(((jbl_stream*)jbl_refer_pull(x))->extra[0].u>=((jbl_stream*)jbl_refer_pull(x))->extra[1].u)
 #define			jwl_websocket_decode_stream_get_status(x)	(((jbl_stream*)jbl_refer_pull(x))->extra[2].c8[5]&0X0F)
-#define			jwl_websocket_encode_stream_set_opcode(x,y)	(((jbl_stream*)jbl_refer_pull(x))->extra[0].c8[1]=(y))
+#define			jwl_websocket_encode_stream_set_opcode(x,y)	(((jbl_stream*)jbl_refer_pull(x))->extra[0].c8[5]=(y))
+#define			jwl_websocket_encode_stream_set_mask(x,y)	(((jbl_stream*)jbl_refer_pull(x))->extra[0].c8[6]=(y))
 
 #endif
 

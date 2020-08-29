@@ -61,8 +61,9 @@ pl();
 				}
 				else if(jwl_websocket_decode_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_PING)
 				{
+pl();
 					jbl_log(UC "websocket ping");
-					jbl_string *head=jwl_websocket_get_head(0,1,JWL_WEBSOCKET_STATUS_PONG,NULL);
+					jbl_string *head=jwl_websocket_get_head(0,1,0,JWL_WEBSOCKET_STATUS_PONG,NULL);
 					jbl_stream_push_string(websocket_stream,head);
 					jbl_stream_do(websocket_stream,1);	
 					head=jbl_string_free(head);					
@@ -71,7 +72,8 @@ pl();
 						(jwl_websocket_decode_stream_get_status(websocket_stream)==JWL_WEBSOCKET_STATUS_BIN))
 				{
 //jbl_log(UC "%v",jbl_gc_minus(jbl_string_copy_as_var(get)));jbl_log_save();
-					jbl_string *res=jbl_string_add_chars(NULL,UC"Receive from ip:");
+					jbl_string *res=NULL;
+					res=jbl_string_add_chars(res,UC"Receive from ip:");
 					res=jwl_get_string_ip(jwl_socket_get_ip(client),res);
 					res=jbl_string_add_char(res,'(');
 					res=jwl_ip2region(jwl_socket_get_ip(client),res);
@@ -86,8 +88,8 @@ pl();
 					res=jbl_string_add_chars(res,UC"bytes intotal");
 					res=jbl_string_add_chars(res,UC" data:<br>");
 					res=jbl_string_add_string(res,get);
-					res=jbl_string_add_chars(res,UC"<br>ex:<br>");
-					res=jbl_rand_string(res,4096,UC jbl_rand_dict_small jbl_rand_dict_big jbl_rand_dict_number jbl_rand_dict_symbol);
+//					res=jbl_string_add_chars(res,UC"<br>ex:<br>");
+//					res=jbl_rand_string(res,4096,UC jbl_rand_dict_small jbl_rand_dict_big jbl_rand_dict_number jbl_rand_dict_symbol);
 					jwl_socket_poll_foreach(poll,i)
 						if(jwl_socket_get_payload(i->socket)==1)
 						{
@@ -104,8 +106,8 @@ pl();
 						}
 					res=jbl_string_free(res);
 				}
-				websocket_stream=jbl_stream_free(websocket_stream);
 				get=jbl_string_free(get);
+				websocket_stream=jbl_stream_free(websocket_stream);
 				client_stream=jbl_stream_free(client_stream);
 			}
 			else

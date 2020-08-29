@@ -71,3 +71,6 @@ ip2region:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region_maker.o examples$(H)ip2region_maker.c	
 	$(CC) $(BITS) -o exes$(H)ip2region tmp$(H)$(pre)ip2region.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)ip2region_maker tmp$(H)$(pre)ip2region_maker.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+websocket:
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)websocket_client.o examples$(H)websocket_client.c	
+	$(CC) $(BITS) -o exes$(H)websocket_client tmp$(H)$(pre)websocket_client.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

@@ -686,7 +686,7 @@ void __jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream* nxt=jbl_refer_pull(this->nxt);
-	jbl_string *str;this->data=jbl_string_extend_to(((jbl_string*)this->data),128,1,&str);jbl_string_hash_clear(str);
+	jbl_string *str;this->data=jbl_string_extend_to(((jbl_string*)this->data),128+this->en,1,&str);jbl_string_hash_clear(str);
 	str->len+=this->en;
 	this->buf=str->s+str->len;
 	this->size=str->size-str->len;

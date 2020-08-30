@@ -139,7 +139,7 @@ void jbl_stream_push_chars(jbl_stream* this,const unsigned char *str)
 	if(!str)return;
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull(this);
-	for(;*str;){for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en);jbl_stream_do(this,0);if(1==thi->stop)return;}
+	for(;*str;){for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en){}jbl_stream_do(this,0);if(1==thi->stop)return;}
 }
 void jbl_stream_push_uint_length(jbl_stream *this,jbl_uint64 in,jbl_uint8 len,char c)
 {
@@ -194,7 +194,7 @@ inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint
 	if(format)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
 	if(!this)typename=UC"null";
 	jbl_uint8 i=0;
-	for(;typename[i];){for(;typename[i]&&out->en<out->size;out->buf[out->en]=typename[i],++out->en,++i);jbl_stream_do(out,0);if(out->stop)return 1;}
+	for(;typename[i];){for(;typename[i]&&out->en<out->size;out->buf[out->en]=typename[i],++out->en,++i){}jbl_stream_do(out,0);if(out->stop)return 1;}
 	if(i<JBL_VIEW_NAME_LENGTH)
 		for(;i<JBL_VIEW_NAME_LENGTH;++i,jbl_stream_push_char(out,' '));
 #if JBL_VIEW_DISPLAY_VARNAME == 1

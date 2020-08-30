@@ -1,4 +1,10 @@
 #include "main.h"
+#include <setjmp.h>
+jmp_buf env;
+void stop()
+{
+	longjmp(env,1);
+}
 int main(int argc,char** argv)
 {
 	jbl_start();
@@ -56,13 +62,13 @@ int main(int argc,char** argv)
 	wbesocket_send_stream=jbl_stream_free(wbesocket_send_stream);
 	jbl_string_free(s1);
 	
-
+jbl_exception_add_exit_function(stop);	
 	jbl_stream * wbesocket_receive_stream=jwl_websocket_decode_stream_new();
 	jbl_string * get=jbl_string_new();
 	jbl_stream * get_stream=jbl_string_stream_new(jbl_refer(&get));
 	jbl_stream_connect(socket_stream,wbesocket_receive_stream);
 	jbl_stream_connect(wbesocket_receive_stream,get_stream);
-	while(!jwl_socket_closed(socket))
+	while(!jwl_socket_closed(socket)&&!setjmp(env))
 	{
 		jbl_stream_do(socket_stream,jbl_stream_force);
 		if(wbesocket_receive_stream->stop)

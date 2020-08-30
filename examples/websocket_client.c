@@ -65,10 +65,13 @@ int main(int argc,char** argv)
 	while(!jwl_socket_closed(socket))
 	{
 		jbl_stream_do(socket_stream,jbl_stream_force);
-		jbl_string_view(get);
-		get=jbl_string_clear(get);
-		jbl_string_update_stream_buf(get_stream);
-		wbesocket_receive_stream->stop=0;
+		if(wbesocket_receive_stream->stop)
+		{
+			jbl_string_view(get);
+			get=jbl_string_clear(get);pf();
+			jbl_string_update_stream_buf(get_stream);
+			wbesocket_receive_stream->stop=0;
+		}
 	}
 	get_stream=jbl_stream_free(get_stream);
 	get=jbl_string_free(get);

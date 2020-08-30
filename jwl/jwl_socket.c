@@ -261,7 +261,7 @@ static void __jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	{
 		while(socket->handle!=-1)
 		{
-			if(nxt->stop)return;
+			jbl_stream_do(nxt,0);if(nxt->stop)return;
 			jbl_stream_buf_size_type len=nxt->size-nxt->en;
 			int j;
 			for(jbl_uint8 i=0;(socket->handle!=-1)&&(j=recv(socket->handle,(char*)nxt->buf+nxt->en,len,0))<=0;++i,jbl_log(UC "Receive failed\terrno:%d retrying %d",errno,i))
@@ -285,7 +285,6 @@ static void __jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 				}
 			jbl_log(UC "Receive success,data length:%d",j);			
 			nxt->en+=j;
-			jbl_stream_do(nxt,0);if(nxt->stop)return;
 		}
 		jbl_stream_do(nxt,flags);	
 	}

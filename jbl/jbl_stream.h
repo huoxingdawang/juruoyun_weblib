@@ -55,6 +55,7 @@ jbl_stream *	jbl_stream_new						(const jbl_stream_operater *op,void *data,jbl_s
 jbl_stream * 	jbl_stream_init						(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
 jbl_stream * 	jbl_stream_copy						(jbl_stream* this);
 jbl_stream * 	jbl_stream_free						(jbl_stream* this);
+const jbl_stream_operater * jbl_stream_get_ops(jbl_stream* this);
 void			jbl_stream_do						(jbl_stream* this,jbl_uint8 flag);
 #define			jbl_stream_caculate_size(y)			((sizeof(jbl_stream))+(sizeof(jbl_stream_extra_struct)*(y)))
 jbl_stream *	jbl_stream_connect					(jbl_stream* this,jbl_stream* next);

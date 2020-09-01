@@ -105,10 +105,14 @@ jbl_stream * jbl_stream_copy(jbl_stream* this)
 	return that;
 */
 }
+inline const jbl_stream_operater *jbl_stream_get_ops(jbl_stream* this)
+{
+	if(!this)return NULL;
+	return ((jbl_stream*)jbl_refer_pull(this))->op;
+}
 void jbl_stream_do(jbl_stream* this,jbl_uint8 flag)
 {
-	if(!this)return;
-	void  (*op)(jbl_stream*,jbl_uint8)=this->op->op;
+	void  (*op)(jbl_stream*,jbl_uint8)=jbl_stream_get_ops(this)->op;
 	if(!op)return;
 	op(this,flag);
 }

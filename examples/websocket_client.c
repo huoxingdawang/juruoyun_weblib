@@ -1,10 +1,7 @@
 #include "main.h"
 #include <setjmp.h>
-jmp_buf env;
-void stop()
-{
-	longjmp(env,1);
-}
+jmp_buf env,env2;
+void stop(){if(!setjmp(env2))longjmp(env,1);}
 int main(int argc,char** argv)
 {
 	jbl_start();
@@ -51,16 +48,21 @@ int main(int argc,char** argv)
 	jwl_websocket_encode_stream_set_opcode(wbesocket_send_stream,JWL_WEBSOCKET_STATUS_BIN);
 	jbl_stream_connect(wbesocket_send_stream,socket_stream);
 	
-	jbl_string * s1=jbl_string_add_chars(NULL,UC"");
-	s1=jbl_rand_string(s1,128,UC jbl_rand_dict_small jbl_rand_dict_big);
-	jbl_string_view(s1);
-	jbl_stream_push_string(wbesocket_send_stream,s1);
-	jbl_stream_do(wbesocket_send_stream,jbl_stream_force);	
-	wbesocket_send_stream->stop=0;
+	jbl_string * s1=jbl_string_new();
 
-	
-	wbesocket_send_stream=jbl_stream_free(wbesocket_send_stream);
+	for(jbl_uint8 i=0;i<128;++i)
+	{
+		s1=jbl_string_clear(s1);
+		s1=jbl_rand_string(s1,128,UC jbl_rand_dict_small jbl_rand_dict_big);
+		jbl_string_view(s1);pf();
+		jbl_stream_push_string(wbesocket_send_stream,s1);
+		jbl_stream_do(wbesocket_send_stream,jbl_stream_force);
+		wbesocket_send_stream->stop=0;
+	}
 	jbl_string_free(s1);
+	jbl_stream_do(socket_stream,jbl_stream_force);	
+	wbesocket_send_stream=jbl_stream_free(wbesocket_send_stream);
+	
 	
 jbl_exception_add_exit_function(stop);	
 	jbl_stream * wbesocket_receive_stream=jwl_websocket_decode_stream_new();
@@ -68,24 +70,24 @@ jbl_exception_add_exit_function(stop);
 	jbl_stream * get_stream=jbl_string_stream_new(jbl_refer(&get));
 	jbl_stream_connect(socket_stream,wbesocket_receive_stream);
 	jbl_stream_connect(wbesocket_receive_stream,get_stream);
-	while(!jwl_socket_closed(socket)&&!setjmp(env))
+	jbl_uint8 _=0;
+	while(!jwl_socket_closed(socket)&&!(_=setjmp(env)))
 	{
-		jbl_stream_do(socket_stream,jbl_stream_force);
-		if(wbesocket_receive_stream->stop)
+		do
 		{
-			jbl_string_view(get);
-			get=jbl_string_clear(get);pf();
-			jbl_string_update_stream_buf(get_stream);
 			wbesocket_receive_stream->stop=0;
-		}
+			get=jbl_string_clear(get);
+			jbl_string_update_stream_buf(get_stream);
+			do{jbl_stream_do(socket_stream,jbl_stream_force);}while((socket_stream->en||wbesocket_receive_stream->en)&&(!wbesocket_receive_stream->stop));
+			jbl_string_view(get);pf();
+		}while((socket_stream->en||wbesocket_receive_stream->en)&&(wbesocket_receive_stream->stop));
 	}
 	get_stream=jbl_stream_free(get_stream);
 	get=jbl_string_free(get);
 	wbesocket_receive_stream=jbl_stream_free(wbesocket_receive_stream);
-
-
 	socket_stream=jbl_stream_free(socket_stream);
 	socket=jwl_socket_free(socket);
+	if(_)longjmp(env2,1);
 
 
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");

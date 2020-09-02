@@ -186,6 +186,7 @@ jwl/jwl_ying		:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ying.o       jwl$(H)jwl_ying.c      $(JWL_EXLIB)
 jwl/jwl_socket		:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket.o     jwl$(H)jwl_socket.c    $(JWL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket_poll.o     jwl$(H)jwl_socket_poll.c    $(JWL_EXLIB)
 jwl/jwl_http		:
 ifeq ($(system),linux)
 ifeq ($(findstring jwl,$(complain_re2c)),jwl)

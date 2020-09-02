@@ -155,7 +155,7 @@ backup:;
 		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}
 	if(flags&jbl_stream_force)
-		this->stop=1,jbl_stream_do(nxt,flags);
+		this->stop=1,jbl_stream_do(nxt,0);
 }
 static void __jwl_websocket_decode_operator(jbl_stream* this,jbl_uint8 flags)
 {
@@ -164,14 +164,15 @@ static void __jwl_websocket_decode_operator(jbl_stream* this,jbl_uint8 flags)
 	jbl_stream *nxt=jbl_refer_pull(this->nxt);
 	if(nxt&&(!this->stop)&&this->en)
 	{
+start:;
 		jbl_stream_buf_size_type i=0;
 		if(this->extra[2].c8[4]==0)//第一帧
 		{
-			if((i=__jwl_websocket_get_data_start(this->buf))>=this->en)return;
+			if((i=__jwl_websocket_get_data_start(this->buf))>this->en){i=0;goto backup;}
 			if((this->buf[0]&0XF))	this->extra[2].c8[5]=this->buf[0];
 			else					this->extra[2].c8[5]=(this->extra[2].c8[5]&0X0F)|(this->buf[0]&0XF0);
-			if((this->extra[2].c8[5]&0X0F)==JWL_WEBSOCKET_STATUS_CLOSE){this->extra[0].u=this->extra[1].u=0;goto backup;}
-			if((this->extra[2].c8[5]&0X0F)==JWL_WEBSOCKET_STATUS_PING){this->extra[0].u=this->extra[1].u=0;goto backup;}
+			if((this->extra[2].c8[5]&0X0F)==JWL_WEBSOCKET_STATUS_CLOSE){this->extra[0].u=this->extra[1].u=0;this->stop=1;goto backup;}
+			if((this->extra[2].c8[5]&0X0F)==JWL_WEBSOCKET_STATUS_PING){this->extra[0].u=this->extra[1].u=0;this->stop=1;goto backup;}
 			this->extra[0].u=0;
 			this->extra[1].u=__jwl_websocket_get_length(this->buf);
 			this->extra[2].c8[4]=1;
@@ -211,8 +212,9 @@ end:;
 				jbl_stream_do(nxt,flags);
 				goto backup;
 			}
+			jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
+			goto start;
 		}
-		jbl_stream_do(nxt,0);
 backup:;
 		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}

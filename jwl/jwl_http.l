@@ -535,7 +535,7 @@ jwl_http_head* jwl_http_head_decode(jbl_string *buf,jbl_string_size_type *start)
 jbl_stream *jwl_http_encode_stream_new(jwl_http_head* head)
 {
 	if(!head)jbl_exception("NULL POINTER");
-	return jbl_stream_new(&jwl_http_encode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH,NULL,1);
+	return jbl_stream_new(&jwl_http_encode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH,NULL,2);
 }
 jbl_stream *jwl_http_decode_stream_new(jwl_http_head* head)
 {
@@ -546,7 +546,7 @@ jbl_stream *jwl_http_decode_stream_new(jwl_http_head* head)
 jbl_var *jwl_http_encode_Vstream_new(jwl_http_head* head)
 {
 	if(!head)jbl_exception("NULL POINTER");
-	return jbl_Vstream_new(&jwl_http_encode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH,NULL,1);
+	return jbl_Vstream_new(&jwl_http_encode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH,NULL,2);
 }
 jbl_var *jwl_http_decode_Vstream_new(jwl_http_head* head)
 {
@@ -572,12 +572,21 @@ static void __jwl_http_encode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 			jbl_memory_copy(nxt->buf+nxt->en,this->buf+i,len);
 			i+=len;
 			nxt->en+=len;
+			this->extra[1].u+=len;
 			if(head->tren&JWL_HTTP_TREN_CHUNKED)jbl_stream_push_char(nxt,'\r'),jbl_stream_push_char(nxt,'\n');
+			if((!(head->tren&JWL_HTTP_TREN_CHUNKED))&&(this->extra[1].u==head->len))goto pushf;
 			jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;
 		}
-		if((flags&jbl_stream_force)&&(head->tren&JWL_HTTP_TREN_CHUNKED))jbl_stream_push_chars(nxt,UC"0\r\n\r\n");
-		if(flags&jbl_stream_force)this->extra[0].c8[0]=0;
-		jbl_stream_do(nxt,flags);
+		if((!(head->tren&JWL_HTTP_TREN_CHUNKED))&&(this->extra[1].u==head->len))goto pushf;
+		if((head->tren&JWL_HTTP_TREN_CHUNKED)&&(flags&jbl_stream_force))
+		{
+			jbl_stream_push_chars(nxt,UC"0\r\n\r\n");
+pushf:;			
+			jbl_stream_do(nxt,0);
+			this->stop=1;
+			this->extra[0].c8[0]=0,this->extra[1].u=0;
+			goto backup;
+		}
 backup:;
 		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}
@@ -612,10 +621,10 @@ start:;
 		{
 			if(head->tren&JWL_HTTP_TREN_CHUNKED)//读chunk的头
 			{
-				if((i+2>=this->en))return;
+				if((i+2>=this->en))goto backup;
 				if(this->extra[0].c8[1]){if(this->buf[i]!='\r'){jbl_exception("ERROR");}++i;}
 				if(this->extra[0].c8[1]){if(this->buf[i]!='\n'){jbl_exception("ERROR");}++i;}
-				if((i+3>=this->en))return;
+				if((i+3>=this->en))goto backup;
 				jbl_string *s1=jbl_string_add_const_length(NULL,this->buf,this->en);
 				this->extra[1].u=jbl_string_get_hex_start(s1,&i);
 				s1=jbl_string_free(s1);
@@ -626,7 +635,7 @@ start:;
 				if(!this->extra[1].u)//最后一包
 				{
 					this->stop=1;
-					jbl_stream_do(nxt,flags);
+					jbl_stream_do(nxt,jbl_stream_force);
 					this->extra[0].c8[0]=0;
 					goto backup;
 				}
@@ -654,7 +663,7 @@ start:;
 				}
 				else
 				{
-					jbl_stream_do(nxt,flags);
+					jbl_stream_do(nxt,jbl_stream_force);
 					this->stop=1;
 					this->extra[0].c8[0]=0;
 					goto backup;
@@ -664,6 +673,7 @@ start:;
 backup:;
 		jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 	}
+	else this->stop=1;
 }
 jbl_stream_operators_new(jwl_http_decode_stream_operaters,__jwl_http_decode_stream_operater,jwl_http_head_free,__jwl_http_decode_stream_usf);
 jbl_stream_operators_new(jwl_http_encode_stream_operaters,__jwl_http_encode_stream_operater,jwl_http_head_free,NULL);
@@ -700,6 +710,7 @@ jwl_http_head* jwl_http_head_view_put(jwl_http_head* this,jbl_stream *out,jbl_ui
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"filename     :");jbl_stream_push_string(out,thi->filename)										;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"user agent   :");jbl_stream_push_string(out,thi->ua)											;jbl_stream_push_char(out,'\n');	
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"referer      :");jbl_stream_push_string(out,thi->referer)										;jbl_stream_push_char(out,'\n');
+	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"url          :");jbl_stream_push_string(out,thi->url)											;jbl_stream_push_char(out,'\n');
 	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j);	jbl_stream_push_chars(out,UC"connection   :");
 	if(!thi->connection)
 		jbl_stream_push_chars(out,UC connection	[0]);

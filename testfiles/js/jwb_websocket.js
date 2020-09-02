@@ -13,21 +13,18 @@ jwb.websocket = new function()
 	var error=[];
 	var send_buf=[];
 	this.status=0;
-	var cnt=0;
 	if(true||typeof SharedWorker=='undefined')
 	{
 		var start=()=>
 		{
 			if(this.stop/*||jry_wb_login_user==undefined||jry_wb_login_user.id<=0||jry_wb_login_user.id==''*/)
 				return;
-			if(socket!==null)
-				socket.close(),socket=null;
+			if(socket!==null)return socket.close();
 			socket=new WebSocket(jwb.info.ws.url);
 			socket.onopen=(evt)=>
 			{
 				onstart();
 				this.status=socket.readyState;
-				cnt=0;
 			};
 			socket.onmessage=(evt)=>
 			{
@@ -43,14 +40,12 @@ jwb.websocket = new function()
 			{
 				this.stop=false;
 				this.status=socket.readyState;
+				socket=null;
 				onclose();
-				if(cnt++>10)
-					setTimeout(()=>
-					{
-						start();
-					},2000);
-				else
+				setTimeout(()=>
+				{
 					start();
+				},1000);
 			};
 		};
 	}

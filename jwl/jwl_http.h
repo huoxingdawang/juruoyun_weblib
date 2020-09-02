@@ -181,6 +181,8 @@ extern					const jbl_stream_operater			jwl_http_encode_stream_operaters;
 extern					const jbl_stream_operater			jwl_http_decode_stream_operaters;
 jbl_stream *			jwl_http_encode_stream_new			(jwl_http_head* head);
 jbl_stream *			jwl_http_decode_stream_new			(jwl_http_head* head);
+#define					jbl_stream_is_jwl_http_encode_stream(x)		(jbl_stream_get_ops(x)==&jwl_http_encode_stream_operaters)
+#define					jbl_stream_is_jwl_http_decode_stream(x)		(jbl_stream_get_ops(x)==&jwl_http_decode_stream_operaters)
 #if JBL_VAR_ENABLE==1
 jbl_var *				jwl_http_encode_Vstream_new			(jwl_http_head* head);
 jbl_var *				jwl_http_decode_Vstream_new			(jwl_http_head* head);

@@ -56,26 +56,28 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 	va_start(arg_ptr,s);
 	for(;*s;)
 	{
-		jbl_var_scanner_key key=jbl_var_scanner(s,&s);
+		jbl_scanner_key key=jbl_scanner(s,&s);
 		switch(key)
 		{
-			case JBL_VAR_SCANNER_KEY_UNDEFINED				:							;break;
-			case JBL_VAR_SCANNER_KEY_END					:goto finish;				;break;
-			case JBL_VAR_SCANNER_KEY_INT					:__jbl_logs.p[__jbl_logs.pcnt].i=va_arg(arg_ptr,jbl_int64)	;++__jbl_logs.pcnt	;break;
-			case JBL_VAR_SCANNER_KEY_UINT					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
-			case JBL_VAR_SCANNER_KEY_DOUBLE					:__jbl_logs.p[__jbl_logs.pcnt].d=va_arg(arg_ptr,double)		;++__jbl_logs.pcnt	;break;
-			case JBL_VAR_SCANNER_KEY_CHAR					:__jbl_logs.p[__jbl_logs.pcnt].c=va_arg(arg_ptr,int)		;++__jbl_logs.pcnt	;break;//类型提升
-			case JBL_VAR_SCANNER_KEY_CHARS					:__jbl_logs.p[__jbl_logs.pcnt].s=va_arg(arg_ptr,char *)		;++__jbl_logs.pcnt	;break;
-			case JBL_VAR_SCANNER_KEY_HEX					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
-			case JBL_VAR_SCANNER_KEY_VAR					:__jbl_logs.p[__jbl_logs.pcnt].v=jbl_var_copy(va_arg(arg_ptr,jbl_var*))	;++__jbl_logs.pcnt	;break;
-			case JBL_VAR_SCANNER_KEY_JSON					:__jbl_logs.p[__jbl_logs.pcnt].v=jbl_var_copy(va_arg(arg_ptr,jbl_var*))	;++__jbl_logs.pcnt	;break;
+			case JBL_SCANNER_KEY_UNDEFINED				:							;break;
+			case JBL_SCANNER_KEY_END					:goto finish;				;break;
+			case JBL_SCANNER_KEY_INT					:__jbl_logs.p[__jbl_logs.pcnt].i=va_arg(arg_ptr,jbl_int64)	;++__jbl_logs.pcnt	;break;
+			case JBL_SCANNER_KEY_UINT					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
+			case JBL_SCANNER_KEY_DOUBLE					:__jbl_logs.p[__jbl_logs.pcnt].d=va_arg(arg_ptr,double)		;++__jbl_logs.pcnt	;break;
+			case JBL_SCANNER_KEY_CHAR					:__jbl_logs.p[__jbl_logs.pcnt].c=va_arg(arg_ptr,int)		;++__jbl_logs.pcnt	;break;//类型提升
+			case JBL_SCANNER_KEY_CHARS					:__jbl_logs.p[__jbl_logs.pcnt].s=va_arg(arg_ptr,char *)		;++__jbl_logs.pcnt	;break;
+			case JBL_SCANNER_KEY_HEX					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
+#if JBL_VAR_ENABLE == 1
+			case JBL_SCANNER_KEY_VAR					:__jbl_logs.p[__jbl_logs.pcnt].v=jbl_var_copy(va_arg(arg_ptr,void*))	;++__jbl_logs.pcnt	;break;
+			case JBL_SCANNER_KEY_JSON					:__jbl_logs.p[__jbl_logs.pcnt].v=jbl_var_copy(va_arg(arg_ptr,void*))	;++__jbl_logs.pcnt	;break;
+#endif
 		}
 	}
 	finish:;
 	va_end(arg_ptr); 
 #if JBL_TIME_ENABLE==1
 	jbl_time_now(&__jbl_logs.d[__jbl_logs.cnt].t);
-#endif	
+#endif
 	++__jbl_logs.cnt;
 	if((__jbl_logs.cnt+10)>=JBL_LOG_MAX_LENGTH)
 		jbl_log_save();
@@ -107,19 +109,25 @@ void jbl_log_save()
 		
 		for(unsigned char *s=__jbl_logs.d[i].chars;*s;)
 		{
-			jbl_var_scanner_key key=jbl_var_scanner(s,&s);
+			jbl_scanner_key key=jbl_scanner(s,&s);
 			switch(key)
 			{
-				case JBL_VAR_SCANNER_KEY_UNDEFINED				:jbl_stream_push_char(__jbl_logs.fs,*(s-1))									;break;
-				case JBL_VAR_SCANNER_KEY_END					:goto finish																;break;
-				case JBL_VAR_SCANNER_KEY_INT					:jbl_stream_push_int	(__jbl_logs.fs,__jbl_logs.p[j].i)			;++j	;break;
-				case JBL_VAR_SCANNER_KEY_UINT					:jbl_stream_push_uint	(__jbl_logs.fs,__jbl_logs.p[j].u)			;++j	;break;
-				case JBL_VAR_SCANNER_KEY_DOUBLE					:jbl_stream_push_double	(__jbl_logs.fs,__jbl_logs.p[j].d)			;++j	;break;
-				case JBL_VAR_SCANNER_KEY_CHAR					:jbl_stream_push_char	(__jbl_logs.fs,__jbl_logs.p[j].c)			;++j	;break;
-				case JBL_VAR_SCANNER_KEY_HEX					:jbl_stream_push_hex	(__jbl_logs.fs,__jbl_logs.p[j].u)			;++j	;break;
-				case JBL_VAR_SCANNER_KEY_CHARS					:jbl_stream_push_chars	(__jbl_logs.fs,UC __jbl_logs.p[j].s)		;++j	;break;
-				case JBL_VAR_SCANNER_KEY_VAR					:jbl_stream_push_char	(__jbl_logs.fs,'\n');jbl_var_view_put(__jbl_logs.p[j].v,__jbl_logs.fs,1,JBL_VIEW_DEFAULT_TABS,0,NULL,NULL,NULL)	;__jbl_logs.p[j].v=jbl_var_free(__jbl_logs.p[j].v)	;++j	;break;
-				case JBL_VAR_SCANNER_KEY_JSON					:jbl_var_json_put		(__jbl_logs.p[j].v,__jbl_logs.fs,0,0)						;__jbl_logs.p[j].v=jbl_var_free(__jbl_logs.p[j].v)	;++j	;break;
+				case JBL_SCANNER_KEY_UNDEFINED				:jbl_stream_push_char(__jbl_logs.fs,*(s-1))									;break;
+				case JBL_SCANNER_KEY_END					:goto finish																;break;
+				case JBL_SCANNER_KEY_INT					:jbl_stream_push_int	(__jbl_logs.fs,__jbl_logs.p[j].i)			;++j	;break;
+				case JBL_SCANNER_KEY_UINT					:jbl_stream_push_uint	(__jbl_logs.fs,__jbl_logs.p[j].u)			;++j	;break;
+				case JBL_SCANNER_KEY_DOUBLE					:jbl_stream_push_double	(__jbl_logs.fs,__jbl_logs.p[j].d)			;++j	;break;
+				case JBL_SCANNER_KEY_CHAR					:jbl_stream_push_char	(__jbl_logs.fs,__jbl_logs.p[j].c)			;++j	;break;
+				case JBL_SCANNER_KEY_HEX					:jbl_stream_push_hex	(__jbl_logs.fs,__jbl_logs.p[j].u)			;++j	;break;
+				case JBL_SCANNER_KEY_CHARS					:jbl_stream_push_chars	(__jbl_logs.fs,UC __jbl_logs.p[j].s)		;++j	;break;
+#if JBL_VAR_ENABLE == 1
+				case JBL_SCANNER_KEY_VAR					:jbl_stream_push_char	(__jbl_logs.fs,'\n');jbl_var_view_put(__jbl_logs.p[j].v,__jbl_logs.fs,1,JBL_VIEW_DEFAULT_TABS,0,NULL,NULL,NULL)	;__jbl_logs.p[j].v=jbl_var_free(__jbl_logs.p[j].v)	;++j	;break;
+				case JBL_SCANNER_KEY_JSON					:
+#if JBL_JSON_ENABLE == 1
+				jbl_var_json_put		(__jbl_logs.p[j].v,__jbl_logs.fs,0,0);
+#endif	
+				__jbl_logs.p[j].v=jbl_var_free(__jbl_logs.p[j].v)	;++j	;break;
+#endif	
 			}
 		}
 		finish:;

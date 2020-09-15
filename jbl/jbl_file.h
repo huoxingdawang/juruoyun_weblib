@@ -15,6 +15,7 @@
 #include "jbl_time.h"
 #include "jbl_string.h"
 #include "jbl_file_ct.h"
+#include "jbl_var.h"
 typedef enum
 {
 	JBL_FILE_CLOSE,
@@ -26,6 +27,9 @@ typedef enum
 typedef struct __jbl_file
 {
 	jbl_gc					gc;		//gc结构
+#if JBL_VAR_ENABLE==1
+	jbl_var_operators *		var_ops;
+#endif
 	jbl_string *			dir;
 #if JBL_FILE_CACHE_GB2312NAME==1 && defined(_WIN32)
 	jbl_string *			dir_gb2312;
@@ -44,8 +48,8 @@ typedef struct __jbl_file
 	}status;
 }jbl_file;
 typedef struct __jbl_file jbl_file;
+jbl_var_operators_extern(jbl_file_operators);
 jbl_file *			jbl_file_new						();
-jbl_file *			jbl_file_init						(jbl_file* this);
 jbl_file *			jbl_file_free						(jbl_file *this);
 jbl_file *			jbl_file_copy						(jbl_file *that);
 jbl_file *			jbl_file_open						(jbl_file *this,jbl_string * dir,jbl_file_handle_type type);
@@ -72,9 +76,6 @@ jbl_file*			jbl_file_view_put					(jbl_file* this,jbl_stream *out,jbl_uint8 form
 #define				jbl_file_view(x)					jbl_file_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个字符串
 #endif
 jbl_stream *		jbl_file_stream_new					(jbl_file *file);
-#if JBL_VAR_ENABLE==1
-jbl_var *			jbl_file_Vstream_new				(jbl_file *file);
-#endif
 extern const 		jbl_stream_operater					jbl_file_stream_operators;											//string的流处理器
 #define				jbl_file_stream_set_offset(x,l)		(((jbl_stream*)jbl_refer_pull(x))->extra[0].u=l)
 #define				jbl_file_stream_set_end(x,l)		(((jbl_stream*)jbl_refer_pull(x))->extra[1].u=l)

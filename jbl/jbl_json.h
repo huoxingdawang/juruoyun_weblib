@@ -7,12 +7,20 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JBL_YING_CONFIG_H
-#define __JBL_YING_CONFIG_H
-#include "jbl_config.h"
-#if JBL_YING_ENABLE==1
-#define JBL_DOUBLE_PRECISION 0.00001
-#define JBL_INLINE
+#ifndef __JBL_JSON_H
+#define __JBL_JSON_H
+#include "jbl_json_config.h"
+#if JBL_JSON_ENABLE==1
+#include "jbl_stream.h"
+
+#if JBL_STREAM_ENABLE==1
+extern					const jbl_stream_operater			jbl_json_decode_stream_operaters;
+jbl_stream *			jbl_json_decode_stream_new			();
+void *					jbl_json_decode_stream_var			(jbl_stream* this);
+#endif
+
+
+
 
 
 

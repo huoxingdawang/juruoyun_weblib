@@ -24,9 +24,7 @@
 #define JBL_STRING_USE_CACHE						1		//是否使用缓冲,依赖于ht的sys模式
 #define JBL_STRING_USE_CACHE_WHEN_JSON_DECODE		1		//JSONdecode时是否使用缓冲
 #define JBL_STRING_CACHE_MAX_LENGTH					128		//参与缓冲字符串最大长度
-#define JBL_STRING_CACHE_UNVAR_ONLY					1		//只缓冲非var
-#define JBL_STRING_CACHE_NEW_VAR					1		//如果可能，新建字符串时使用var类型
-#define JBL_STRING_CACHE_DEBUG						0		//调试模式
+#define JBL_STRING_CACHE_DEBUG						1		//调试模式
 
 #define JBL_STRING_CC_ENABLE						1		//jbl_string_cc.c
 #define JBL_STRING_CC_DEBUG							1		//jbl_string_cc.c

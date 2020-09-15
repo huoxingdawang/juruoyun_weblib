@@ -55,20 +55,10 @@ jbl_aes_128_key* jbl_aes_128_key_set(jbl_aes_128_key *this,unsigned char* key)
 {
 	if(!this)this=jbl_aes_128_key_new();
 	jbl_reference *ref=NULL;jbl_aes_128_key *thi=jbl_refer_pull_keep_father(this,&ref);
-	jbl_uint8 is_multiple=(jbl_gc_refcnt(thi)!=1);
-#if JBL_VAR_ENABLE==1
-	jbl_uint8 is_var=jbl_gc_is_var(thi);
-	if(jbl_gc_is_pvar(thi))thi=((jbl_reference*)thi)->ptr,is_multiple|=(jbl_gc_refcnt(thi)!=1);
-#endif
-	if(is_multiple)
+	if(jbl_gc_refcnt(thi)!=1)
 	{
 		jbl_aes_128_key_free(thi);
-#if JBL_VAR_ENABLE==1
-		if(is_var)
-			jbl_aes_128_key_free(this),thi=jbl_Vaes_128_key(jbl_Vaes_128_key_new());
-		else
-#endif
-			jbl_aes_128_key_free(this),thi=jbl_aes_128_key_new();
+		jbl_aes_128_key_free(this),thi=jbl_aes_128_key_new();
 	}
 	jbl_uint8 rc[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36};
 	for(jbl_uint8 r=0;r<4;r++)
@@ -107,7 +97,7 @@ const jbl_uint8	__jbl_aes_128_ffmul_0x0d[] ={0,13,26,23,52,57,46,35,104,101,114,
 const jbl_uint8	__jbl_aes_128_ffmul_0x09[] ={0,9,18,27,36,45,54,63,72,65,90,83,108,101,126,119,144,153,130,139,180,189,166,175,216,209,202,195,252,245,238,231,59,50,41,32,31,22,13,4,115,122,97,104,87,94,69,76,171,162,185,176,143,134,157,148,227,234,241,248,199,206,213,220,118,127,100,109,82,91,64,73,62,55,44,37,26,19,8,1,230,239,244,253,194,203,208,217,174,167,188,181,138,131,152,145,77,68,95,86,105,96,123,114,5,12,23,30,33,40,51,58,221,212,207,198,249,240,235,226,149,156,135,142,177,184,163,170,236,229,254,247,200,193,218,211,164,173,182,191,128,137,146,155,124,117,110,103,88,81,74,67,52,61,38,47,16,25,2,11,215,222,197,204,243,250,225,232,159,150,141,132,187,178,169,160,71,78,85,92,99,106,113,120,15,6,29,20,43,34,57,48,154,147,136,129,190,183,172,165,210,219,192,201,246,255,228,237,10,3,24,17,46,39,60,53,66,75,80,89,102,111,116,125,161,168,179,186,133,140,151,158,233,224,251,242,205,196,223,214,49,56,35,42,21,28,7,14,121,112,107,98,93,84,79,70};
 #else
 #define ffmul(x,y)	__jbl_aes_128_ffmul(x,y)
-inline jbl_uint8 __jbl_aes_128_ffmul(jbl_uint8 a,jbl_uint8 b)
+JBL_INLINE jbl_uint8 __jbl_aes_128_ffmul(jbl_uint8 a,jbl_uint8 b)
 {
 	jbl_uint8 bw[4];
 	jbl_uint8 res=0,aa=a;

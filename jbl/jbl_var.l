@@ -16,14 +16,14 @@
 #include "jbl_ll.h"
 #include "jbl_string.h"
 
-inline jbl_var * jbl_var_set_operators(jbl_var * this,const jbl_var_operators *ops)
+JBL_INLINE jbl_var * jbl_var_set_operators(jbl_var * this,const jbl_var_operators *ops)
 {
 	if(!jbl_gc_is_var((jbl_var_data*)this))
 		jbl_exception("VAR TYPE ERROR");
 	((jbl_var*)(((char*)this)-(sizeof(jbl_var))))->ops=ops;
 	return this;
 }
-inline const jbl_var_operators * jbl_var_get_operators(jbl_var * this)
+JBL_INLINE const jbl_var_operators * jbl_var_get_operators(jbl_var * this)
 {
 	if(!this)return NULL;
 	if(!jbl_gc_is_var((jbl_var_data*)this))
@@ -32,9 +32,9 @@ inline const jbl_var_operators * jbl_var_get_operators(jbl_var * this)
 }
 
 
-inline jbl_var * jbl_var_free(jbl_var * this){if(!this)return NULL;void*(*free)(void*)=jbl_var_get_operators(this)->free;if(free)return free(this);return NULL;}
-inline jbl_var * jbl_var_copy(jbl_var * this){if(!this)return NULL;void*(*copy)(void*)=jbl_var_get_operators(this)->copy;if(copy)return copy(this);return NULL;}
-inline char      jbl_var_space_ship(jbl_var * this,jbl_var * that){if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}char(*space_ship)(const void*,const void*)=jbl_var_get_operators(this)->space_ship;if(space_ship)return space_ship(this,that);return -1;}
+JBL_INLINE jbl_var * jbl_var_free(jbl_var * this){if(!this)return NULL;void*(*free)(void*)=jbl_var_get_operators(this)->free;if(free)return free(this);return NULL;}
+JBL_INLINE jbl_var * jbl_var_copy(jbl_var * this){if(!this)return NULL;void*(*copy)(void*)=jbl_var_get_operators(this)->copy;if(copy)return copy(this);return NULL;}
+JBL_INLINE char      jbl_var_space_ship(jbl_var * this,jbl_var * that){if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}char(*space_ship)(const void*,const void*)=jbl_var_get_operators(this)->space_ship;if(space_ship)return space_ship(this,that);return -1;}
 jbl_var *jbl_var_copy_as(void * that,const jbl_var_operators *ops)
 {
 	if(that==NULL)return NULL;
@@ -48,7 +48,7 @@ jbl_var *jbl_var_copy_as(void * that,const jbl_var_operators *ops)
 		jbl_gc_minus((jbl_reference*)data);	//出来的data ref_cnt一定是2
 		return (jbl_var*)(data);
 	}
-	jbl_reference *this=(jbl_reference*)((char*)(jbl_malloc((sizeof(jbl_reference))+(sizeof(jbl_var)))+(sizeof(jbl_var))));	
+	jbl_reference *this=(jbl_reference*)(((char*)(jbl_malloc((sizeof(jbl_reference))+(sizeof(jbl_var))))+(sizeof(jbl_var))));	
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数
 	jbl_gc_set_pvar(this);

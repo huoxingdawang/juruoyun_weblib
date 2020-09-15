@@ -99,7 +99,7 @@ void jbl_malloc_stop()
 /*******************************************************************************************/
 /*                            以下函数完成内存管理组件基本操作                           */
 /*******************************************************************************************/
-inline void* jbl_malloc(jbl_malloc_size_type size)
+JBL_INLINE void* jbl_malloc(jbl_malloc_size_type size)
 {
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!size)jbl_exception("MEMORY ERROR");
@@ -116,7 +116,7 @@ inline void* jbl_malloc(jbl_malloc_size_type size)
 #endif
 	return ptr;
 }
-inline jbl_malloc_size_type jbl_malloc_size(void* ptr)
+JBL_INLINE jbl_malloc_size_type jbl_malloc_size(void* ptr)
 {
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("NULL POINTER");	
@@ -169,7 +169,7 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 	return ptr2;
 #endif
 }
-inline void jbl_free(void * ptr)
+JBL_INLINE void jbl_free(void * ptr)
 {
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("NULL POINTER");	

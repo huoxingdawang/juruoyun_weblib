@@ -7,12 +7,11 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JBL_YING_CONFIG_H
-#define __JBL_YING_CONFIG_H
+#ifndef __JBL_JSON_CONFIG_H
+#define __JBL_JSON_CONFIG_H
 #include "jbl_config.h"
-#if JBL_YING_ENABLE==1
-#define JBL_DOUBLE_PRECISION 0.00001
-#define JBL_INLINE
+#if JBL_JSON_ENABLE==1
+#include "jbl_ying.h"
 
 
 

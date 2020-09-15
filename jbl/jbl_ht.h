@@ -12,7 +12,7 @@
 #include "jbl_ht_config.h"
 #if JBL_HT_ENABLE==1
 /*******************************************************************************************/
-/*                            依赖 jbl_gc jbl_malloc jbl_var jbl_ying                      */
+/*                            依赖 jbl_gc jbl_malloc void jbl_ying                      */
 /*                                 jbl_exception jbl_string                                */
 /*******************************************************************************************/
 #include "jbl_gc.h"
@@ -38,13 +38,16 @@ typedef struct __jbl_ht_data
 	jbl_string *			k;		//key值,在int类型作为key时为NULL
 	union
 	{
-		jbl_var *			v;		//载荷,当有sys标记时不按照var的格式处理
+		void *			v;		//载荷,当有sys标记时不按照var的格式处理
 		jbl_pointer_int		u;		//载荷,不能与v同时使用,当有sys标记时可以用来直接储存一个与当前系统位数相同的无符号整数
 	};
 }jbl_ht_data;						//蒟蒻云基础库hash表数据体结构
 typedef struct __jbl_ht
 {
 	jbl_gc					gc;		//gc结构
+#if JBL_VAR_ENABLE==1
+	jbl_var_operators *		var_ops;
+#endif
 	jbl_ht_size_type		size;	//当前已申请的空间
 	jbl_ht_size_type		len;	//当前长度
 	jbl_ht_size_type		nxt;	//当前最后一个元素所在的位置
@@ -53,15 +56,10 @@ typedef struct __jbl_ht
 /*******************************************************************************************/
 /*                            以下函实现哈希表基本操作                                   */
 /*******************************************************************************************/
-extern	const			jbl_var_operators			jbl_ht_operators;									//hash table 操作器
-jbl_ht  *				jbl_Vht						(jbl_var * this);									//以hash table德格式使用var
-#define					Vis_jbl_ht(x)				(jbl_var_get_operators(x)==&jbl_ht_operators)		//判断一个var是不是hash table 
+jbl_var_operators_extern(jbl_ht_operators);																//hash table 操作器
 jbl_ht  *				jbl_ht_new					();													//新建一个hash table
-jbl_var *				jbl_Vht_new					();													//以var形式新建一个hash table
-jbl_ht  *				jbl_ht_init					(jbl_ht *this);										//初始化一个hash table
 jbl_ht  *				jbl_ht_free					(jbl_ht *this);										//释放一个hash table
 jbl_ht  *				jbl_ht_copy					(jbl_ht *that);										//复制一个hash table
-#define					jbl_ht_copy_as_var(x)		jbl_var_copy_as(x,&jbl_ht_operators)				//复制为一个var
 #define					jbl_ht_extend(x,y)			jbl_ht_extend_to(x,y,1,NULL)
 jbl_ht  *				jbl_ht_extend_to			(jbl_ht *this,jbl_ht_size_type size,jbl_uint8 add,jbl_ht **pthi);				//把一个hash table扩展到size
 #define					jbl_ht_foreach(this,i)		for(jbl_ht_data *i=&((jbl_ht *)jbl_refer_pull(this))->data[0],*____i=&(((jbl_ht *)jbl_refer_pull(this)))->data[((jbl_ht *)jbl_refer_pull(this))->nxt];i!=____i;i++)if(i->v!=NULL)	//枚举一个hash table
@@ -69,10 +67,10 @@ jbl_ht  *				jbl_ht_rehash				(jbl_ht *this);										//重新hash一个hash ta
 /*******************************************************************************************/
 /*                            以下函实现哈希表插入操作                                   */
 /*******************************************************************************************/
-jbl_ht  *				jbl_ht_insert				(jbl_ht *this,jbl_string *k,jbl_var *v);			//插入一个var
-jbl_ht  *				jbl_ht_insert_chars			(jbl_ht *this,unsigned char *kk,jbl_var *v);		//以chars为key插入一个var
-jbl_ht  *				jbl_ht_insert_int			(jbl_ht *this,jbl_string_hash_type h,jbl_var *v);	//以int为key插入一个var
-jbl_ht *				jbl_ht_insert_force			(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,jbl_var *v);		//强制插入,忽略互斥性
+jbl_ht  *				jbl_ht_insert				(jbl_ht *this,jbl_string *k,void *v);				//插入一个var
+jbl_ht  *				jbl_ht_insert_chars			(jbl_ht *this,unsigned char *kk,void *v);			//以chars为key插入一个var
+jbl_ht  *				jbl_ht_insert_int			(jbl_ht *this,jbl_string_hash_type h,void *v);		//以int为key插入一个var
+jbl_ht *				jbl_ht_insert_force			(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,void *v);		//强制插入,忽略互斥性
 /*******************************************************************************************/
 /*                            以下函实现哈希表删除操作                                   */
 /*******************************************************************************************/
@@ -82,12 +80,12 @@ jbl_ht  *				jbl_ht_unset_int			(jbl_ht *this,jbl_string_hash_type h);				//以i
 /*******************************************************************************************/
 /*                            以下函实现哈希表获取操作                                   */
 /*******************************************************************************************/
-jbl_var *				jbl_htv						(jbl_ht_data *node);								//获取一个node的var
+void *					jbl_htv						(jbl_ht_data *node);								//获取一个node的var
 jbl_string * 			jbl_htk						(jbl_ht_data *node);								//获取一个node的key
 jbl_string_hash_type	jbl_hth						(jbl_ht_data *node);								//获取一个node的hash
-jbl_var *				jbl_ht_get					(const jbl_ht *this,jbl_string *k);					//获取一个var
-jbl_var *				jbl_ht_get_chars			(const jbl_ht *this,unsigned char *kk);				//以chars为key获取一个var
-jbl_var *				jbl_ht_get_int				(const jbl_ht *this,jbl_string_hash_type h);		//以chars为int获取一个var
+void *					jbl_ht_get					(const jbl_ht *this,jbl_string *k);					//获取一个var
+void *					jbl_ht_get_chars			(const jbl_ht *this,unsigned char *kk);				//以chars为key获取一个var
+void *					jbl_ht_get_int				(const jbl_ht *this,jbl_string_hash_type h);		//以chars为int获取一个var
 jbl_ht_data *			jbl_ht_get_ht_data			(const jbl_ht *this,jbl_string *k);					//获取一个ht_data
 jbl_ht_data *			jbl_ht_get_ht_data_chars	(const jbl_ht *this,const jbl_uint8 *chars);		//以chars为key获取一个ht_data
 jbl_ht_data *			jbl_ht_get_ht_data_int		(const jbl_ht *this,jbl_string_hash_type h);		//以int为key获取一个ht_data
@@ -125,7 +123,6 @@ jbl_ht *				jbl_ht_merge_ll				(jbl_ht *this,jbl_ll *that);						//合并一个l
 /*******************************************************************************************/
 #if JBL_JSON_ENABLE==1
 jbl_string *			jbl_ht_json_encode			(const jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON 编码
-jbl_ht*					jbl_ht_json_decode			(jbl_ht *this,jbl_string* in,jbl_string_size_type *start);	//JSON 解码
 #if JBL_STREAM_ENABLE==1
 void					jbl_ht_json_put				(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个hash table
 #endif

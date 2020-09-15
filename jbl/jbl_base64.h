@@ -17,11 +17,10 @@
 #include "jbl_exception.h"
 #include "jbl_ying.h"
 /*******************************************************************************************/
-/*                            联动jbl_stream jbl_string jbl_var                            */
+/*                            联动jbl_stream jbl_string                                    */
 /*******************************************************************************************/
 #include "jbl_string.h"
 #include "jbl_stream.h"
-#include "jbl_var.h"
 
 #if JBL_STRING_ENABLE==1
 /*******************************************************************************************/
@@ -39,10 +38,6 @@ extern			const jbl_stream_operater			jbl_stream_base64_encode_operators;						//
 extern			const jbl_stream_operater 			jbl_stream_base64_decode_operators;						//base64解密流处理器
 #define			jbl_stream_base64_encode_new()		jbl_stream_new(&jbl_stream_base64_encode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建base64加密流
 #define			jbl_stream_base64_decode_new()		jbl_stream_new(&jbl_stream_base64_decode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建base64解密流
-#if JBL_VAR_ENABLE == 1
-#define			jbl_Vstream_base64_encode_new()		jbl_Vstream_new(&jbl_stream_base64_encode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建AES128CBC加密流
-#define			jbl_Vstream_base64_decode_new()		jbl_Vstream_new(&jbl_stream_base64_decode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建AES128CBC解密流
-#endif
 
 #endif
 

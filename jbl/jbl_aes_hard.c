@@ -25,20 +25,10 @@ jbl_aes_128_key* jbl_aes_128_key_set(jbl_aes_128_key *this,unsigned char* key)
 {
 	if(!this)this=jbl_aes_128_key_new();
 	jbl_reference *ref=NULL;jbl_aes_128_key *thi=jbl_refer_pull_keep_father(this,&ref);
-	jbl_uint8 is_multiple=(jbl_gc_refcnt(thi)!=1);
-#if JBL_VAR_ENABLE==1
-	jbl_uint8 is_var=jbl_gc_is_var(thi);
-	if(jbl_gc_is_pvar(thi))thi=((jbl_reference*)thi)->ptr,is_multiple|=(jbl_gc_refcnt(thi)!=1);
-#endif
-	if(is_multiple)
+	if(jbl_gc_refcnt(thi)!=1)
 	{
 		jbl_aes_128_key_free(thi);
-#if JBL_VAR_ENABLE==1
-		if(is_var)
-			jbl_aes_128_key_free(this),thi=jbl_Vaes_128_key(jbl_Vaes_128_key_new());
-		else
-#endif
-			jbl_aes_128_key_free(this),thi=jbl_aes_128_key_new();
+		jbl_aes_128_key_free(this),thi=jbl_aes_128_key_new();
 	}
 	thi->key[0] =_mm_loadu_si128((const __m128i*) key);
 	thi->key[1] =__jbl_aes_128_key_exp(thi->key[0],0x01);

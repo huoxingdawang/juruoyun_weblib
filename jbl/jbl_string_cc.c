@@ -13,7 +13,7 @@
 //下面这两张表(__jbl_string_gtu_table,__jbl_string_gtu_table)来自fatfs cc936.c
 //需要注意的是,在二分计算有效长度的时候,需要/4,unicode 和 gb2312各占两个字节
 #if JBL_STRING_CC_INNER_DB_ENABLE==1
-#include "jbl_string_cc_table.c"
+#include "jbl_string_cc_table.h"
 static const jbl_uint32 __jbl_string_utg_table_len=(const jbl_uint32)((sizeof __jbl_string_utg_table)>>2)-1;//unicode 和 gb2312各占两个字节
 static const jbl_uint32 __jbl_string_gtu_table_len=(const jbl_uint32)((sizeof __jbl_string_gtu_table)>>2)-1;//unicode 和 gb2312各占两个字节
 #else

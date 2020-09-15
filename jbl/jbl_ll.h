@@ -34,11 +34,14 @@ typedef struct __jbl_ll_node
 {
 	struct __jbl_ll_node *	pre;	//上一个
 	struct __jbl_ll_node *	nxt;	//下一个
-	jbl_var *				v;		//载荷
+	void *				v;		//载荷
 }jbl_ll_node;
 typedef struct __jbl_ll
 {
 	jbl_gc				gc;			//gc结构
+#if JBL_VAR_ENABLE==1
+	jbl_var_operators *		var_ops;
+#endif
 	jbl_ll_node *		head;		//链头
 	jbl_ll_node *		tail;		//链尾
 	jbl_ll_size_type	len;		//长度
@@ -46,22 +49,17 @@ typedef struct __jbl_ll
 /*******************************************************************************************/
 /*                            以下函实现链表基本操作                                      */
 /*******************************************************************************************/
-extern	const	jbl_var_operators			jbl_ll_operators;												//link list 操作器
-jbl_ll  *		jbl_Vll						(jbl_var * this);												//以link list的格式使用var
-#define			Vis_jbl_ll(x)				(jbl_var_get_operators(x)==&jbl_ll_operators)					//判断一个var是不是link list
+jbl_var_operators_extern(jbl_ll_operators);
 jbl_ll  *		jbl_ll_new					();																//新建一个link list
-jbl_var *		jbl_Vll_new					();																//以var形式新建一个link list
-jbl_ll  *		jbl_ll_init					(jbl_ll *this);													//初始化一个link list
 jbl_ll  *		jbl_ll_free					(jbl_ll *this);													//释放一个link list
 jbl_ll  *		jbl_ll_copy					(jbl_ll *that);													//复制一个link list
-#define			jbl_ll_copy_as_var(x)		jbl_var_copy_as(x,&jbl_ll_operators)							//复制为一个var
 jbl_ll  *		jbl_ll_extend				(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi);	//分离一个link list
 #define 		jbl_ll_foreach(x,y)			for(jbl_ll_node *(y)=((jbl_ll *)jbl_refer_pull(x))->head;(y);(y)=(y)->nxt)	//枚举一个link list(不支持删除,会re)
 #define 		jbl_ll_foreach_del(x,y,z)	for(jbl_ll_node *(y)=((jbl_ll *)jbl_refer_pull(x))->head,*(z)=((y)==NULL?NULL:(y)->nxt);(y)!=NULL;(y)=(z),(z)=((y)==NULL?NULL:(y)->nxt))	//枚举一个link list(支持删除操作)
 /*******************************************************************************************/
 /*                            以下函实现链表插入操作                                     */
 /*******************************************************************************************/
-jbl_ll  *		jbl_ll_insert				(jbl_ll *this,jbl_var *var,jbl_ll_node *after);					//在after后面插入一个var
+jbl_ll  *		jbl_ll_insert				(jbl_ll *this,void *var,jbl_ll_node *after);					//在after后面插入一个var
 #define			jbl_ll_add(x,y)				jbl_ll_insert(x,y,x?((jbl_ll *)jbl_refer_pull(x))->tail:NULL)	//在link list最后插入一个var
 /*******************************************************************************************/
 /*                            以下函实现链表合并操作                                     */
@@ -80,7 +78,7 @@ jbl_ll  *		jbl_ll_delete				(jbl_ll *this,jbl_ll_node *node);								//删除nod
 /*                            以下函实现链表获取操作                                      */
 /*******************************************************************************************/
 #define			jbl_ll_get_length(x)		(((jbl_ll *)jbl_refer_pull(x))->len)							//获取一个link list的长度
-jbl_var *		jbl_llv						(jbl_ll_node *node);											//获取node的值
+void *			jbl_llv						(jbl_ll_node *node);											//获取node的值
 /*******************************************************************************************/
 /*                            以下函实现链表交换操作                                     */
 /*******************************************************************************************/
@@ -100,7 +98,6 @@ char			jbl_ll_space_ship			(const jbl_ll *this,const jbl_ll *that);						//太�
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
 jbl_string*		jbl_ll_json_encode			(const jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码
-jbl_ll*			jbl_ll_json_decode			(jbl_ll *this,jbl_string* in,jbl_string_size_type *start);	//JSON解码
 #endif
 #if JBL_STREAM_ENABLE==1
 void			jbl_ll_json_put				(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个link list

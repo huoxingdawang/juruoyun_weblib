@@ -33,17 +33,23 @@ void jbl_stop()
 	jbl_log_stop();
 	jbl_malloc_stop();
 }
-inline jbl_int64 jbl_ceil(long double i)
+JBL_INLINE jbl_int64 jbl_ceil(long double i)
 {
 	return (((jbl_int64)i)==i)?((jbl_int64)i):(((jbl_int64)i)+1);
 }
-inline jbl_uint64 jbl_min2pow(jbl_uint64 i)
+JBL_INLINE jbl_uint64 jbl_min2pow(jbl_uint64 i)
 {
 	jbl_uint64 j=1;
 	for(;j<i;j<<=1);
 	return j;
 }
-inline jbl_uint32 jbl_getuint64(jbl_uint8 *s)
+JBL_INLINE double jbl_pow(double a,jbl_uint8 b)
+{
+	double ans=1;
+	while(b--)ans*=a;
+	return ans;
+}
+JBL_INLINE jbl_uint32 jbl_getuint64(jbl_uint8 *s)
 {
 	jbl_uint8 c,i=0;
 	jbl_uint32 x;

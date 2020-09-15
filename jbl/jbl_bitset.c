@@ -66,7 +66,7 @@ jbl_uint8 jbl_highbit320(jbl_uint32 a)
 #define hb(x)	jbl_highbit(x)
 #define hb0(x)	jbl_highbit0(x)
 #endif
-inline void jbl_bitset_init(jbl_bitset_type *bitset,jbl_uint32 len)
+JBL_INLINE void jbl_bitset_init(jbl_bitset_type *bitset,jbl_uint32 len)
 {
 	while(len--)
 		bitset[len]=0;

@@ -29,53 +29,46 @@
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
 jbl_int8		jbl_time_time_zone=JBL_TIME_DEFAULT_TIME_ZONE;
+jbl_var_operators_new(jbl_time_operators,jbl_time_free,jbl_time_copy,jbl_time_space_ship,jbl_time_json_encode,jbl_time_view_put,jbl_time_json_put);
 /*******************************************************************************************/
 /*                            以下函实现时间基本操作                                     */
 /*******************************************************************************************/
-inline jbl_time * jbl_time_new()
+jbl_time * jbl_time_new()
 {
 	return jbl_time_init(jbl_malloc(sizeof(jbl_time)));
 }
-inline jbl_time * jbl_time_init(jbl_time *this)
+JBL_INLINE jbl_time * jbl_time_init(jbl_time *this)
 {
+	if(!this)jbl_exception("NULL POINTER");
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jbl_time_operators);
 	this->t=0;
 	return this;
 }
-inline jbl_time * jbl_time_free(jbl_time *this)
+JBL_INLINE jbl_time * jbl_time_free(jbl_time *this)
 {
 	if(this==NULL)return NULL;
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
 		((jbl_gc_is_ref(this))?jbl_time_free((jbl_time*)(((jbl_reference*)this)->ptr)):0);
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;
 }
-inline jbl_time * jbl_time_set(jbl_time * this,jbl_uint64 time)
+JBL_INLINE jbl_time * jbl_time_set(jbl_time * this,jbl_uint64 time)
 {
 	if(!this)this=jbl_time_new();
 	((jbl_time *)(jbl_refer_pull(this)))->t=time;
 	return this;
 }
-inline jbl_time * jbl_time_copy(jbl_time * that)
+JBL_INLINE jbl_time * jbl_time_copy(jbl_time * that)
 {
-	if(that==NULL)return NULL;
-#if JBL_VAR_ENABLE==1
-	if(jbl_gc_is_var(that))
-		return jbl_time_set(jbl_Vtime(jbl_Vtime_new()),((jbl_time*)jbl_refer_pull(that))->t);
-	else
-#endif
+	if(!that)return NULL;
 	return jbl_time_set(NULL,((jbl_time*)jbl_refer_pull(that))->t);
 }
-inline jbl_time * jbl_time_add_second(jbl_time * this,jbl_uint64 second)
+JBL_INLINE jbl_time * jbl_time_add_second(jbl_time * this,jbl_uint64 second)
 {
 	if(!this)this=jbl_time_new();
 	((jbl_time *)(jbl_refer_pull(this)))->t+=second*1000;
@@ -84,7 +77,7 @@ inline jbl_time * jbl_time_add_second(jbl_time * this,jbl_uint64 second)
 /*******************************************************************************************/
 /*                            以下函实现时间获取操作                                     */
 /*******************************************************************************************/
-inline jbl_time * jbl_time_now(jbl_time *this)
+JBL_INLINE jbl_time * jbl_time_now(jbl_time *this)
 {
 	struct timeval tv;
 	gettimeofday(&tv,NULL);
@@ -137,7 +130,7 @@ void jbl_time_decode(jbl_time *this,jbl_time_decoded *tt)
 /*******************************************************************************************/
 /*                            以下函实现时间比较操作                                      */
 /*******************************************************************************************/
-inline char jbl_time_space_ship(jbl_time *this,jbl_time *that)
+JBL_INLINE char jbl_time_space_ship(jbl_time *this,jbl_time *that)
 {
 	jbl_int64 t=jbl_time_minus(this,that);
 	return (t>0)?1:((t<0)?(-1):0);
@@ -145,9 +138,9 @@ inline char jbl_time_space_ship(jbl_time *this,jbl_time *that)
 /*******************************************************************************************/
 /*                            以下函实现特殊时间判断操作                                 */
 /*******************************************************************************************/
-inline jbl_uint8	jbl_time_if_leap_year		(jbl_uint32 year){return (((year%400)==0)?1:(((year%100)==0)?0:(((year%4)==0)?1:0)));}
-inline jbl_uint8	jbl_time_get_day_of_month	(jbl_uint8 month,jbl_uint32 year){static const jbl_uint8 dpm[12]={31,28,31,30,31,30,31,31,30,31,30,31};return (month==2||(month==0)||(month>12))?(dpm[1]+jbl_time_if_leap_year(year)):(dpm[month-1]);}
-inline jbl_uint8	jbl_time_get_weekday		(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year){if((month==1)||(month==2))month+=12,year--;return (day+2*month+3*(month+1)/5+year+year/4-year/100+year/400)%7+1;}
+JBL_INLINE jbl_uint8	jbl_time_if_leap_year		(jbl_uint32 year){return (((year%400)==0)?1:(((year%100)==0)?0:(((year%4)==0)?1:0)));}
+JBL_INLINE jbl_uint8	jbl_time_get_day_of_month	(jbl_uint8 month,jbl_uint32 year){static const jbl_uint8 dpm[12]={31,28,31,30,31,30,31,31,30,31,30,31};return (month==2||(month==0)||(month>12))?(dpm[1]+jbl_time_if_leap_year(year)):(dpm[month-1]);}
+JBL_INLINE jbl_uint8	jbl_time_get_weekday		(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year){if((month==1)||(month==2))month+=12,year--;return (day+2*month+3*(month+1)/5+year+year/4-year/100+year/400)%7+1;}
 jbl_uint8 jbl_time_if_dst(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year)
 {
 	if(jbl_time_time_zone==JBL_TIME_ZONE_ASIA_SHANGHAI)
@@ -370,7 +363,7 @@ void jbl_stream_push_time(jbl_stream *out,jbl_time *this,const unsigned char * f
 /*                            以下函实现时间JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-inline jbl_string* jbl_time_json_encode(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+JBL_INLINE jbl_string* jbl_time_json_encode(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
 	out=jbl_string_add_char(out,'"');
@@ -410,34 +403,4 @@ jbl_time* jbl_time_view_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_
 }
 #endif
 
-#if JBL_VAR_ENABLE==1
-/*******************************************************************************************/
-/*                            以下函实现时间的var操作                                    */
-/*******************************************************************************************/
-jbl_var_operators_new(jbl_time_operators,jbl_time_free,jbl_time_copy,jbl_time_space_ship,jbl_time_json_encode,jbl_time_view_put,jbl_time_json_put);
-inline jbl_time* jbl_Vtime(jbl_var * this){if(this&&!Vis_jbl_time(this))jbl_exception("VAR TYPE ERROR");return((jbl_time*)this);}
-jbl_var * jbl_Vtime_new()
-{
-	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_time))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
-	jbl_time_init((jbl_time*)this);
-	jbl_gc_set_var((jbl_time*)this);
-	jbl_var_set_operators(this,&jbl_time_operators);
-	return this;
-}
-jbl_var * jbl_time_copy_as_var(jbl_time *that)
-{
-	if(that==NULL)return NULL;
-	if(jbl_gc_is_var(that))
-		return jbl_V(jbl_time_copy(that));
-	if(jbl_gc_is_ref(that))
-	{
-		void *data=that;
-		jbl_gc_plus((jbl_reference*)that);//出来的data ref_cnt一定是2
-		jbl_refer_as_var(&data,&jbl_time_operators);
-		jbl_gc_minus((jbl_reference*)data);//出来的data ref_cnt一定是2
-		return jbl_V(data);
-	}	
-	return jbl_V(jbl_time_set(jbl_Vtime(jbl_Vtime_new()),((jbl_time*)jbl_refer_pull(that))->t));
-}
-#endif
 #endif

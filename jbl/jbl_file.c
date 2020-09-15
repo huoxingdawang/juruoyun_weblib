@@ -16,15 +16,13 @@
 #include "jbl_file_ct.h"
 #include <errno.h>
 #include <stdio.h>
+jbl_var_operators_new(jbl_file_operators,jbl_file_free,jbl_file_copy,NULL,NULL,jbl_file_view_put,NULL);
 jbl_file * jbl_file_new()
 {
-	return jbl_file_init(jbl_malloc(sizeof(jbl_file)));
-}
-jbl_file * jbl_file_init(jbl_file* this)
-{
-	if(!this)jbl_exception("NULL POINTER");
+	jbl_file * this=jbl_malloc(sizeof(jbl_file));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jbl_file_operators);
 	this->dir					=NULL;
 	this->handle				=NULL;
 	this->type					=JBL_FILE_CLOSE;
@@ -46,20 +44,15 @@ jbl_file* jbl_file_free(jbl_file *this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		if(jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))
+		if(jbl_gc_is_ref(this))
 			jbl_file_free((jbl_file*)(((jbl_reference*)this)->ptr));
 		else
 			this=jbl_file_close(this);
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;
 }
-inline jbl_file *jbl_file_copy(jbl_file *that)
+JBL_INLINE jbl_file *jbl_file_copy(jbl_file *that)
 {
 	if(!that)return NULL;
 	jbl_gc_plus(that);
@@ -100,7 +93,7 @@ jbl_file* jbl_file_open(jbl_file *this,jbl_string * dir,jbl_file_handle_type typ
 	thi=jbl_file_change_handle(thi,type);
 	return this;
 }
-inline jbl_file* jbl_file_open_chars(jbl_file *this,unsigned char * dir,jbl_file_handle_type type)
+JBL_INLINE jbl_file* jbl_file_open_chars(jbl_file *this,unsigned char * dir,jbl_file_handle_type type)
 {
 	return jbl_file_open(this,jbl_gc_minus(jbl_string_add_const(NULL,dir)),type);
 }
@@ -139,7 +132,7 @@ jbl_file* jbl_file_change_handle(jbl_file *this,jbl_file_handle_type type)
 		thi=jbl_file_update_status(thi);
 	else
 	{
-		jbl_log(UC"open file %j failed",jbl_gc_minus(jbl_string_copy_as_var(thi->dir)));		
+		jbl_log(UC"open file %j failed",thi->dir);		
 		thi=jbl_file_close(thi);
 	}
 	return this;
@@ -160,7 +153,7 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 	{
 		thi->dir=jbl_string_free(thi->dir);
 		gb2312name=jbl_string_free(gb2312name);	
-		jbl_log(UC"open file %j failed with errno %d",jbl_gc_minus(jbl_string_copy_as_var(thi->dir)),errno);
+		jbl_log(UC"open file %j failed with errno %d",thi->dir,errno);
 		return this;
 	}
 	gb2312name=jbl_string_free(gb2312name);	
@@ -168,15 +161,17 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 	struct stat buf;
 	if(stat((char*)jbl_string_get_chars(thi->dir),&buf))
 	{
-		jbl_log(UC"open file %j failed with errno %d",jbl_gc_minus(jbl_string_copy_as_var(thi->dir)),errno);
+		jbl_log(UC"open file %j failed with errno %d",thi->dir,errno);
 		thi->dir=jbl_string_free(thi->dir);
 		return this;
 	}
 #endif
 	thi->status.size		=buf.st_size;
+#if JBL_TIME_ENABLE==1
 	thi->status.time_access	=jbl_time_set(thi->status.time_access,buf.st_atime*1000);
 	thi->status.time_modify	=jbl_time_set(thi->status.time_modify,buf.st_mtime*1000);
 	thi->status.time_creat	=jbl_time_set(thi->status.time_creat ,buf.st_ctime*1000);
+#endif
 	return this;
 }
 jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_uint64 end)
@@ -184,7 +179,7 @@ jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_u
 	if(!this)jbl_exception("NULL POINTER");
 	this=jbl_file_change_handle(this,JBL_FILE_READ);
 	jbl_file *thi=jbl_refer_pull(this);
-	if(thi->type==JBL_FILE_WRITE||thi->type==JBL_FILE_CLOSE)jbl_exception("Unread able file");
+	if(thi->type==JBL_FILE_WRITE||thi->type==JBL_FILE_CLOSE)jbl_exception("Unreadable file");
 	jbl_min_update(end,thi->status.size);
 	if(start==-1)
 		start=0;
@@ -203,12 +198,12 @@ jbl_file * jbl_file_write(jbl_file * this,jbl_string*out)
 	if(!this)jbl_exception("NULL POINTER");
 	this=jbl_file_change_handle(this,JBL_FILE_WRITE);
 	jbl_file *thi=jbl_refer_pull(this);
-	if(thi->type==JBL_FILE_READ||thi->type==JBL_FILE_CLOSE)jbl_exception("Unread able file");
+	if(thi->type==JBL_FILE_READ||thi->type==JBL_FILE_CLOSE)jbl_exception("Unwriteable file");
 	out=jbl_refer_pull(out);
 	fwrite(out->s,1,out->len,this->handle);
 	return this;
 }
-inline jbl_file * jbl_file_set_offset(jbl_file * this,jbl_uint64 start)
+JBL_INLINE jbl_file * jbl_file_set_offset(jbl_file * this,jbl_uint64 start)
 {
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_file *thi=jbl_refer_pull(this);	
@@ -250,16 +245,6 @@ jbl_stream * jbl_file_stream_new(jbl_file *file)
 	this->extra[1].u=-1;
 	return this;
 }
-#if JBL_VAR_ENABLE==1
-jbl_var * jbl_file_Vstream_new(jbl_file *file)
-{
-	jbl_stream* this=jbl_Vstream(jbl_Vstream_new(&jbl_file_stream_operators,(file),JBL_FILE_STREAM_BUF_LENGTH,NULL,2));
-	this->extra[0].u=0;
-	this->extra[1].u=-1;
-	return jbl_V(this);
-}
-#endif
-
 
 void __jbl_file_stream_operator(jbl_stream* this,jbl_uint8 flags)
 {
@@ -269,12 +254,14 @@ void __jbl_file_stream_operator(jbl_stream* this,jbl_uint8 flags)
 	if(this->en)
 	{
 		file=jbl_file_change_handle(file,JBL_FILE_WRITE);
+		if(file->type==JBL_FILE_READ||file->type==JBL_FILE_CLOSE)jbl_exception("Unwriteable file");
 		fwrite(this->buf,1,this->en,file->handle);
 		this->en=0;
 	}
 	else if(nxt)
 	{
 		file=jbl_file_change_handle(file,JBL_FILE_READ);
+		if(file->type==JBL_FILE_WRITE||file->type==JBL_FILE_CLOSE)jbl_exception("Unreadable file");
 		file=jbl_file_set_offset(file,this->extra[0].u);
 		jbl_min_update(this->extra[1].u,file->status.size);
 		while(this->extra[0].u<this->extra[1].u)

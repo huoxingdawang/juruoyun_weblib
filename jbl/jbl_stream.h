@@ -15,6 +15,9 @@
 #include "jbl_malloc.h"
 #include "jbl_gc.h"
 #include "jbl_exception.h"
+#if JBL_VAR_ENABLE==1
+typedef	struct	__jbl_var_operators					jbl_var_operators;
+#endif
 typedef struct __jbl_stream_operater jbl_stream_operater;
 typedef union
 {
@@ -25,6 +28,9 @@ typedef union
 typedef struct __jbl_stream
 {
 	jbl_gc						gc;
+#if JBL_VAR_ENABLE==1
+	jbl_var_operators *			var_ops;
+#endif
 	const jbl_stream_operater *	op;
 	struct __jbl_stream *		nxt;
 	jbl_stream_buf_size_type	en;
@@ -52,7 +58,6 @@ typedef struct __jbl_stream_operater
 void			jbl_stream_start					();
 void			jbl_stream_stop						();
 jbl_stream *	jbl_stream_new						(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
-jbl_stream * 	jbl_stream_init						(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
 jbl_stream * 	jbl_stream_copy						(jbl_stream* this);
 jbl_stream * 	jbl_stream_free						(jbl_stream* this);
 const jbl_stream_operater * jbl_stream_get_ops(jbl_stream* this);
@@ -92,19 +97,6 @@ char			jbl_stream_json_put_format			(const void *this,jbl_stream *out,jbl_uint8 
 extern			jbl_stream *						jbl_stream_stdout;
 extern			jbl_stream *						jbl_stream_stdin;
 extern			jbl_stream *						jbl_stream_stdin_link;
-
-#if JBL_VAR_ENABLE==1
-typedef	struct	__jbl_var_operators					jbl_var_operators;
-typedef	struct	__jbl_var							jbl_var;
-extern	const	jbl_var_operators					jbl_stream_operators;
-
-jbl_stream *	jbl_Vstream							(jbl_var * this);
-#define			Vis_jbl_stream(x)					(jbl_var_get_operators(x)==&jbl_stream_operators)
-jbl_var *		jbl_Vstream_new						(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
-
-
-
-#endif
 
 
 #else

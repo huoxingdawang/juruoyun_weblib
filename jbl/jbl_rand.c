@@ -59,8 +59,8 @@ jbl_uint32 jbl_rand()
 /*                            以下函数完成对stdlib随机函数封装                           */
 /*******************************************************************************************/
 #include <stdlib.h>
-inline void jbl_rand_srand(jbl_uint32 seed){srand(seed);}
-inline jbl_uint32 jbl_rand(){return rand();}
+JBL_INLINE void jbl_rand_srand(jbl_uint32 seed){srand(seed);}
+JBL_INLINE jbl_uint32 jbl_rand(){return rand();}
 #else
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
@@ -69,14 +69,14 @@ jbl_uint32 __jbl_rand_next;
 /*******************************************************************************************/
 /*                            以下函数完成我也不知道叫啥的伪随机                        */
 /*******************************************************************************************/
-inline void jbl_rand_srand(jbl_uint32 seed){__jbl_rand_next=seed;}
-inline jbl_uint32 jbl_rand()
+JBL_INLINE void jbl_rand_srand(jbl_uint32 seed){__jbl_rand_next=seed;}
+JBL_INLINE jbl_uint32 jbl_rand()
 {
 	__jbl_rand_next=__jbl_rand_next*1103515245+12345;
 	return((jbl_uint32)(__jbl_rand_next/65536)%32768);
 }
 #endif
-inline jbl_uint32 jbl_rand_between(jbl_uint32 a,jbl_uint32 b)
+JBL_INLINE jbl_uint32 jbl_rand_between(jbl_uint32 a,jbl_uint32 b)
 {
 	return jbl_rand()%(b-a+1)+a;
 }

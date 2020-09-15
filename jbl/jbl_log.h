@@ -13,6 +13,7 @@
 #if JBL_LOG_ENABLE==1
 #include "jbl_string.h"
 #include "jbl_time.h"
+#include "jbl_scanner.h"
 
 typedef struct __jbl_log_struct
 {
@@ -45,8 +46,7 @@ void	jbl_log_add_log	(const char * file,const char * func,jbl_uint32 line,unsign
 #else
 #define	jbl_log_start()
 #define	jbl_log_stop()
-#define	jbl_log(s)
-#define	jbl_logstr(s)
+#define	jbl_log(s,...)
 
 #endif
 #endif

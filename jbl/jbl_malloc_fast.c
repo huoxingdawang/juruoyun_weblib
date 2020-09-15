@@ -110,7 +110,7 @@ void					__jbl_free_cached_chunks	();											//该函数不会操作size     
 void*					__jbl_malloc_page			(jbl_uint16 nums,jbl_uint8 type);			//该函数不会操作size和applied_size
 jbl_uint16				__jbl_free_page				(void *ptr);								//该函数不会操作size和applied_size
 void*					__jbl_malloc_large			(jbl_malloc_size_type size);				//该函数  会操作size              但不会操作applied_size
-extern inline void		__jbl_free_large			(void *ptr);								//该函数  会操作size              但不会操作applied_size
+extern JBL_INLINE void		__jbl_free_large			(void *ptr);								//该函数  会操作size              但不会操作applied_size
 void*					__jbl_malloc_small			(jbl_uint16 size);							//该函数  会操作size              但不会操作applied_size
 void					__jbl_free_small			(void* ptr);								//该函数  会操作size              但不会操作applied_size
 void					__jbl_free_smalls			();											//该函数不会操作size和applied_size
@@ -120,7 +120,7 @@ jbl_uint8				__jbl_free_huge				(void* ptr);								//该函数  会操作size�
 #define					aligned_to_2M(ptr)			((void*)(((jbl_malloc_size_type)(ptr))&(~0X1fffff)))
 #define					is_aligned_4K(ptr)			((((jbl_malloc_size_type)(ptr))&(0XFFF))==0)
 #define					aligned_to_4K(ptr)			((void*)(((jbl_malloc_size_type)(ptr))&(~0XFFF)))
-#define					get_page_i(page,chunk)		(((jbl_malloc_size_type)(page-(void*)chunk))>>12)
+#define					get_page_i(page,chunk)		(((jbl_malloc_size_type)((char*)page-(char*)chunk))>>12)
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
@@ -337,7 +337,7 @@ void *__jbl_malloc_aligned(jbl_malloc_size_type size,jbl_malloc_size_type alignm
 	if(offset!=0)
 	{
 		offset=alignment-offset;
-		ptr=VirtualAlloc(ptr+offset,size,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);
+		ptr=VirtualAlloc((char*)ptr+offset,size,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);
 	}
 	else
 		ptr=VirtualAlloc(ptr,size,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);
@@ -360,7 +360,7 @@ void *__jbl_malloc_aligned(jbl_malloc_size_type size,jbl_malloc_size_type alignm
 	return ptr;
 }
 //释放指定尺寸的对齐过的mmap
-inline void __jbl_free_aligned(void* ptr,jbl_malloc_size_type size)
+JBL_INLINE void __jbl_free_aligned(void* ptr,jbl_malloc_size_type size)
 {
 	__jbl_malloc_munmap(ptr,size);
 }
@@ -499,7 +499,7 @@ void* __jbl_malloc_large(jbl_malloc_size_type size)
 	return __jbl_malloc_page(page,0XFF);														//申请，返回
 }
 //释放一个large内存
-inline void __jbl_free_large(void *ptr)
+JBL_INLINE void __jbl_free_large(void *ptr)
 {
 #if JBL_MALLOC_COUNT ==1
 	jbl_malloc_heap.size-=(__jbl_free_page(ptr)<<12);
@@ -571,7 +571,7 @@ void __jbl_free_smalls()
 				{
 					void *page2=(void*)(((jbl_malloc_size_type)ptr2)&(~0XFFF));						//计算page
 					jbl_malloc_chunk_struct *chunk2=(void*)(((jbl_malloc_size_type)page2)&(~0X1fffff));	//计算chunk地址
-					jbl_uint16 i2=((jbl_malloc_size_type)(page2-(void*)chunk2))>>12;				//计算page编号
+					jbl_uint16 i2=((jbl_malloc_size_type)((char*)page2-(char*)chunk2))>>12;				//计算page编号
 					jbl_uint16 fi2=i2-(jbl_uint32)((chunk2->map[i2]>>10)&0X1FF);					//计算father page编号
 					//printf("\t0X%X 0X%X 0X%X %d %d\n",ptr2,page2,chunk2,i2,fi2);
 					jbl_uint8 flag=0;

@@ -31,14 +31,14 @@
 /*******************************************************************************************/
 void __jbl_ht_data_init(jbl_ht_data *this);
 void __jbl_ht_data_free(jbl_ht_data *this);
-inline void __jbl_ht_data_init(jbl_ht_data *this)
+JBL_INLINE void __jbl_ht_data_init(jbl_ht_data *this)
 {
 	this->k=NULL;
 	this->v=NULL;
 	this->h=0;
 	this->nxt=((jbl_ht_size_type)-1);
 }
-inline void __jbl_ht_data_free(jbl_ht_data *this)
+JBL_INLINE void __jbl_ht_data_free(jbl_ht_data *this)
 {
 	this->k=jbl_string_free(this->k);
 	this->v=jbl_var_free(this->v);
@@ -47,17 +47,17 @@ inline void __jbl_ht_data_free(jbl_ht_data *this)
 }
 #if JBL_HT_SYS_ENABLE==1
 void __jbl_ht_data_free2(jbl_ht_data *this);
-jbl_var* __jbl_ht_sys_var_copy(jbl_var *this);
-jbl_var* __jbl_ht_sys_var_free(jbl_var *this);
+void* __jbl_ht_sys_var_copy(void *this);
+void* __jbl_ht_sys_var_free(void *this);
 #define jbl_ht_is_sys_force(x) (jbl_gc_is_user1(x))		//获取sys标记
-inline void __jbl_ht_data_free2(jbl_ht_data *this)
+JBL_INLINE void __jbl_ht_data_free2(jbl_ht_data *this)
 {
 	this->k=jbl_string_free(this->k);
 	this->h=0;
 	this->nxt=((jbl_ht_size_type)-1);
 }
-inline jbl_var* __jbl_ht_sys_var_free(jbl_var *this){return NULL;}
-inline jbl_var* __jbl_ht_sys_var_copy(jbl_var *this){return this;}
+JBL_INLINE void* __jbl_ht_sys_var_free(void *this){return NULL;}
+JBL_INLINE void* __jbl_ht_sys_var_copy(void *this){return this;}
 #endif
 /*******************************************************************************************/
 /*                            以下函实现哈希表基本操作                                   */
@@ -65,23 +65,12 @@ inline jbl_var* __jbl_ht_sys_var_copy(jbl_var *this){return this;}
 #define htvh(x) for(jbl_ht_size_type i=0;i<(x)->size;jbl_stream_push_char(jbl_stream_stdout,' '),jbl_stream_push_int(jbl_stream_stdout,(jbl_ht_size_type_signed)((jbl_ht_size_type*)(x)->data)[-i-1]),++i);jbl_stream_push_char(jbl_stream_stdout,'\n')		//查看hash值
 #define gh2(x,y) ((jbl_ht_size_type_signed)(((jbl_ht_size_type)(y))|(-(jbl_ht_size_type)(x)->size)))
 jbl_var_operators_new(jbl_ht_operators,jbl_ht_free,jbl_ht_copy,jbl_ht_space_ship,jbl_ht_json_encode,jbl_ht_view_put,jbl_ht_json_put);
-inline jbl_ht* jbl_Vht(jbl_var * this){if(this&&!Vis_jbl_ht(this))jbl_exception("VAR TYPE ERROR");return((jbl_ht*)this);}
-inline jbl_ht * jbl_ht_new()
+jbl_ht * jbl_ht_new()
 {
-	return jbl_ht_init(jbl_malloc((sizeof(jbl_ht))));	
-}
-jbl_var * jbl_Vht_new()
-{
-	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_ht))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
-	jbl_ht_init((jbl_ht*)this);
-	jbl_gc_set_var((jbl_ht*)this);
-	jbl_var_set_operators(this,&jbl_ht_operators);
-	return this;		
-}
-inline jbl_ht * jbl_ht_init(jbl_ht *this)
-{
+	jbl_ht * this=jbl_malloc(sizeof(jbl_ht));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jbl_ht_operators);
 	this->size=this->len=this->nxt=0;
 	this->data=NULL;
 	return this;
@@ -92,7 +81,7 @@ jbl_ht* jbl_ht_free(jbl_ht *this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		if(jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))
+		if(jbl_gc_is_ref(this))
 			jbl_ht_free((jbl_ht*)(((jbl_reference*)this)->ptr));
 		else
 			if(this->size!=0)
@@ -105,57 +94,35 @@ jbl_ht* jbl_ht_free(jbl_ht *this)
 					for(register jbl_ht_size_type i=0;i<this->size;__jbl_ht_data_free(&this->data[i]),++i);
 				jbl_free((char*)this->data-sizeof(jbl_ht_size_type)*this->size);
 			}
-		jbl_free(((jbl_gc_is_var(this))?(jbl_ht*)((char*)this-sizeof(jbl_var)):this));
+		jbl_free(this);
 	}
 	return NULL;
 }
-inline jbl_ht *jbl_ht_copy(jbl_ht *that)
+JBL_INLINE jbl_ht *jbl_ht_copy(jbl_ht *that)
 {
-	if(that==NULL)return NULL;
+	if(!that)return NULL;
 	jbl_gc_plus(that);
 	return that;
 }
 jbl_ht * jbl_ht_extend_to(jbl_ht *this,jbl_ht_size_type size,jbl_uint8 add,jbl_ht **pthi)
 {
-//pvar脱出
 //size不够扩
 //分离
 	if(!this)this=jbl_ht_new();
 	jbl_reference *ref=NULL;jbl_ht *thi=jbl_refer_pull_keep_father(this,&ref);	
 #if JBL_HT_SYS_ENABLE==1
-	jbl_var*(*copy)(jbl_var*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_copy:jbl_var_copy);
+	void*(*copy)(void*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_copy:jbl_var_copy);
 #else 
 	#define copy jbl_var_copy
 #endif
-	jbl_uint8 is_var=jbl_gc_is_var(thi);							//var留标记
-	jbl_uint8 is_multiple=(jbl_gc_refcnt(thi)!=1);					//标记是否多个并用
-	jbl_ht *thii=NULL;
-	if(jbl_gc_is_pvar(thi))											//pvar脱出
-		thii=thi,thi=(jbl_ht*)((jbl_reference*)thi)->ptr,is_multiple|=(jbl_gc_refcnt(thi)!=1);
-	//thi现在一定指向数据体，thii指向可能存在的pvar
 	//size计算
 	jbl_ht_size_type size_need=size+(thi->len)*(add&1);				//装下当前数据需要的size
 	size+=(thi->nxt)*(add&1);										//加上末尾的
 	jbl_max_update(size,JBL_HT_MIN_SIZE);							//最小值
 	size=1LL<<(jbl_highbit(size-1)+1);								//2的倍数
 	jbl_ht *tmp=NULL;
-	if(!is_multiple)												//不是多个并用
+	if(jbl_gc_refcnt(thi)==1)										//不是多个并用
 	{
-		if(thii)													//pvar搬家
-		{
-			tmp=jbl_Vht(jbl_Vht_new());								//新的ht
-#if JBL_HT_SYS_ENABLE==1
-			if(jbl_ht_is_sys_force(thi))
-				jbl_ht_set_sys(tmp);
-#endif				
-			tmp->size =thi->size; thi->size=0;
-			tmp->len  =thi->len;  thi->len=0;
-			tmp->nxt  =thi->nxt;  thi->nxt=0;
-			tmp->data =thi->data; thi->data=NULL;
-			thii=jbl_ht_free(thii);									//thii清空
-			thi=tmp;
-			tmp=NULL;
-		}
 		if(size<=thi->size)											//空间足够
 			goto exit;
 		else if((size_need<<1)<thi->size)							//有一半的限制节点，可以rehash
@@ -166,7 +133,7 @@ jbl_ht * jbl_ht_extend_to(jbl_ht *this,jbl_ht_size_type size,jbl_uint8 add,jbl_h
 		//需要重新搞，直接进入下面
 	}
 	//多个分离
-	tmp=(is_var)?jbl_Vht(jbl_Vht_new()):jbl_ht_new();
+	tmp=jbl_ht_new();
 #if JBL_HT_SYS_ENABLE==1
 	if(jbl_ht_is_sys_force(thi))
 		jbl_ht_set_sys(tmp);
@@ -189,7 +156,7 @@ jbl_ht * jbl_ht_extend_to(jbl_ht *this,jbl_ht_size_type size,jbl_uint8 add,jbl_h
 				++tmp->len;
 			}
 	}
-	if(thii)jbl_ht_free(thii);else jbl_ht_free(thi);
+	jbl_ht_free(thi);
 	thi=tmp;
 exit:;	
 	if(ref)ref->ptr=thi;else this=thi;
@@ -203,7 +170,7 @@ jbl_ht * jbl_ht_rehash(jbl_ht *this)
 	if(thi->data==NULL)return this;
 	register jbl_ht_size_type i=0,j=0;
 #if JBL_HT_SYS_ENABLE==1
-	jbl_var*(*copy)(jbl_var*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_copy:jbl_var_copy);
+	void*(*copy)(void*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_copy:jbl_var_copy);
 	void (*dfree)(jbl_ht_data*)=(jbl_ht_is_sys_force(this)?__jbl_ht_data_free2:__jbl_ht_data_free);
 #else 
 	#define copy jbl_var_copy
@@ -231,7 +198,7 @@ jbl_ht * jbl_ht_rehash(jbl_ht *this)
 /*******************************************************************************************/
 /*                            以下函实现哈希表插入操作                                   */
 /*******************************************************************************************/
-jbl_ht * __jbl_ht_insert(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,jbl_var *v)
+jbl_ht * __jbl_ht_insert(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,void *v)
 {
 	jbl_ht * thi=NULL;this=jbl_ht_extend_to(this,1,1,&thi);
 	jbl_ht_size_type_signed h2=gh2(thi,h);
@@ -260,7 +227,7 @@ jbl_ht * __jbl_ht_insert(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,jbl_v
 	++thi->nxt;
 	return this;
 }
-jbl_ht * jbl_ht_insert_force(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,jbl_var *v)
+jbl_ht * jbl_ht_insert_force(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,void *v)
 {
 	jbl_ht * thi=NULL;this=jbl_ht_extend_to(this,1,1,&thi);
 	jbl_ht_size_type_signed h2=gh2(thi,h);
@@ -278,9 +245,9 @@ jbl_ht * jbl_ht_insert_force(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,j
 	++thi->nxt;
 	return this;
 }
-inline jbl_ht  * jbl_ht_insert		(jbl_ht *this,jbl_string *k,jbl_var *v)		{return __jbl_ht_insert(this,jbl_string_hash(k),k,v);}
-inline jbl_ht  * jbl_ht_insert_chars(jbl_ht *this,unsigned char *kk,jbl_var *v)	{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_insert(this,k,v);jbl_string_free(k);return this;}
-inline jbl_ht  * jbl_ht_insert_int	(jbl_ht *this,jbl_string_hash_type h,jbl_var *v)				{return __jbl_ht_insert(this,h,NULL,v);}
+JBL_INLINE jbl_ht  * jbl_ht_insert		(jbl_ht *this,jbl_string *k,void *v)		{return __jbl_ht_insert(this,jbl_string_hash(k),k,v);}
+JBL_INLINE jbl_ht  * jbl_ht_insert_chars(jbl_ht *this,unsigned char *kk,void *v)	{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_insert(this,k,v);jbl_string_free(k);return this;}
+JBL_INLINE jbl_ht  * jbl_ht_insert_int	(jbl_ht *this,jbl_string_hash_type h,void *v)				{return __jbl_ht_insert(this,h,NULL,v);}
 /*******************************************************************************************/
 /*                            以下函实现哈希表删除操作                                   */
 /*******************************************************************************************/
@@ -309,15 +276,15 @@ jbl_ht * __jbl_ht_unset(jbl_ht *this,jbl_string_hash_type h,jbl_string *k)
 	}
 	return this;
 }
-inline jbl_ht  * jbl_ht_unset		(jbl_ht *this,jbl_string *k)				{return __jbl_ht_unset(this,jbl_string_hash(k),k);}
-inline jbl_ht  * jbl_ht_unset_chars	(jbl_ht *this,unsigned char *kk)			{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_unset(this,k);jbl_string_free(k);return this;}
-inline jbl_ht  * jbl_ht_unset_int	(jbl_ht *this,jbl_string_hash_type h)							{return __jbl_ht_unset(this,h,NULL);}
+JBL_INLINE jbl_ht  * jbl_ht_unset		(jbl_ht *this,jbl_string *k)				{return __jbl_ht_unset(this,jbl_string_hash(k),k);}
+JBL_INLINE jbl_ht  * jbl_ht_unset_chars	(jbl_ht *this,unsigned char *kk)			{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_unset(this,k);jbl_string_free(k);return this;}
+JBL_INLINE jbl_ht  * jbl_ht_unset_int	(jbl_ht *this,jbl_string_hash_type h)							{return __jbl_ht_unset(this,h,NULL);}
 /*******************************************************************************************/
 /*                            以下函实现哈希表获取操作                                   */
 /*******************************************************************************************/
-inline jbl_var * jbl_htv(jbl_ht_data *node){return node->v;}
-inline jbl_string * jbl_htk(jbl_ht_data *node){return node->k;}
-inline jbl_string_hash_type jbl_hth(jbl_ht_data *node){return node->h;}
+JBL_INLINE void * jbl_htv(jbl_ht_data *node){return node->v;}
+JBL_INLINE jbl_string * jbl_htk(jbl_ht_data *node){return node->k;}
+JBL_INLINE jbl_string_hash_type jbl_hth(jbl_ht_data *node){return node->h;}
 jbl_ht_data * jbl_ht_get_ht_data(const jbl_ht *this,jbl_string *k)
 {
 	this=jbl_refer_pull(this);
@@ -356,7 +323,7 @@ jbl_ht_data * jbl_ht_get_ht_data_int(const jbl_ht *this,jbl_string_hash_type h)
 	}
 	return NULL;
 }
-inline jbl_var * jbl_ht_get(const jbl_ht *this,jbl_string *k)
+JBL_INLINE void * jbl_ht_get(const jbl_ht *this,jbl_string *k)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data(this,k);
 	if(!data)return NULL;
@@ -367,7 +334,7 @@ inline jbl_var * jbl_ht_get(const jbl_ht *this,jbl_string *k)
 #endif
 	return jbl_var_copy(data->v);
 }
-inline jbl_var * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
+JBL_INLINE void * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data_chars(this,kk);
 	if(!data)return NULL;
@@ -378,7 +345,7 @@ inline jbl_var * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
 #endif
 	return jbl_var_copy(data->v);
 }
-inline jbl_var * jbl_ht_get_int(const jbl_ht *this,jbl_string_hash_type h)
+JBL_INLINE void * jbl_ht_get_int(const jbl_ht *this,jbl_string_hash_type h)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data_int(this,h);
 	if(!data)return NULL;
@@ -404,7 +371,7 @@ char jbl_ht_space_ship(const jbl_ht *this,const jbl_ht *that)
 	if(jbl_ht_is_sys_force(this))return -1;
 	if(jbl_ht_is_sys_force(that))return 1;
 #endif
-	jbl_var *v2;
+	void *v2;
 	jbl_ht_foreach(this,i)
 	{
 		v2=jbl_ht_get(that,i->k);
@@ -434,8 +401,8 @@ jbl_ht * jbl_ht_merge_int(jbl_ht *this)
 	jbl_ht * thi=NULL;this=jbl_ht_extend_to(this,0,1,&thi);
 	if(thi->data==NULL)return this;
 #if JBL_HT_SYS_ENABLE==1
-	jbl_var*(*copy)(jbl_var*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_copy:jbl_var_copy);
-	jbl_var*(*fre)(jbl_var*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_free:jbl_var_free);
+	void*(*copy)(void*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_copy:jbl_var_copy);
+	void*(*fre)(void*)=(jbl_ht_is_sys_force(this)?__jbl_ht_sys_var_free:jbl_var_free);
 #else 
 	#define copy jbl_var_copy
 	#define fre jbl_var_free
@@ -518,47 +485,6 @@ jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,jbl_uint8 form
 	out=jbl_string_add_char(out,'}');
 	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;
-}
-jbl_ht* jbl_ht_json_decode(jbl_ht *this,jbl_string* in,jbl_string_size_type *start)
-{
-#if JBL_HT_SYS_ENABLE==1
-	if(this&&jbl_ht_is_sys_force(this))return this;
-#endif
-	char flag=0;
-	if(!this)this=jbl_ht_new(),flag=1;
-	in=jbl_refer_pull(in);
-	if(!in)jbl_exception("NULL POINTER");
-	jbl_string_size_type i=start?(*start):0,n=in->len;
-	for(;i<n&&in->s[i]<=32;++i);
-//	pchar(in->s[i]);pn();
-	if(in->s[i]!='{')goto fail;
-	++i;
-	for(;i<n;)
-	{
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]=='}'){++i;goto success;}
-		jbl_string * k=jbl_string_json_decode(NULL,in,&i);
-		if(!k)goto fail;
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]!=':'){k=jbl_string_free(k);goto fail;}
-		++i;
-		jbl_var *v=jbl_var_json_decode(NULL,in,&i);
-		if(v==NULL)goto fail;
-		this=jbl_ht_insert(this,k,v);
-		v=jbl_var_free(v);
-		k=jbl_string_free(k);
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]=='}'){++i;goto success;}
-		if(in->s[i]!=',')goto fail;
-		++i;
-	}
-	goto fail;
-success:;
-	start?(*start=i):0;
-	return this;
-fail:;
-	if(flag)this=jbl_ht_free(this);
-	return NULL;
 }
 #if JBL_STREAM_ENABLE==1
 void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)

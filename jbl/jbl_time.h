@@ -27,7 +27,7 @@
 #define JBL_TIME_ZONE_ASIA_SHANGHAI 1
 
 
-
+jbl_var_operators_extern(jbl_time_operators);
 
 /*******************************************************************************************/
 /*                            结构体定义                                                  */
@@ -35,6 +35,9 @@
 typedef struct __jbl_time
 {
 	jbl_gc gc;									//gc结构
+#if JBL_VAR_ENABLE==1
+	jbl_var_operators *		var_ops;
+#endif
 	jbl_int64 t;								//时间戳，带3位毫秒
 }jbl_time;										//蒟蒻云基础库时间结构
 typedef struct __jbl_time_decoded
@@ -159,16 +162,6 @@ jbl_string *		jbl_time_json_encode			(jbl_time* this,jbl_string *out,jbl_uint8 f
 #if JBL_STREAM_ENABLE==1
 void				jbl_time_json_put				(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
 #endif
-#endif
-#if JBL_VAR_ENABLE==1
-/*******************************************************************************************/
-/*                            以下函实现时间的var操作                                    */
-/*******************************************************************************************/
-extern	const		jbl_var_operators				jbl_time_operators;															//time 操作器
-jbl_time  *			jbl_Vtime						(jbl_var * this);															//以time的格式使用var
-#define				Vis_jbl_time(x)					(jbl_var_get_operators(x)==&jbl_time_operators)								//判断一个var是不是time 
-jbl_var *			jbl_Vtime_new					();																			//新建一个time类型的var
-jbl_var *			jbl_time_copy_as_var			(jbl_time *that);															//复制为一个var,这里重写了复制函数，因为time属于直接复制类型
 #endif
 
 

@@ -12,11 +12,7 @@
 jbl_var_operators_new(jwl_http_head_operators,jwl_http_head_free,jwl_http_head_copy,NULL,NULL,jwl_http_head_view_put,NULL);
 jwl_http_head *jwl_http_head_new()
 {
-	return jwl_http_head_init(jbl_malloc(sizeof(jwl_http_head)));
-}
-jwl_http_head *jwl_http_head_init(jwl_http_head * this)
-{
-	if(!this)jbl_exception("NULL POINTER");		
+	jwl_http_head * this=jbl_malloc(sizeof(jwl_http_head));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	jbl_var_set_operators(this,&jwl_http_head_operators);	

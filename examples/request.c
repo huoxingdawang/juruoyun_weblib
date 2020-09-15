@@ -57,7 +57,7 @@ int main(int argc,char** argv)
 	jbl_string_view(get);
 	get=jbl_string_free(get);
 #else
-	jbl_var_view(jbl_gc_minus(jbl_json_decode_stream_var(get_stream)));
+	jbl_var_free(jbl_var_view(jbl_json_decode_stream_var(get_stream)));
 #endif
 
 

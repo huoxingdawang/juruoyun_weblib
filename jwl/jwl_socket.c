@@ -40,13 +40,9 @@ void jwl_socket_start()
 	signal(SIGPIPE, SIG_IGN);
 #endif
 }
-inline jwl_socket * jwl_socket_new()
+jwl_socket * jwl_socket_new()
 {
-	return jwl_socket_init(jbl_malloc(sizeof(jwl_socket)));	
-}
-jwl_socket * jwl_socket_init(jwl_socket *this)
-{
-	if(!this)jbl_exception("NULL POINTER");	
+	jwl_socket *this=jbl_malloc(sizeof(jwl_socket));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	jbl_var_set_operators(this,&jwl_socket_operators);	

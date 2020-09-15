@@ -34,7 +34,6 @@ typedef struct __jwl_socket
 #include "jwl_socket_poll.h"
 void					jwl_socket_start			();													//启动socket
 jwl_socket *			jwl_socket_new				();													//新建一个socket
-jwl_socket *			jwl_socket_init				(jwl_socket *this);									//初始化一个socket
 jwl_socket *			jwl_socket_free				(jwl_socket *this);									//释放一个socket
 jwl_socket *			jwl_socket_copy				(jwl_socket * this);								//拷贝一个socket
 #define					jwl_socket_extend(this)		(this)

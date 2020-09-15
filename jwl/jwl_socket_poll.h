@@ -57,7 +57,6 @@ typedef struct __jwl_socket_poll
 }jwl_socket_poll;
 
 jwl_socket_poll *		jwl_socket_poll_new				();														//新建一个socket
-jwl_socket_poll *		jwl_socket_poll_init			(jwl_socket_poll *this);								//初始化一个socket
 jwl_socket_poll *		jwl_socket_poll_free			(jwl_socket_poll *this);								//释放一个socket
 jwl_socket_poll *		jwl_socket_poll_copy			(jwl_socket_poll * this);								//拷贝一个socket
 #define					jwl_socket_poll_extend(this)	(this)

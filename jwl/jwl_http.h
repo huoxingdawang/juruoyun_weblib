@@ -109,7 +109,6 @@ typedef enum
 	JWL_HTTP_TREN_IDENTITY		=B0010_0000,
 }jwl_http_tren;
 jwl_http_head *	jwl_http_head_new			();
-jwl_http_head *	jwl_http_head_init			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_free			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_clear			(jwl_http_head * this);
 jwl_http_head *	jwl_http_head_copy			(jwl_http_head * this);

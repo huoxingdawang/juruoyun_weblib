@@ -32,9 +32,9 @@
 jbl_var_operators_new(jwl_socket_poll_operators,jwl_socket_poll_free,jwl_socket_poll_copy,NULL,NULL,jwl_socket_poll_view_put,NULL);
 
 //连接池
-inline jwl_socket_poll * jwl_socket_poll_new()
+jwl_socket_poll * jwl_socket_poll_new()
 {
-	return jwl_socket_poll_init(jbl_malloc(sizeof(jwl_socket_poll)+
+	jwl_socket_poll *this=jbl_malloc(sizeof(jwl_socket_poll)+
 #ifdef __linux__	
 	(sizeof(struct epoll_event))
 #elif __APPLE__
@@ -42,11 +42,7 @@ inline jwl_socket_poll * jwl_socket_poll_new()
 #elif _WIN32
 	0
 #endif	
-	*128));	
-}
-jwl_socket_poll * jwl_socket_poll_init(jwl_socket_poll *this)
-{
-	if(!this)jbl_exception("NULL POINTER");	
+	*128);	
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	jbl_var_set_operators(this,&jwl_socket_poll_operators);

@@ -12,6 +12,7 @@
 
 
 #define JWL_YING_ENABLE			1
+#define JWL_DNS_ENABLE			1
 #define JWL_SOCKET_ENABLE		1
 #define JWL_WEBSOCKET_ENABLE	1
 #define JWL_HTTP_ENABLE			1

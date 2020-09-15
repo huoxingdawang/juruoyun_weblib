@@ -29,6 +29,7 @@
 	#include <sys/epoll.h>
 #endif
 #include <errno.h>
+jbl_var_operators_new(jwl_socket_poll_operators,jwl_socket_poll_free,jwl_socket_poll_copy,NULL,NULL,jwl_socket_poll_view_put,NULL);
 
 //连接池
 inline jwl_socket_poll * jwl_socket_poll_new()
@@ -48,6 +49,7 @@ jwl_socket_poll * jwl_socket_poll_init(jwl_socket_poll *this)
 	if(!this)jbl_exception("NULL POINTER");	
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jwl_socket_poll_operators);
 	this->len=0;
 	this->data=NULL;
 #ifdef _WIN32
@@ -88,12 +90,7 @@ jwl_socket_poll * jwl_socket_poll_free(jwl_socket_poll *this)
 			close(this->handle);
 #endif
 		}
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;
 }

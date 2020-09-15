@@ -36,10 +36,6 @@ extern			const jbl_stream_operater			jwl_stream_websocket_encode_operators;
 #define 		jwl_websocket_decode_stream_new()	jbl_stream_new(&jwl_stream_websocket_decode_operators,NULL,JWL_WEBSOCKET_STREAM_BUF_LENGTH,NULL,3);
 #define			jbl_stream_is_jwl_websocket_encode_stream(x)		(jbl_stream_get_ops(x)==&jwl_stream_websocket_encode_operators)
 #define			jbl_stream_is_jwl_websocket_decode_stream(x)		(jbl_stream_get_ops(x)==&jwl_stream_websocket_decode_operators)
-#if JBL_VAR_ENABLE==1
-#define			jwl_websocket_encode_Vstream_new()	jbl_Vstream_new(&jwl_stream_websocket_encode_operators,NULL,JWL_WEBSOCKET_STREAM_BUF_LENGTH,NULL,1);
-#define			jwl_websocket_decode_Vstream_new()	jbl_Vstream_new(&jwl_stream_websocket_decode_operators,NULL,JWL_WEBSOCKET_STREAM_BUF_LENGTH,NULL,3);
-#endif
 
 
 #define			jwl_websocket_decode_stream_finished(x)		(((jbl_stream*)jbl_refer_pull(x))->extra[0].u>=((jbl_stream*)jbl_refer_pull(x))->extra[1].u)

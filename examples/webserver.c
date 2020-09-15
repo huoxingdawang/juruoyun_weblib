@@ -171,7 +171,7 @@ pl();
 						{
 							resh=jwl_http_head_clear				(resh);
 							resh=jwl_http_head_set_response			(resh);
-							resh=jwl_http_head_set_connection		(resh,JWL_HTTP_CONNECTION_KEEP_ALIVE);
+							resh=jwl_http_head_set_connection		(resh,JWL_HTTP_CONNECTION_CLOSE);
 							resh=jwl_http_head_set_tren				(resh,JWL_HTTP_TREN_CHUNKED);
 							jbl_stream *outs=NULL;
 							jbl_string * url=jwl_http_head_get_url(reqh);

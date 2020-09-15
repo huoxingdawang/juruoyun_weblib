@@ -54,23 +54,28 @@ run:
 
 #examples
 test2:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)test2.o examples$(H)test2.c	
-	$(CC) $(BITS) -o exes$(H)test2 tmp$(H)$(pre)test2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)test2.o             examples$(H)test2.c	
+	$(CC) $(BITS) -o exes$(H)test2            tmp$(H)$(pre)test2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 webserver:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)webserver.o examples$(H)webserver.c	
-	$(CC) $(BITS) -o exes$(H)webserver tmp$(H)$(pre)webserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)webserver.o         examples$(H)webserver.c	
+	$(CC) $(BITS) -o exes$(H)webserver        tmp$(H)$(pre)webserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+dns:
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)dns.o               examples$(H)dns.c	
+	$(CC) $(BITS) -o exes$(H)dns              tmp$(H)$(pre)dns.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 request:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o  examples$(H)request.c	
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request2.o examples$(H)request2.c	
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request_proxy.o examples$(H)request_proxy.c	
-	$(CC) $(BITS) -o exes$(H)request  tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)request2 tmp$(H)$(pre)request2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)request_proxy tmp$(H)$(pre)request_proxy.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o           examples$(H)request.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request2.o          examples$(H)request2.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request_proxy.o     examples$(H)request_proxy.c	
+	$(CC) $(BITS) -o exes$(H)request           tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)request2          tmp$(H)$(pre)request2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)request_proxy     tmp$(H)$(pre)request_proxy.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 ip2region:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region.o examples$(H)ip2region.c	
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region_maker.o examples$(H)ip2region_maker.c	
-	$(CC) $(BITS) -o exes$(H)ip2region tmp$(H)$(pre)ip2region.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)ip2region_maker tmp$(H)$(pre)ip2region_maker.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region.o         examples$(H)ip2region.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region_maker.o   examples$(H)ip2region_maker.c	
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)cip.o               examples$(H)cip.c	
+	$(CC) $(BITS) -o exes$(H)ip2region         tmp$(H)$(pre)ip2region.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)ip2region_maker   tmp$(H)$(pre)ip2region_maker.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)cip               tmp$(H)$(pre)cip.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 websocket:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)websocket_client.o examples$(H)websocket_client.c	
-	$(CC) $(BITS) -o exes$(H)websocket_client tmp$(H)$(pre)websocket_client.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)websocket_client.o  examples$(H)websocket_client.c	
+	$(CC) $(BITS) -o exes$(H)websocket_client  tmp$(H)$(pre)websocket_client.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

@@ -22,6 +22,7 @@
 #include <sys/event.h>
 #include <sys/types.h>
 #endif
+jbl_var_operators_extern(jwl_socket_poll_operators);
 typedef struct __jwl_socket_poll_data
 {
 	jwl_socket *socket;
@@ -35,6 +36,9 @@ typedef struct __jwl_socket_poll_data
 typedef struct __jwl_socket_poll
 {
 	jbl_gc gc;
+#if JBL_VAR_ENABLE==1
+	jbl_var_operators *		var_ops;
+#endif
 	jbl_uint16 len;
 	jwl_socket_poll_data *data;
 	

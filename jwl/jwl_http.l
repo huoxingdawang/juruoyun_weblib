@@ -9,6 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #include "jwl_http.h"
 #if JWL_HTTP_ENABLE==1
+jbl_var_operators_new(jwl_http_head_operators,jwl_http_head_free,jwl_http_head_copy,NULL,NULL,jwl_http_head_view_put,NULL);
 jwl_http_head *jwl_http_head_new()
 {
 	return jwl_http_head_init(jbl_malloc(sizeof(jwl_http_head)));
@@ -18,6 +19,7 @@ jwl_http_head *jwl_http_head_init(jwl_http_head * this)
 	if(!this)jbl_exception("NULL POINTER");		
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jwl_http_head_operators);	
 	this->status		=0;
 	this->charset		=0;	
 	this->content_type	=0;
@@ -73,10 +75,7 @@ jwl_http_head *jwl_http_head_free(jwl_http_head * this)
 			this->yy.k			=jbl_string_free(this->yy.k);
 			this->yy.v			=jbl_var_free(this->yy.v);
 		}
-		if(jbl_gc_is_var(this))//因为该功能依赖jbl_ht,jbl_ht强制依赖var所以不用宏判断
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;	
 	
@@ -126,14 +125,6 @@ inline jwl_http_head *jwl_http_head_extend(jwl_http_head * this,jwl_http_head **
 {
 	if(!this){this=jwl_http_head_new();if(pthi)*pthi=this;return this;}
 	jbl_reference *ref=NULL;jwl_http_head *thi=jbl_refer_pull_keep_father(this,&ref);
-	if(jbl_gc_is_pvar(thi))
-	{
-		jwl_http_head *ttt=((jbl_reference*)thi)->ptr;
-		if(jbl_gc_refcnt(thi)==1)
-			((jbl_reference*)thi)->ptr=NULL,
-		jwl_http_head_free(thi);
-		thi=ttt;
-	}	
 	if((jbl_gc_refcnt(thi)<=1)){if(pthi)*pthi=thi;return this;}
 
 	jwl_http_head * tmp	=jwl_http_head_new();
@@ -194,9 +185,9 @@ jwl_http_head *		jwl_http_head_set_url			(jwl_http_head * this,jbl_string * url)
 jwl_http_head *		jwl_http_head_set_host			(jwl_http_head * this,jbl_string * host)					{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);jbl_string_free(thi->host)			;thi->host			=jbl_string_copy(host)							;return this;}
 jwl_http_head *		jwl_http_head_set_ua			(jwl_http_head * this,jbl_string * ua)						{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);jbl_string_free(thi->ua)			;thi->ua			=jbl_string_copy(ua)							;return this;}
 jwl_http_head *		jwl_http_head_set_referer		(jwl_http_head * this,jbl_string * referer)					{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);jbl_string_free(thi->referer)		;thi->referer		=jbl_string_copy(referer)						;return this;}
-jwl_http_head *		jwl_http_head_set				(jwl_http_head * this,unsigned char * key,jbl_var* var)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi)									;thi->v				=jbl_ht_insert_chars(thi->v			,key,var)	;return this;}
-jwl_http_head *		jwl_http_head_set_parameter		(jwl_http_head * this,unsigned char * key,jbl_var* var)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);									thi->parameter		=jbl_ht_insert_chars(thi->parameter	,key,var)	;return this;}
-jwl_http_head *		jwl_http_head_set_cookie		(jwl_http_head * this,unsigned char * key,jbl_var* var)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);									thi->cookie			=jbl_ht_insert_chars(thi->cookie	,key,var)	;return this;}
+jwl_http_head *		jwl_http_head_set				(jwl_http_head * this,unsigned char * key,void* var)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi)									;thi->v				=jbl_ht_insert_chars(thi->v			,key,var)	;return this;}
+jwl_http_head *		jwl_http_head_set_parameter		(jwl_http_head * this,unsigned char * key,void* var)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);									thi->parameter		=jbl_ht_insert_chars(thi->parameter	,key,var)	;return this;}
+jwl_http_head *		jwl_http_head_set_cookie		(jwl_http_head * this,unsigned char * key,void* var)		{jwl_http_head *thi;this=jwl_http_head_extend(this,&thi);									thi->cookie			=jbl_ht_insert_chars(thi->cookie	,key,var)	;return this;}
 
 jbl_uint32			jwl_http_head_get_status		(jwl_http_head * this){if(!this)return 0;this=jbl_refer_pull(this);return this->status;}
 jwl_http_charset	jwl_http_head_get_charget		(jwl_http_head * this){if(!this)return 0;this=jbl_refer_pull(this);return this->charset;}
@@ -217,9 +208,9 @@ jbl_string *		jwl_http_head_get_url			(jwl_http_head * this){if(!this)return NUL
 jbl_string *		jwl_http_head_get_host			(jwl_http_head * this){if(!this)return NULL;this=jbl_refer_pull(this);return jbl_string_copy(this->host);}
 jbl_string *		jwl_http_head_get_ua			(jwl_http_head * this){if(!this)return NULL;this=jbl_refer_pull(this);return jbl_string_copy(this->ua);}
 jbl_string *		jwl_http_head_get_referer		(jwl_http_head * this){if(!this)return NULL;this=jbl_refer_pull(this);return jbl_string_copy(this->referer);}
-jbl_var    *		jwl_http_head_get				(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->v)			return NULL;return jbl_ht_get_chars(this->v,key);}
-jbl_var    *		jwl_http_head_get_parameter		(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->parameter)	return NULL;return jbl_ht_get_chars(this->parameter,key);}
-jbl_var    *		jwl_http_head_get_cookie		(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->cookie)		return NULL;return jbl_ht_get_chars(this->cookie,key);}
+void       *		jwl_http_head_get				(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->v)			return NULL;return jbl_ht_get_chars(this->v,key);}
+void       *		jwl_http_head_get_parameter		(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->parameter)	return NULL;return jbl_ht_get_chars(this->parameter,key);}
+void       *		jwl_http_head_get_cookie		(jwl_http_head * this,unsigned char * key){if(!this)return NULL;this=jbl_refer_pull(this);if(!this->cookie)		return NULL;return jbl_ht_get_chars(this->cookie,key);}
 
 
 void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
@@ -265,7 +256,7 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 				f=1;
 				jbl_stream_push_string(stream,i->k);
 				jbl_stream_push_char(stream,'=');
-				if(Vis_jbl_string(i->v))jbl_stream_push_string(stream,jbl_Vstring(i->v));
+				if(jbl_var_is(i->v,jbl_string_operators))jbl_stream_push_string(stream,i->v);
 				else					jbl_var_json_put(i->v,stream,0,0);
 			}		
 		}		
@@ -358,7 +349,7 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 		{
 			jbl_stream_push_string(stream,jbl_htk(i));
 			jbl_stream_push_chars(stream,UC": ");
-			if(Vis_jbl_string(i->v))jbl_stream_push_string(stream,jbl_Vstring(i->v));
+			if(jbl_var_is(i->v,jbl_string_operators))jbl_stream_push_string(stream,i->v);
 			else					jbl_var_json_put(i->v,stream,0,0);
 			rn();
 		}
@@ -404,8 +395,8 @@ jwl_http_head* __jwl_http_head_decode(jwl_http_head * head,unsigned char* in,uns
 	<parameter>		[]											{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_parameter	;}
 	<parameter>		" " 						=> protocol		{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_protocol	;}
 	<parameter>		"&" 						=> parameter	{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_parameter	;}
-	<parameter>		"="							=> parameterv	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_parameterv;}
-	<parameterv>	[]											{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_parameterv;}
+	<parameter>		"="							=> parameterv	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_string_new()						;goto yyc_parameterv;}
+	<parameterv>	[]											{   ;hea->yy.v			=jbl_string_add_char(hea->yy.v,*YYCURSOR);++YYCURSOR;upd;goto yyc_parameterv;}
 	<parameterv>	"&"							=> head_body	{upd;hea->parameter		=jbl_ht_insert(hea->parameter,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v);			;goto yyc_parameter	;}
 	<parameterv>	" " 						=> protocol		{upd;hea->parameter		=jbl_ht_insert(hea->parameter,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v);			;goto yyc_protocol	;}
 	
@@ -493,9 +484,9 @@ jwl_http_head* __jwl_http_head_decode(jwl_http_head * head,unsigned char* in,uns
 
 	<head_body>		"Cookie:"" "*				=> head_cookie	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_cookie;}
 	<head_cookie>	[]											{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_head_cookie;}
-	<head_cookie>	"="							=> head_cookiev	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_head_cookiev;}
+	<head_cookie>	"="							=> head_cookiev	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_string_new()						;goto yyc_head_cookiev;}
 	<head_cookie>	"\r\n"						=> head_body	{upd;hea->yy.k			=jbl_string_free(hea->yy.k)													;goto yyc_head_body	;}
-	<head_cookiev>	[]											{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_head_cookiev;}
+	<head_cookiev>	[]											{   ;hea->yy.v			=jbl_string_add_char(hea->yy.v,*YYCURSOR);++YYCURSOR;upd;goto yyc_head_cookiev;}
 	<head_cookiev>	"; "						=> head_cookie	{upd;hea->cookie		=jbl_ht_insert(hea->cookie,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)		;goto yyc_head_cookie	;}
 	<head_cookiev>	"\r\n"						=> head_body	{upd;hea->cookie		=jbl_ht_insert(hea->cookie,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)		;goto yyc_head_body		;}
 
@@ -503,8 +494,8 @@ jwl_http_head* __jwl_http_head_decode(jwl_http_head * head,unsigned char* in,uns
 	<head_body>		[]							=> special_key	{   ;hea->yy.k			=jbl_string_add_char(jbl_string_free(hea->yy.k),*YYCURSOR)	;++YYCURSOR;upd	;goto yyc_special_key;}
 	<special_key>	[]											{   ;hea->yy.k			=jbl_string_add_char(hea->yy.k,*YYCURSOR)					;++YYCURSOR;upd	;goto yyc_special_key;}
 	<special_key>	"\r\n"						=> head_body	{upd;hea->yy.k			=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)				;goto yyc_head_body	;}
-	<special_key>	":"" "*						=> special_var	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_Vstring_new()						;goto yyc_special_var;}
-	<special_var>	[]											{   ;hea->yy.v			=jbl_V(jbl_string_add_char(jbl_Vstring(hea->yy.v),*YYCURSOR));++YYCURSOR;upd;goto yyc_special_var;}
+	<special_key>	":"" "*						=> special_var	{upd;hea->yy.v			=jbl_var_free(hea->yy.v);hea->yy.v=jbl_string_new()							;goto yyc_special_var;}
+	<special_var>	[]											{   ;hea->yy.v			=jbl_string_add_char(hea->yy.v,*YYCURSOR);++YYCURSOR;upd;goto yyc_special_var;}
 	<special_var>	"\r\n"						=> head_body	{upd;hea->v				=jbl_ht_insert(hea->v,hea->yy.k,hea->yy.v);hea->yy.k=jbl_string_free(hea->yy.k);hea->yy.v=jbl_var_free(hea->yy.v)			;goto yyc_head_body		;}
 
 	<head_body>		"Server:"" "*				=> head_ign		{upd;																								;goto yyc_head_ign	;}
@@ -542,18 +533,6 @@ jbl_stream *jwl_http_decode_stream_new(jwl_http_head* head)
 	if(!head)jbl_exception("NULL POINTER");
 	return jbl_stream_new(&jwl_http_decode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH+1,NULL,2);
 }
-#if JBL_VAR_ENABLE==1
-jbl_var *jwl_http_encode_Vstream_new(jwl_http_head* head)
-{
-	if(!head)jbl_exception("NULL POINTER");
-	return jbl_Vstream_new(&jwl_http_encode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH,NULL,2);
-}
-jbl_var *jwl_http_decode_Vstream_new(jwl_http_head* head)
-{
-	if(!head)jbl_exception("NULL POINTER");
-	return jbl_Vstream_new(&jwl_http_decode_stream_operaters,head,JWL_HTTP_STREAM_BUF_LENGTH+1,NULL,2);
-}
-#endif
 static void __jwl_http_encode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 {
 	if(!this)jbl_exception("NULL POINTER");	
@@ -745,7 +724,7 @@ jwl_http_head* jwl_http_head_view_put(jwl_http_head* this,jbl_stream *out,jbl_ui
 			jbl_stream_push_string(out,i->k);
 			for(jbl_int32 j=jbl_string_get_length(i->k);j<13;jbl_stream_push_char(out,' '),++j);//格式化的\t
 			jbl_stream_push_char(out,':');
-			if(Vis_jbl_string(i->v))jbl_stream_push_string(out,jbl_Vstring(i->v)),jbl_stream_push_char(out,'\n');	
+			if(jbl_var_is(i->v,jbl_string_operators))jbl_stream_push_string(out,i->v),jbl_stream_push_char(out,'\n');	
 			else					jbl_var_view_put(i->v,out,0,tabs,0,NULL,NULL,NULL);
 		}		
 		--tabs;
@@ -760,7 +739,7 @@ jwl_http_head* jwl_http_head_view_put(jwl_http_head* this,jbl_stream *out,jbl_ui
 			jbl_stream_push_string(out,i->k);
 			for(jbl_int32 j=jbl_string_get_length(i->k);j<13;jbl_stream_push_char(out,' '),++j);//格式化的\t
 			jbl_stream_push_char(out,':');
-			if(Vis_jbl_string(i->v))jbl_stream_push_string(out,jbl_Vstring(i->v)),jbl_stream_push_char(out,'\n');	
+			if(jbl_var_is(i->v,jbl_string_operators))jbl_stream_push_string(out,i->v),jbl_stream_push_char(out,'\n');	
 			else					jbl_var_view_put(i->v,out,0,tabs,0,NULL,NULL,NULL);
 		}		
 		--tabs;
@@ -772,7 +751,7 @@ jwl_http_head* jwl_http_head_view_put(jwl_http_head* this,jbl_stream *out,jbl_ui
 			jbl_stream_push_string(out,i->k);
 			for(jbl_int32 j=jbl_string_get_length(i->k);j<13;jbl_stream_push_char(out,' '),++j);//格式化的\t
 			jbl_stream_push_char(out,':');
-			if(Vis_jbl_string(i->v))jbl_stream_push_string(out,jbl_Vstring(i->v)),jbl_stream_push_char(out,'\n');	
+			if(jbl_var_is(i->v,jbl_string_operators))jbl_stream_push_string(out,i->v),jbl_stream_push_char(out,'\n');	
 			else					jbl_var_view_put(i->v,out,0,tabs,0,NULL,NULL,NULL);
 		}
 	return this;

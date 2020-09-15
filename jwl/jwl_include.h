@@ -14,6 +14,7 @@
 #include "../jbl/jbl_include.h"
 
 #include "jwl_ying.h"
+#include "jwl_dns.h"
 #include "jwl_socket.h"
 #include "jwl_websocket.h"
 #include "jwl_http.h"

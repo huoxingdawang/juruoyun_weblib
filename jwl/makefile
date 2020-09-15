@@ -18,10 +18,12 @@ ifeq ($(system),windows)
 JWL_EXLIB = -lwsock32
 endif
 
-jwl					:jwl/jwl_ying jwl/jwl_socket jwl/jwl_http jwl/jwl_websocket jwl/jwl_ip2region
+jwl					:jwl/jwl_ying jwl/jwl_dns jwl/jwl_socket jwl/jwl_http jwl/jwl_websocket jwl/jwl_ip2region
 	ar rc tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jwl_*.o
 jwl/jwl_ying		:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ying.o       jwl$(H)jwl_ying.c      $(JWL_EXLIB)
+jwl/jwl_dns			:
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_dns.o        jwl$(H)jwl_dns.c       $(JWL_EXLIB)
 jwl/jwl_socket		:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket.o     jwl$(H)jwl_socket.c    $(JWL_EXLIB)
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_socket_poll.o     jwl$(H)jwl_socket_poll.c    $(JWL_EXLIB)
@@ -41,4 +43,3 @@ jwl/jwl_websocket   :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_websocket.o  jwl$(H)jwl_websocket.c $(JWL_EXLIB)
 jwl/jwl_ip2region   :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jwl_ip2region.o  jwl$(H)jwl_ip2region.c $(JWL_EXLIB)
-		

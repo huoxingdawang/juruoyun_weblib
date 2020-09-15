@@ -25,13 +25,13 @@ int main(int argc,char** argv)
 	{
 		if((out->size-out->en)<256)jbl_stream_do(out,0);
 		jbl_string_size_type j=0;
-		jwl_get_binary_ip(jbl_Vstring(i->v),&j);				//第一个ip
-		jwl_get_binary_ip(jbl_Vstring(i->v),&j);				//第二个ip
-		jbl_string*addr=jbl_string_delete(jbl_string_copy(jbl_Vstring(i->v)),0,j+1);
+		jwl_get_binary_ip(i->v,&j);				//第一个ip
+		jwl_get_binary_ip(i->v,&j);				//第二个ip
+		jbl_string*addr=jbl_string_delete(jbl_string_copy(i->v),0,j+1);
 		
 		jbl_ht_data *data=jbl_ht_get_ht_data(table,addr);
 		if(!data)
-			table=jbl_ht_insert_force(table,jbl_string_hash(addr),addr,(jbl_var *)(((addr->len+4)<<24)|(len&0x00FFFFFF))),len+=addr->len+4/*,jbl_string_view(addr)*/;
+			table=jbl_ht_insert_force(table,jbl_string_hash(addr),addr,(void *)(((addr->len+4)<<24)|(len&0x00FFFFFF))),len+=addr->len+4/*,jbl_string_view(addr)*/;
 		addr=jbl_string_free(addr);
 	}
 	tmp=len					;jbl_endian_copy_uint32(&tmp,out->buf+out->en),out->en+=4;
@@ -47,11 +47,11 @@ int main(int argc,char** argv)
 	{
 		if((out->size-out->en)<12)jbl_stream_do(out,0);
 		jbl_string_size_type j=0;
-		tmp=jwl_get_binary_ip(jbl_Vstring(i->v),&j);				//第一个ip
+		tmp=jwl_get_binary_ip(i->v,&j);				//第一个ip
 		jbl_endian_swap_uint32(&tmp,out->buf+out->en),out->en+=4;	//转成小段序写入
-		tmp=jwl_get_binary_ip(jbl_Vstring(i->v),&j);				//第二个ip
+		tmp=jwl_get_binary_ip(i->v,&j);				//第二个ip
 		jbl_endian_swap_uint32(&tmp,out->buf+out->en),out->en+=4;	//转成小段序写入
-		jbl_string*addr=jbl_string_delete(jbl_string_copy(jbl_Vstring(i->v)),0,j+1);
+		jbl_string*addr=jbl_string_delete(jbl_string_copy(i->v),0,j+1);
 		jbl_ht_data *data=jbl_ht_get_ht_data(table,addr);
 
 

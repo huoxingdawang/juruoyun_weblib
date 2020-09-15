@@ -27,7 +27,7 @@
 	#include <signal.h>
 #endif
 #include <errno.h>
-//undefined reference to `__imp_WSAStartup'
+jbl_var_operators_new(jwl_socket_operators,jwl_socket_free,jwl_socket_copy,NULL,NULL,jwl_socket_view_put,NULL);
 void jwl_socket_start()
 {
 #ifdef _WIN32
@@ -49,6 +49,7 @@ jwl_socket * jwl_socket_init(jwl_socket *this)
 	if(!this)jbl_exception("NULL POINTER");	
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jwl_socket_operators);	
 	this->handle=-1;
 	this->ip=0;
 	this->port=0;
@@ -69,12 +70,7 @@ jwl_socket * jwl_socket_free(jwl_socket *this)
 			jwl_socket_free((jwl_socket*)(((jbl_reference*)this)->ptr));
 		else
 			jwl_socket_close(this);
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;
 }
@@ -221,15 +217,6 @@ jbl_stream *jwl_socket_stream_new(jwl_socket* socket)
 	jbl_stream *this=jbl_stream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,0);
 	return this;
 }
-#if JBL_VAR_ENABLE==1
-jbl_var *jwl_socket_Vstream_new(jwl_socket* socket)
-{
-	if(!socket)jbl_exception("NULL POINTER");
-	if(jwl_socket_is_host(socket))jbl_exception("NEW STREAM FROM HOST SOCKET");	
-	jbl_stream *this=(jbl_stream *)jbl_Vstream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,0);
-	return (jbl_var *)this;
-}
-#endif
 static void __jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 {
 	if(!this)jbl_exception("NULL POINTER");	

@@ -14,10 +14,10 @@
 jbl_string * jwl_websocket_get_sec(jwl_http_head* head,jbl_string *res)
 {
 	if(!(jwl_http_head_get_connection(head)&JWL_HTTP_CONNECTION_UPGRADE)||jwl_http_head_get_upgrade(head)!=JWL_HTTP_UPGRADE_WEBSOCKET)return NULL;
-	jbl_var * sec=jwl_http_head_get(head,UC"Sec-WebSocket-Key");
+	void * sec=jwl_http_head_get(head,UC"Sec-WebSocket-Key");
 	if(!sec)return NULL;
-	sec=jbl_V(jbl_string_add_chars(jbl_Vstring(sec),UC"258EAFA5-E914-47DA-95CA-C5AB0DC85B11"));
-	jbl_string *tmp=jbl_sha1(jbl_Vstring(sec),NULL,true);
+	sec=jbl_string_add_chars(sec,UC"258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
+	jbl_string *tmp=jbl_sha1(sec,NULL,true);
 	res=jbl_base64_encode(tmp,res);
 	sec=jbl_var_free(sec);
 	tmp=jbl_string_free(tmp);
@@ -28,7 +28,7 @@ jwl_http_head * jwl_websocket_set_response_head(jwl_http_head* response,jwl_http
 	jwl_http_head_set_status(response,101);
 	jwl_http_head_set_connection(response,JWL_HTTP_CONNECTION_UPGRADE);
 	jwl_http_head_set_upgrade(response,JWL_HTTP_UPGRADE_WEBSOCKET);
-	jwl_http_head_set(response,UC"Sec-WebSocket-Accept",jbl_V(jbl_gc_minus(jwl_websocket_get_sec(request,jbl_Vstring(jbl_Vstring_new())))));
+	jwl_http_head_set(response,UC"Sec-WebSocket-Accept",jbl_gc_minus(jwl_websocket_get_sec(request,NULL)));
 	return response;
 }
 jbl_string * jwl_websocket_get_head(jbl_uint64 len,jbl_uint8 is_last,jbl_uint8 need_mask,jwl_websocket_status opcode,jbl_string* head)

@@ -159,6 +159,7 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 	client->handle=handle;	
 	jbl_endian_from_big_uint16(&claddr.sin_port,&client->port);
 	client->ip=claddr.sin_addr.s_addr;
+	client->mode=thi->mode;
 #ifdef _WIN32
 	int timeout = JWL_SOCKET_TRANSFER_MAX_TIME;
 	setsockopt(client->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));

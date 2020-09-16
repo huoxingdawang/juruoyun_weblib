@@ -74,7 +74,8 @@ jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,jbl_
 	if(!this)this=jwl_socket_new();
 	jwl_socket* thi=jbl_refer_pull(this);
 	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
-	thi->handle=socket(AF_INET,SOCK_STREAM,mode);
+	if(mode==JWL_SOCKET_MODE_TCP)		thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	else if(mode==JWL_SOCKET_MODE_UDP)	thi->handle=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
 	struct sockaddr_in skaddr;
 	skaddr.sin_family=AF_INET;
 	jbl_endian_to_big_uint16(&port,&skaddr.sin_port);

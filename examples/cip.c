@@ -13,7 +13,7 @@ int main(int argc,char** argv)
 	reqh=jwl_http_head_set_request		(reqh);
 	reqh=jwl_http_head_set_method		(reqh,JWL_HTTP_METHOD_GET);
 	reqh=jwl_http_head_set_host			(reqh,jbl_gc_minus(jbl_string_cache_get(UC"cip.cc")));
-	reqh=jwl_http_head_set_url			(reqh,jbl_gc_minus(jbl_string_cache_get(UC"/60.205.217.184")));
+	reqh=jwl_http_head_set_url			(reqh,jbl_gc_minus(jbl_string_add_chars(jbl_string_add_chars(NULL,UC"/"),UC argv[1])));
 	reqh=jwl_http_head_set_ua			(reqh,jbl_gc_minus(jbl_string_cache_get(UC"curl/7.68.0")));
 	reqh=jwl_http_head_set_cache		(reqh,JWL_HTTP_CACHE_NO);
 	reqh=jwl_http_head_set_protocol		(reqh,JWL_HTTP_PROTOCOL_HTTP_1_1);

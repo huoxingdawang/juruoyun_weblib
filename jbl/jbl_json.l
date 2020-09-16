@@ -283,7 +283,7 @@ static void __jbl_json_decode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	{
 		this->buf[this->en]=0;
 		this->data=__jbl_json_decode(this->data,this->buf,this->buf+this->size,&i);
-		if((((struct __jbl_json_decode_yy*)this->data)->cond==(jbl_uint8)-2))
+		if(((struct __jbl_json_decode_yy*)this->data)->cond==(jbl_uint8)-2)
 		{
 			jbl_log(UC"%v",((struct __jbl_json_decode_yy*)this->extra[0].p)->v);
 			this->extra[0].p=__jbl_json_decode_yy_free((struct __jbl_json_decode_yy*)this->extra[0].p);

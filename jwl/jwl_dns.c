@@ -83,7 +83,7 @@ jbl_uint64 jwl_dns_get_ip_domin_chars(jbl_uint8 *domin,int query_type)
 	++len,qname[len]=0;	
 	tmp=1;jbl_endian_to_big_uint16(&tmp,buf+sizeof(struct __jwl_dns_header)+len);
 	tmp=query_type;jbl_endian_to_big_uint16(&tmp,buf+sizeof(struct __jwl_dns_header)+len+2);
-	jwl_socket * socket=jwl_socket_connect(NULL,jwl_get_binary_ip_chars(UC"10.200.0.1"),53,JWL_SOCKET_MODE_UDP);
+	jwl_socket * socket=jwl_socket_connect(NULL,jwl_get_binary_ip_chars(UC JWL_DNS_SERVER),53,JWL_SOCKET_MODE_UDP);
 	jwl_socket_send_chars(socket,buf,sizeof(struct __jwl_dns_header)+len+sizeof(struct __jwl_dns_question));
 	jwl_socket_receive_chars(socket,buf,65536);
 	socket=jwl_socket_free(socket);

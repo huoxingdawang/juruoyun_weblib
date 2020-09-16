@@ -64,10 +64,8 @@ dns:
 	$(CC) $(BITS) -o exes$(H)dns              tmp$(H)$(pre)dns.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 request:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request.o           examples$(H)request.c	
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request2.o          examples$(H)request2.c	
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)request_proxy.o     examples$(H)request_proxy.c	
 	$(CC) $(BITS) -o exes$(H)request           tmp$(H)$(pre)request.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)request2          tmp$(H)$(pre)request2.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)request_proxy     tmp$(H)$(pre)request_proxy.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 ip2region:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ip2region.o         examples$(H)ip2region.c	

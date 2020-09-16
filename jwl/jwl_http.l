@@ -241,7 +241,8 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 		char * method		[]={"","GET ","POST "};
 		char * protocol		[]={""," HTTP/1.1",""};
 		jbl_stream_push_chars	(stream,UC method[head->method]);
-		jbl_stream_push_string	(stream,head->url);
+		if(jbl_string_get_length(head->url))jbl_stream_push_string	(stream,head->url);
+		else jbl_stream_push_char(stream,'/');
 		if(head->parameter)
 		{
 			jbl_stream_push_char(stream,'?');
@@ -326,6 +327,8 @@ void jwl_http_head_encode(jwl_http_head *head,jbl_stream *stream)
 	
 	if(head->host&&jwl_http_head_is_request(head))
 		jbl_stream_push_chars(stream,UC"Host: ")							,jbl_stream_push_string(stream,head->host)				,rn();	
+	if(head->ua&&jwl_http_head_is_request(head))
+		jbl_stream_push_chars(stream,UC"User-Agent: ")						,jbl_stream_push_string(stream,head->ua)				,rn();	
 	
 	
 	if(jwl_http_head_is_response(head))

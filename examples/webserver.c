@@ -14,7 +14,7 @@ int main(int argc,char** argv)
 	jwl_start();
 	jbl_exception_add_exit_function(stop);	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");pf();
-	host=jwl_socket_bind(host,jwl_get_binary_ip_chars(UC((argc>1)?argv[1]:"0.0.0.0")),jbl_getuint64(UC((argc>2)?argv[2]:"1217")));
+	host=jwl_socket_bind(host,jwl_get_binary_ip_chars(UC((argc>1)?argv[1]:"0.0.0.0")),jbl_getuint64(UC((argc>2)?argv[2]:"1217")),JWL_SOCKET_MODE_TCP);
 	jwl_socket_view(host);pf();
 	
 	poll=jwl_socket_poll_new();

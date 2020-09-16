@@ -4,7 +4,7 @@ int main(int argc,char** argv)
 	jbl_start();
 	jwl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jwl_socket *socket=jwl_socket_connect(NULL,jwl_get_binary_ip_chars(UC"192.168.56.1"),7890);
+	jwl_socket *socket=jwl_socket_connect(NULL,jwl_get_binary_ip_chars(UC"192.168.56.1"),7890,JWL_SOCKET_MODE_TCP);
 	jwl_socket_view(socket);
 	jbl_stream * socket_stream=jwl_socket_stream_new(jbl_refer(&socket));
 	socket=jwl_socket_free(socket);

@@ -70,13 +70,13 @@ jwl_socket * jwl_socket_free(jwl_socket *this)
 	}
 	return NULL;
 }
-jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
+jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,jbl_uint8 mode)
 {
 //分离
 	if(!this)this=jwl_socket_new();
 	jwl_socket* thi=jbl_refer_pull(this);
 	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
-	thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	thi->handle=socket(AF_INET,SOCK_STREAM,mode);
 	struct sockaddr_in skaddr;
 	skaddr.sin_family=AF_INET;
 	jbl_endian_to_big_uint16(&port,&skaddr.sin_port);
@@ -88,23 +88,29 @@ jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
 	jwl_socket_set_host(thi);
 	thi->port=port;
 	thi->ip=ip;
+	thi->mode=mode;
 	return this;
 }
-jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port)
+jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,jbl_uint8 mode)
 {
 //分离
 	if(!this)this=jwl_socket_new();
 	jwl_socket* thi=jbl_refer_pull(this);
 	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
-	thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
-	struct sockaddr_in skaddr;
-	skaddr.sin_family=AF_INET;
-	jbl_endian_to_big_uint16(&port,&skaddr.sin_port);
-	skaddr.sin_addr.s_addr=ip;
-	if(connect(thi->handle,(struct sockaddr*)&skaddr,sizeof(skaddr))==-1)
-		thi=jwl_socket_close(thi),jbl_log(UC "CONNECT FAILED");
+	if(mode==JWL_SOCKET_MODE_TCP)		thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	else if(mode==JWL_SOCKET_MODE_UDP)	thi->handle=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
 	thi->port=port;
 	thi->ip=ip;
+	thi->mode=mode;
+	if(mode==JWL_SOCKET_MODE_TCP)
+	{
+		struct sockaddr_in skaddr;
+		skaddr.sin_family=AF_INET;
+		jbl_endian_to_big_uint16(&port,&skaddr.sin_port);
+		skaddr.sin_addr.s_addr=ip;
+		if(connect(thi->handle,(struct sockaddr*)&skaddr,sizeof(skaddr))==-1)
+			thi=jwl_socket_close(thi),jbl_log(UC "CONNECT FAILED");
+	}
 #ifdef _WIN32
 	int timeout = JWL_SOCKET_TRANSFER_MAX_TIME*1000;
 	setsockopt(thi->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
@@ -165,6 +171,68 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 #endif	
 	return client;
 }
+jwl_socket * jwl_socket_send_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len)
+{
+	if(!this)return NULL;
+	jwl_socket* thi=jbl_refer_pull(this);
+	if(jwl_socket_is_host(thi))jbl_exception("SEND FROM HOST SOCKET");	
+	if(thi->mode==JWL_SOCKET_MODE_TCP)
+	{
+		
+		
+	}
+	else if(thi->mode==JWL_SOCKET_MODE_UDP)
+	{
+		struct sockaddr_in skaddr;
+		skaddr.sin_family=AF_INET;
+		jbl_endian_to_big_uint16(&thi->port,&skaddr.sin_port);
+		skaddr.sin_addr.s_addr=thi->ip;
+		for(jbl_uint8 i=0;thi->handle!=-1&&sendto(thi->handle,(char*)data,len,0,(struct sockaddr*)&skaddr,sizeof(skaddr))<0;++i,jbl_log(UC "Send failed\terrno:%d retrying %d",errno,i))
+			if(errno==ECONNRESET||errno==EPIPE||i>=7)
+			{
+				jbl_log(UC "Send failed\terrno:%d",errno);
+				jwl_socket_close(thi);
+				break;
+			}
+	}
+	else
+		jbl_exception("SEND FROM UNKNOW MODE");	
+	return this;
+}
+jbl_uint64 jwl_socket_receive_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len)
+{
+	if(!this)return 0;
+	jwl_socket* thi=jbl_refer_pull(this);
+	if(jwl_socket_is_host(thi))jbl_exception("RECEIVE FROM HOST SOCKET");	
+	jbl_uint64 length=0;
+	if(thi->mode==JWL_SOCKET_MODE_TCP)
+	{
+		
+		
+	}
+	else if(thi->mode==JWL_SOCKET_MODE_UDP)
+	{
+		struct sockaddr_in skaddr;
+		skaddr.sin_family=AF_INET;
+		jbl_endian_to_big_uint16(&thi->port,&skaddr.sin_port);
+		skaddr.sin_addr.s_addr=thi->ip;
+#ifdef _WIN32
+		jbl_int32 size=sizeof(skaddr);
+#elif defined(__APPLE__) || defined(__linux__)
+		jbl_uint32 size=sizeof(skaddr);
+#endif	
+		for(jbl_uint8 i=0;thi->handle!=-1&&(length=recvfrom(thi->handle,(char*)data,len,0,(struct sockaddr*)&skaddr,&size))<0;++i,jbl_log(UC "Receive failed\terrno:%d retrying %d",errno,i))
+			if(errno==ECONNRESET||errno==EPIPE||i>=7)
+			{
+				jbl_log(UC "Receive failed\terrno:%d",errno);
+				jwl_socket_close(thi);
+				break;
+			}
+	}
+	else
+		jbl_exception("RECEIVE FROM UNKNOW MODE");	
+	return length;
+}
 #ifdef jwl_socket_payload
 jwl_socket * jwl_socket_set_payload(jwl_socket * this,jwl_socket_payload payload)
 {
@@ -198,6 +266,13 @@ jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 forma
 		tmp=jbl_string_free(tmp);
 		jbl_stream_push_chars(out,UC" port:");
 		jbl_stream_push_uint(out,thi->port);
+		jbl_stream_push_chars(out,UC" mode:");
+		switch(thi->mode)
+		{
+			case JWL_SOCKET_MODE_TCP:jbl_stream_push_chars(out,UC"TCP");break;
+			case JWL_SOCKET_MODE_UDP:jbl_stream_push_chars(out,UC"UDP");break;
+			default:jbl_stream_push_chars(out,UC"unknow");break;
+		}
 #ifdef jwl_socket_payload
 		jbl_stream_push_chars(out,UC" payload:");
 		jwl_socket_payload_view(out,thi->payload);
@@ -210,6 +285,7 @@ jbl_stream *jwl_socket_stream_new(jwl_socket* socket)
 {
 	if(!socket)jbl_exception("NULL POINTER");
 	if(jwl_socket_is_host(socket))jbl_exception("NEW STREAM FROM HOST SOCKET");	
+	if(((jwl_socket*)jbl_refer_pull(socket))->mode!=JWL_SOCKET_MODE_TCP)jbl_exception("NEW STREAM FROM NOT TCP SOCKET");	
 	jbl_stream *this=jbl_stream_new(&jwl_stream_socket_operators,socket,JWL_SOCKET_STREAM_BUF_LENGTH,NULL,0);
 	return this;
 }

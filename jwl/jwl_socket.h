@@ -30,17 +30,27 @@ typedef struct __jwl_socket
 #endif
 	jbl_uint32 ip;
 	jbl_uint16 port;
+	jbl_uint8 mode;
 }jwl_socket;
+typedef enum
+{
+	JWL_SOCKET_MODE_TCP=1,
+	JWL_SOCKET_MODE_UDP=2,
+}jwl_socket_mode;
 #include "jwl_socket_poll.h"
 void					jwl_socket_start			();													//启动socket
 jwl_socket *			jwl_socket_new				();													//新建一个socket
 jwl_socket *			jwl_socket_free				(jwl_socket *this);									//释放一个socket
 jwl_socket *			jwl_socket_copy				(jwl_socket * this);								//拷贝一个socket
 #define					jwl_socket_extend(this)		(this)
-jwl_socket *			jwl_socket_bind				(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port);	//启动一个socket监听
-jwl_socket *			jwl_socket_connect			(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port);	//发起一个socket连接
+jwl_socket *			jwl_socket_bind				(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,jbl_uint8 mode);	//启动一个socket监听
+jwl_socket *			jwl_socket_connect			(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,jbl_uint8 mode);	//发起一个socket连接
 jwl_socket *			jwl_socket_close			(jwl_socket *this);									//关闭一个socket请求
 jwl_socket *			jwl_socket_accept			(jwl_socket *this);									//接受一个socket请求
+
+jwl_socket * jwl_socket_send_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len);
+jbl_uint64 jwl_socket_receive_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len);
+
 #define					jwl_socket_if_equal(a,b)	(jbl_refer_pull(a)==jbl_refer_pull(b))
 #define					jwl_socket_get_ip(x)		(((jwl_socket*)jbl_refer_pull(x))->ip)		
 #define					jwl_socket_get_port(x)		(((jwl_socket*)jbl_refer_pull(x))->port)		

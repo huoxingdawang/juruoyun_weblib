@@ -11,6 +11,16 @@
 #if JWL_DNS_ENABLE==1
 #include "jwl_socket.h"
 #include "jwl_ying.h"
+#if JWL_DNS_USE_SYSTEM ==1
+#ifdef _WIN32
+#include<winsock2.h>
+#elif defined(__APPLE__) || defined(__linux__)
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#endif
+#endif
+#if JWL_DNS_USE_BUDIN ==1
 struct __jwl_dns_header
 {
 	jbl_uint16	id			;	//会话标识
@@ -50,9 +60,20 @@ struct __jwl_dns_receive_record
 	struct __jwl_dns_receive_data *	resource;	//资源数据
 	jbl_uint8     *	rdata;
 };
-
-jbl_uint64 jwl_dns_get_ip_domin_chars(jbl_uint8 *domin,int query_type)
+#endif
+jbl_uint64 jwl_dns_get_ip_by_domin_chars(jbl_uint8 *domin,int query_type)
 {
+	jbl_uint64 ip=0;
+#if JWL_DNS_USE_SYSTEM == 1
+	struct hostent *hptr;
+	if(!(hptr=gethostbyname((char*)domin)))goto sysfail;
+	switch(hptr->h_addrtype)
+	{
+		case AF_INET:ip=*((int*)hptr->h_addr);goto exit;break;
+	}
+sysfail:;
+#endif
+#if JWL_DNS_USE_BUDIN ==1
 	jbl_uint8 *buf=jbl_malloc(65536); 
 	struct __jwl_dns_header *dns=(struct __jwl_dns_header *)buf;
 	dns->qr			=0;	//查询
@@ -92,7 +113,6 @@ jbl_uint64 jwl_dns_get_ip_domin_chars(jbl_uint8 *domin,int query_type)
 
 	jbl_uint16 ans_cnt=0;jbl_endian_from_big_uint16(&dns->ans_count,&ans_cnt);
 //	printf("%d个回答\n",ans_cnt);
-	jbl_uint64 ip=0;
 	for(int i=0;i<ans_cnt;++i)
 	{
 		struct __jwl_dns_receive_data *	resource=(struct __jwl_dns_receive_data *)reader;
@@ -106,6 +126,10 @@ jbl_uint64 jwl_dns_get_ip_domin_chars(jbl_uint8 *domin,int query_type)
 		reader+=resource->len;
 	}
 	jbl_free(buf);
+#endif
+#if JWL_DNS_USE_SYSTEM == 1
+exit:;
+#endif
 	return ip;
 }
 #endif

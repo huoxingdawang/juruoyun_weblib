@@ -12,7 +12,9 @@
 #include "jwl_config.h"
 #if JWL_DNS_ENABLE==1
 #include "jwl_ying.h"
-#define JWL_DNS_SERVER	"114.114.114.114"
+#define JWL_DNS_USE_SYSTEM	1
+#define JWL_DNS_USE_BUDIN	1
+#define JWL_DNS_SERVER		"114.114.114.114"
 
 
 #endif

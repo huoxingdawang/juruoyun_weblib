@@ -34,9 +34,7 @@ void jwl_socket_start()
 	WSADATA wsd;
 	if(WSAStartup(MAKEWORD(2,2),&wsd)!=0)
 		jbl_exception("DLL LOADING FAILED");
-#elif __linux__
-	signal(SIGPIPE, SIG_IGN);
-#elif __APPLE__
+#elif defined(__APPLE__) || defined(__linux__)
 	signal(SIGPIPE, SIG_IGN);
 #endif
 }

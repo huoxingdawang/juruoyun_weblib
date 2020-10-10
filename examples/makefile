@@ -77,3 +77,8 @@ ip2region:
 websocket:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)websocket_client.o  examples$(H)websocket_client.c	
 	$(CC) $(BITS) -o exes$(H)websocket_client  tmp$(H)$(pre)websocket_client.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+udp:
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)udpserver.o         examples$(H)udpserver.c	
+	$(CC) $(BITS) -o exes$(H)udpserver         tmp$(H)$(pre)udpserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)udpclient.o         examples$(H)udpclient.c	
+	$(CC) $(BITS) -o exes$(H)udpclient         tmp$(H)$(pre)udpclient.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)

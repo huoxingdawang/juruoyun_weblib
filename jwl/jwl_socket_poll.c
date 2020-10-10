@@ -158,7 +158,7 @@ jwl_socket_poll * jwl_socket_poll_remove_closed(jwl_socket_poll *this)
 	if(!this)jbl_exception("NULL POINTER");	
 	jwl_socket_poll * thi=jbl_refer_pull(this);
 	for(jwl_socket_poll_data *i=thi->data,*pre=NULL;i;)
-		if(jwl_socket_closed(i->socket))
+		if(!jwl_socket_opened(i->socket))
 		{
 			jwl_socket_poll_data *j=i->nxt;
 #ifdef __linux__

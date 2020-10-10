@@ -33,16 +33,16 @@ jwl_http_head * jwl_websocket_set_response_head(jwl_http_head* response,jwl_http
 }
 jbl_string * jwl_websocket_get_head(jbl_uint64 len,jbl_uint8 is_last,jbl_uint8 need_mask,jwl_websocket_status opcode,jbl_string* head)
 {
-	head=jbl_string_add_char(head,((is_last?0X80:0X00)|(opcode&0X0F)));
+	head=jbl_string_add_char(head,(char)((is_last?0X80:0X00)|(opcode&0X0F)));
 	jbl_uint8 tmp[8];
 	if(len<=125)
-		head=jbl_string_add_char(head,len|((need_mask&1)<<7));
+		head=jbl_string_add_char(head,(char)(len|((need_mask&1ULL)<<7)));
 	else if(len>125&&len<65536)
-		head=jbl_string_add_char(head,126|((need_mask&1)<<7)),
+		head=jbl_string_add_char(head,(char)(126|((need_mask&1ULL)<<7))),
 		jbl_endian_to_big_uint16(&len,tmp),
 		head=jbl_string_add_chars_length(head,tmp,2);
 	else
-		head=jbl_string_add_char(head,127|((need_mask&1)<<7)),
+		head=jbl_string_add_char(head,(char)(127|((need_mask&1ULL)<<7))),
 		jbl_endian_to_big_uint64(&len,tmp),
 		head=jbl_string_add_chars_length(head,tmp,8);
 	return head;

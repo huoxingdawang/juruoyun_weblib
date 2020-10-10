@@ -77,6 +77,11 @@ ip2region:
 websocket:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)websocket_client.o  examples$(H)websocket_client.c	
 	$(CC) $(BITS) -o exes$(H)websocket_client  tmp$(H)$(pre)websocket_client.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+udp:
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)udpserver.o         examples$(H)udpserver.c	
+	$(CC) $(BITS) -o exes$(H)udpserver         tmp$(H)$(pre)udpserver.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)udpclient.o         examples$(H)udpclient.c	
+	$(CC) $(BITS) -o exes$(H)udpclient         tmp$(H)$(pre)udpclient.o tmp$(H)$(pre)jwl.a tmp$(H)$(pre)jbl.a $(EXLIB)
 #   Copyright (c) [2020] juruoyun developer team
 #   Juruoyun basic lib is licensed under the Mulan PSL v1.
 #   You can use this software according to the terms and conditions of the Mulan PSL v1.
@@ -88,12 +93,12 @@ websocket:
 #   See the Mulan PSL v1 for more details.
 #jbl
 ifeq ($(system),linux)
-JBL_EXLIB = 
+JBL_EXLIB = -lpthread
 endif
 ifeq ($(system),windows)
 JBL_EXLIB = 
 endif
-jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_endian jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_json jbl/jbl_ll jbl/jbl_log jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_scanner jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
+jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_endian jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_json jbl/jbl_ll jbl/jbl_log jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_pthread jbl/jbl_rand jbl/jbl_scanner jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
 	ar  rc tmp$(H)$(pre)jbl.a tmp$(H)$(pre)jbl_*.o
 jbl/jbl_aes            :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes.o         jbl$(H)jbl_aes.c         $(JBL_EXLIB)
@@ -139,6 +144,8 @@ jbl/jbl_malloc         :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_malloc_fast.o jbl$(H)jbl_malloc_fast.c $(JBL_EXLIB)
 jbl/jbl_md5            :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_md5.o         jbl$(H)jbl_md5.c         $(JBL_EXLIB)
+jbl/jbl_pthread        :
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_pthread.o     jbl$(H)jbl_pthread.c     $(JBL_EXLIB)
 jbl/jbl_rand           :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_rand.o        jbl$(H)jbl_rand.c        $(JBL_EXLIB)
 jbl/jbl_scanner           :

@@ -23,7 +23,7 @@ void jwl_stop()
 jbl_uint32 jwl_get_binary_ip(jbl_string *this,jbl_string_size_type *start)
 {
 	jbl_string_size_type i=start?*start:0;
-	jbl_uint32 ip=(jbl_string_get_uint_start(this,&i))+(jbl_string_get_uint_start(this,&i)<<8)+(jbl_string_get_uint_start(this,&i)<<16)+(jbl_string_get_uint_start(this,&i)<<24);
+	jbl_uint32 ip=(jbl_uint32)((jbl_string_get_uint_start(this,&i))+(jbl_string_get_uint_start(this,&i)<<8)+(jbl_string_get_uint_start(this,&i)<<16)+(jbl_string_get_uint_start(this,&i)<<24));
 	if(start)*start=i;
 	return ip;
 }
@@ -40,10 +40,10 @@ jbl_uint32 jwl_get_binary_ip_chars(jbl_uint8 *s)
 {
 	jbl_uint8 c,i=0;
 	jbl_uint32 x,r;
-	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=c-'0',++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r=x;
-	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=c-'0',++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r+=x<<8;
-	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=c-'0',++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r+=x<<16;
-	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=c-'0',++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r+=x<<24;
+	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=(jbl_uint8)(c-'0'),++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r=x;
+	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=(jbl_uint8)(c-'0'),++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r+=x<<8;
+	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=(jbl_uint8)(c-'0'),++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r+=x<<16;
+	for(x=0;((c=s[i])<'0'||c>'9')&&s[i];++i){}for(x=(jbl_uint8)(c-'0'),++i;(c=s[i])>='0'&&c<='9'&&s[i];x=(x<<3)+(x<<1)+c-'0',++i){}r+=x<<24;
 	return r;
 }
 #endif

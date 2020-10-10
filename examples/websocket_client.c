@@ -71,7 +71,7 @@ jbl_exception_add_exit_function(stop);
 	jbl_stream_connect(socket_stream,wbesocket_receive_stream);
 	jbl_stream_connect(wbesocket_receive_stream,get_stream);
 	jbl_uint8 _=0;
-	while(!jwl_socket_closed(socket)&&!(_=setjmp(env)))
+	while(jwl_socket_opened(socket)&&!(_=setjmp(env)))
 	{
 		do
 		{

@@ -31,7 +31,7 @@ void __jwl_ip2region_init()
 {
 	__jwl_ip2region_data.db=jbl_string_free(__jwl_ip2region_data.db);
 	jbl_file * f1=jbl_file_open_chars(NULL,UC JWL_IP2REGION_DB_DIR,JBL_FILE_READ);
-	__jwl_ip2region_data.db=jbl_file_read(f1,NULL,0,-1);
+	__jwl_ip2region_data.db=jbl_file_read(f1,NULL,0,(jbl_uint64)-1);
 	jbl_file_free(f1);	
 	
 	jbl_uint8* buf=__jwl_ip2region_data.db->s;

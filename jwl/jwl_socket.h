@@ -34,6 +34,7 @@ typedef struct __jwl_socket
 }jwl_socket;
 typedef enum
 {
+	JWL_SOCKET_MODE_CLOSED=0,
 	JWL_SOCKET_MODE_TCP=1,
 	JWL_SOCKET_MODE_UDP=2,
 }jwl_socket_mode;
@@ -49,12 +50,12 @@ jwl_socket *			jwl_socket_close			(jwl_socket *this);									//关闭一个sock
 jwl_socket *			jwl_socket_accept			(jwl_socket *this);									//接受一个socket请求
 
 jwl_socket * jwl_socket_send_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len);
-jbl_uint64 jwl_socket_receive_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len);
+jbl_uint64 jwl_socket_receive_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len,jwl_socket ** client);
 
 #define					jwl_socket_if_equal(a,b)	(jbl_refer_pull(a)==jbl_refer_pull(b))
 #define					jwl_socket_get_ip(x)		(((jwl_socket*)jbl_refer_pull(x))->ip)		
 #define					jwl_socket_get_port(x)		(((jwl_socket*)jbl_refer_pull(x))->port)		
-#define					jwl_socket_closed(x)		((x)&&((jwl_socket*)jbl_refer_pull(x))->handle==-1)		
+#define					jwl_socket_opened(x)		((x)&&((jwl_socket*)jbl_refer_pull(x))->mode)
 
 #define					jwl_socket_set_host(x)		(jbl_gc_set_user1((jwl_socket*)jbl_refer_pull(x)))		//设置host标记
 #define					jwl_socket_reset_host(x)	(jbl_gc_reset_user1((jwl_socket*)jbl_refer_pull(x)))	//删除host标记

@@ -26,6 +26,11 @@
 	#include <unistd.h>
 	#include <signal.h>
 #endif
+#if JWL_SOCKET_DEBUG ==1
+#define jwl_socket_transfer_success_log jbl_log
+#else
+#define jwl_socket_transfer_success_log(x,...)
+#endif
 #include <errno.h>
 jbl_var_operators_new(jwl_socket_operators,jwl_socket_free,jwl_socket_copy,NULL,NULL,jwl_socket_view_put,NULL);
 void jwl_socket_start()
@@ -47,6 +52,7 @@ jwl_socket * jwl_socket_new()
 	this->handle=-1;
 	this->ip=0;
 	this->port=0;
+	this->mode=0;
 	return this;
 }
 inline jwl_socket *jwl_socket_copy(jwl_socket * this)
@@ -73,7 +79,7 @@ jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,jbl_
 //分离
 	if(!this)this=jwl_socket_new();
 	jwl_socket* thi=jbl_refer_pull(this);
-	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
+	if(thi->mode)jbl_exception("SOCKET REUSE");
 	if(mode==JWL_SOCKET_MODE_TCP)		thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	else if(mode==JWL_SOCKET_MODE_UDP)	thi->handle=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
 	struct sockaddr_in skaddr;
@@ -82,7 +88,7 @@ jwl_socket * jwl_socket_bind(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,jbl_
 	skaddr.sin_addr.s_addr=ip;	
 	if(bind(thi->handle,((struct sockaddr *)&skaddr),sizeof(skaddr))==-1)
 		thi=jwl_socket_close(thi),jbl_exception("BIND FAILED");
-	if(listen(thi->handle,1024)==-1)
+	if(mode==JWL_SOCKET_MODE_TCP&&listen(thi->handle,1024)==-1)
 		thi=jwl_socket_close(thi),jbl_exception("LISTEN FAILED");
 	jwl_socket_set_host(thi);
 	thi->port=port;
@@ -95,12 +101,9 @@ jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,j
 //分离
 	if(!this)this=jwl_socket_new();
 	jwl_socket* thi=jbl_refer_pull(this);
-	if(thi->handle!=-1)jbl_exception("SOCKET REUSE");
+	if(thi->mode)jbl_exception("SOCKET REUSE");
 	if(mode==JWL_SOCKET_MODE_TCP)		thi->handle=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	else if(mode==JWL_SOCKET_MODE_UDP)	thi->handle=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
-	thi->port=port;
-	thi->ip=ip;
-	thi->mode=mode;
 	if(mode==JWL_SOCKET_MODE_TCP)
 	{
 		struct sockaddr_in skaddr;
@@ -110,14 +113,17 @@ jwl_socket * jwl_socket_connect(jwl_socket *this,jbl_uint32 ip,jbl_uint16 port,j
 		if(connect(thi->handle,(struct sockaddr*)&skaddr,sizeof(skaddr))==-1)
 			thi=jwl_socket_close(thi),jbl_log(UC "CONNECT FAILED");
 	}
+	thi->port=port;
+	thi->ip=ip;
+	thi->mode=mode;
 #ifdef _WIN32
 	int timeout = JWL_SOCKET_TRANSFER_MAX_TIME*1000;
 	setsockopt(thi->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
-	setsockopt(thi->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+//	setsockopt(thi->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
 #elif defined(__APPLE__) || defined(__linux__)
 	struct timeval timeout={JWL_SOCKET_TRANSFER_MAX_TIME,0};
 	setsockopt(thi->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
-	setsockopt(thi->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+//	setsockopt(thi->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
 #endif
 
 	return this;
@@ -127,14 +133,14 @@ inline jwl_socket * jwl_socket_close(jwl_socket *this)
 	if(!this)return NULL;
 	jwl_socket* thi=jbl_refer_pull(this);
 #ifdef _WIN32
-	if(thi)(thi->handle==-1?0:closesocket(thi->handle));
+	thi->mode?closesocket(thi->handle):0;
 #elif defined(__APPLE__) || defined(__linux__)
-	if(thi)(thi->handle==-1?0:close(thi->handle));
+	thi->mode?close(thi->handle):0;
 #endif
 	jwl_socket_reset_host(thi);
 	thi->port=0;
 	thi->ip=0;
-	thi->handle=-1;
+	thi->mode=0;
 	return this;
 }
 inline jwl_socket * jwl_socket_accept(jwl_socket *this)
@@ -142,44 +148,58 @@ inline jwl_socket * jwl_socket_accept(jwl_socket *this)
 	if(!this)return NULL;
 	jwl_socket* thi=jbl_refer_pull(this);
 	if(!jwl_socket_is_host(thi))jbl_exception("ACCEPT FROM UNHOST SOCKET");
-	struct sockaddr_in claddr;
-#ifdef _WIN32
-	int length=sizeof(claddr);
-	SOCKET handle;
-#elif defined(__APPLE__) || defined(__linux__)
-	unsigned int length=sizeof(claddr);
-	int handle;
-#endif	
-	if((handle=accept(thi->handle,(struct sockaddr*)&claddr,&length))==-1)
+	if(!thi->mode)jbl_exception("ACCEPT FROM CLOSED SOCKET");
+	if(thi->mode==JWL_SOCKET_MODE_TCP)
 	{
-		jbl_log(UC "ACCEPT FAILED");
-		return NULL;
-	}
-	jwl_socket *client=jwl_socket_new();
-	client->handle=handle;	
-	jbl_endian_from_big_uint16(&claddr.sin_port,&client->port);
-	client->ip=claddr.sin_addr.s_addr;
-	client->mode=thi->mode;
+		struct sockaddr_in claddr;
 #ifdef _WIN32
-	int timeout = JWL_SOCKET_TRANSFER_MAX_TIME;
-	setsockopt(client->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
-	setsockopt(client->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+		int length=sizeof(claddr);
+		SOCKET handle;
 #elif defined(__APPLE__) || defined(__linux__)
-	struct timeval timeout={JWL_SOCKET_TRANSFER_MAX_TIME/1000,JWL_SOCKET_TRANSFER_MAX_TIME%1000};
-	setsockopt(client->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
-	setsockopt(client->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+		unsigned int length=sizeof(claddr);
+		int handle;
 #endif	
-	return client;
+		if((handle=accept(thi->handle,(struct sockaddr*)&claddr,&length))==-1)
+		{
+			jbl_log(UC "ACCEPT FAILED");
+			return NULL;
+		}
+		jwl_socket *client=jwl_socket_new();
+		client->handle=handle;	
+		jbl_endian_from_big_uint16(&claddr.sin_port,&client->port);
+		client->ip=claddr.sin_addr.s_addr;
+		client->mode=thi->mode;
+#ifdef _WIN32
+		int timeout = JWL_SOCKET_TRANSFER_MAX_TIME;
+		setsockopt(client->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
+	//	setsockopt(client->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+#elif defined(__APPLE__) || defined(__linux__)
+		struct timeval timeout={JWL_SOCKET_TRANSFER_MAX_TIME/1000,JWL_SOCKET_TRANSFER_MAX_TIME%1000};
+		setsockopt(client->handle,SOL_SOCKET,SO_SNDTIMEO,(const char*)&timeout,sizeof(timeout));
+	//	setsockopt(client->handle,SOL_SOCKET,SO_RCVTIMEO,(const char*)&timeout,sizeof(timeout));
+#endif
+		return client;
+	}
+	else if(thi->mode==JWL_SOCKET_MODE_UDP)
+		jbl_exception("ACCEPT FROM UDP MODE");	
+		
+	return NULL;
 }
 jwl_socket * jwl_socket_send_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len)
 {
 	if(!this)return NULL;
 	jwl_socket* thi=jbl_refer_pull(this);
-	if(jwl_socket_is_host(thi))jbl_exception("SEND FROM HOST SOCKET");	
+	if(jwl_socket_is_host(thi))jbl_exception("SEND FROM HOST SOCKET");
 	if(thi->mode==JWL_SOCKET_MODE_TCP)
 	{
-		
-		
+		for(jbl_uint8 i=0;thi->mode&&send(thi->handle,(char*)data,len,0)==-1;++i,jbl_log(UC "Send failed\t%errstr retrying %d",errno,i))
+			if(errno==ECONNRESET||errno==EPIPE||i>=JWL_SOCKET_TRANSFER_RETRY_TIMES)
+			{
+				jbl_log(UC "Send failed\t%errstr",errno);
+				jwl_socket_close(thi);
+				return this;
+			}
+		jwl_socket_transfer_success_log(UC "Send success data length:%d",len);		
 	}
 	else if(thi->mode==JWL_SOCKET_MODE_UDP)
 	{
@@ -187,10 +207,10 @@ jwl_socket * jwl_socket_send_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 l
 		skaddr.sin_family=AF_INET;
 		jbl_endian_to_big_uint16(&thi->port,&skaddr.sin_port);
 		skaddr.sin_addr.s_addr=thi->ip;
-		for(jbl_uint8 i=0;thi->handle!=-1&&sendto(thi->handle,(char*)data,len,0,(struct sockaddr*)&skaddr,sizeof(skaddr))<0;++i,jbl_log(UC "Send failed\terrno:%d retrying %d",errno,i))
-			if(errno==ECONNRESET||errno==EPIPE||i>=7)
+		for(jbl_uint8 i=0;thi->mode&&sendto(thi->handle,(char*)data,len,0,(struct sockaddr*)&skaddr,sizeof(skaddr))<0;++i,jbl_log(UC "Send failed\t%errstr retrying %d",errno,i))
+			if(errno==ECONNRESET||errno==EPIPE||i>=JWL_SOCKET_TRANSFER_RETRY_TIMES)
 			{
-				jbl_log(UC "Send failed\terrno:%d",errno);
+				jbl_log(UC "Send failed\t%errstr",errno);
 				jwl_socket_close(thi);
 				break;
 			}
@@ -199,35 +219,55 @@ jwl_socket * jwl_socket_send_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 l
 		jbl_exception("SEND FROM UNKNOW MODE");	
 	return this;
 }
-jbl_uint64 jwl_socket_receive_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len)
+jbl_uint64 jwl_socket_receive_chars(jwl_socket* this,jbl_uint8 *data,jbl_uint64 len,jwl_socket ** client)
 {
 	if(!this)return 0;
 	jwl_socket* thi=jbl_refer_pull(this);
-	if(jwl_socket_is_host(thi))jbl_exception("RECEIVE FROM HOST SOCKET");	
+	if(jwl_socket_is_host(thi)&&thi->mode!=JWL_SOCKET_MODE_UDP)jbl_exception("RECEIVE FROM HOST SOCKET");
 	jbl_uint64 length=0;
 	if(thi->mode==JWL_SOCKET_MODE_TCP)
 	{
-		
-		
+		int j=0;
+		for(jbl_uint8 i=0;(thi->mode)&&(j=recv(thi->handle,(char*)data,len,0))<=0;++i,jbl_log(UC "Receive failed\t%errstr retrying %d",errno,i))
+			if(errno==ECONNRESET||errno==EPIPE||(!j))
+			{
+				jbl_log(UC "Receive failed\t%errstr",errno);
+				jwl_socket_close(thi);
+				return 0;
+			}
+			else if(i>=JWL_SOCKET_TRANSFER_RETRY_TIMES)
+			{
+				jbl_log(UC "Receive failed time out:%d",i);
+				return 0;
+			}
+			else if(errno==EAGAIN)
+				return 0;
+		jwl_socket_transfer_success_log(UC "Receive success,data length:%d",j);			
 	}
 	else if(thi->mode==JWL_SOCKET_MODE_UDP)
 	{
 		struct sockaddr_in skaddr;
-		skaddr.sin_family=AF_INET;
-		jbl_endian_to_big_uint16(&thi->port,&skaddr.sin_port);
-		skaddr.sin_addr.s_addr=thi->ip;
 #ifdef _WIN32
 		jbl_int32 size=sizeof(skaddr);
 #elif defined(__APPLE__) || defined(__linux__)
 		jbl_uint32 size=sizeof(skaddr);
 #endif	
-		for(jbl_uint8 i=0;thi->handle!=-1&&(length=recvfrom(thi->handle,(char*)data,len,0,(struct sockaddr*)&skaddr,&size))<0;++i,jbl_log(UC "Receive failed\terrno:%d retrying %d",errno,i))
-			if(errno==ECONNRESET||errno==EPIPE||i>=7)
+		for(jbl_uint8 i=0;thi->mode&&(length=recvfrom(thi->handle,(char*)data,len,0,(struct sockaddr*)&skaddr,&size))<0;++i,jbl_log(UC "Receive failed\t%errstr retrying %d",errno,i))
+			if(errno==ECONNRESET||errno==EPIPE||i>=JWL_SOCKET_TRANSFER_RETRY_TIMES)
 			{
-				jbl_log(UC "Receive failed\terrno:%d",errno);
+				jbl_log(UC "Receive failed\t%errstr",errno);
 				jwl_socket_close(thi);
 				break;
 			}
+		if(client)
+		{
+			jwl_socket_free(*client);
+			*client=jwl_socket_new();
+			(*client)->handle=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
+			jbl_endian_from_big_uint16(&skaddr.sin_port,&(*client)->port);
+			(*client)->ip=skaddr.sin_addr.s_addr;
+			(*client)->mode=JWL_SOCKET_MODE_UDP;	
+		}
 	}
 	else
 		jbl_exception("RECEIVE FROM UNKNOW MODE");	
@@ -252,7 +292,7 @@ jwl_socket_payload jwl_socket_get_payload(jwl_socket * this)
 jwl_socket* jwl_socket_view_put(jwl_socket* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
 	jwl_socket* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jwl_socket",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
-	if(thi->handle==-1)
+	if(!thi->mode)
 		jbl_stream_push_chars(out,UC" disconnected");
 	else
 	{
@@ -297,35 +337,37 @@ static void __jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	jwl_socket *socket=jbl_refer_pull((jwl_socket*)this->data);
 	if(this->en)
 	{
-		if((flags&jbl_stream_force)||(this->en>JWL_SOCKET_STREAM_BUF_LENGTH>>1))
+		if((flags&jbl_stream_force)||(this->en>(JWL_SOCKET_STREAM_BUF_LENGTH>>1)))
 		{
-			for(jbl_uint8 i=0;socket->handle!=-1&&send(socket->handle,(char*)this->buf,this->en,0)==-1;++i,jbl_log(UC "Send failed\terrno:%d retrying %d",errno,i))
-				if(errno==ECONNRESET||errno==EPIPE||i>=7)
+			for(jbl_uint8 i=0;socket->mode&&send(socket->handle,(char*)this->buf,this->en,0)==-1;++i,jbl_log(UC "Send failed\t%errstr retrying %d",errno,i))
+				if(errno==ECONNRESET||errno==EPIPE||i>=JWL_SOCKET_TRANSFER_RETRY_TIMES)
 				{
-					jbl_log(UC "Send failed\terrno:%d",errno);
+					jbl_log(UC "Send failed\t%errstr",errno);
 					this->stop=1;
 					jwl_socket_close(socket);
-					break;
+					this->en=0;
+					return;
 				}
+			jwl_socket_transfer_success_log(UC "Send success data length:%d",this->en);			
 			this->en=0;
 		}
 	}
 	else if(nxt)
 	{
-		while(socket->handle!=-1)
+		while(socket->mode)
 		{
 			jbl_stream_do(nxt,0);if(nxt->stop)return;
 			jbl_stream_buf_size_type len=nxt->size-nxt->en;
 			int j;
-			for(jbl_uint8 i=0;(socket->handle!=-1)&&(j=recv(socket->handle,(char*)nxt->buf+nxt->en,len,0))<=0;++i,jbl_log(UC "Receive failed\terrno:%d retrying %d",errno,i))
+			for(jbl_uint8 i=0;(socket->mode)&&(j=recv(socket->handle,(char*)nxt->buf+nxt->en,len,0))<=0;++i,jbl_log(UC "Receive failed\t%errstr retrying %d",errno,i))
 				if(errno==ECONNRESET||errno==EPIPE||(!j))
 				{
-					jbl_log(UC "Receive failed\terrno:%d",errno);
+					jbl_log(UC "Receive failed\t%errstr",errno);
 					jwl_socket_close(socket);
 					jbl_stream_do(nxt,flags);					
 					return;
 				}
-				else if(i>=7)
+				else if(i>=JWL_SOCKET_TRANSFER_RETRY_TIMES)
 				{
 					jbl_log(UC "Receive failed time out:%d",i);
 					jbl_stream_do(nxt,0);
@@ -336,7 +378,7 @@ static void __jwl_socket_stream_operater(jbl_stream* this,jbl_uint8 flags)
 					jbl_stream_do(nxt,0);
 					return;
 				}
-			jbl_log(UC "Receive success,data length:%d",j);			
+			jwl_socket_transfer_success_log(UC "Receive success,data length:%d",j);			
 			nxt->en+=j;
 		}
 		jbl_stream_do(nxt,flags);	

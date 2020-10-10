@@ -61,15 +61,15 @@ struct __jwl_dns_receive_record
 	jbl_uint8     *	rdata;
 };
 #endif
-jbl_uint64 jwl_dns_get_ip_by_domin_chars(jbl_uint8 *domin,int query_type)
+jbl_uint32 jwl_dns_get_ip_by_domin_chars(jbl_uint8 *domin,int query_type)
 {
-	jbl_uint64 ip=0;
+	jbl_uint32 ip=0;
 #if JWL_DNS_USE_SYSTEM == 1
 	struct hostent *hptr;
 	if(!(hptr=gethostbyname((char*)domin)))goto sysfail;
 	switch(hptr->h_addrtype)
 	{
-		case AF_INET:ip=*((int*)hptr->h_addr);goto exit;break;
+		case AF_INET:ip=*((jbl_uint32*)hptr->h_addr);goto exit;break;
 	}
 sysfail:;
 #endif
@@ -93,20 +93,20 @@ sysfail:;
 	tmp=1;jbl_endian_to_big_uint16(&tmp,&dns->q_count);
 	tmp=1;jbl_endian_to_big_uint16(&tmp,&dns->id);
 	jbl_uint8 *qname=buf+sizeof(struct __jwl_dns_header);
-	jbl_uint32 len=0;
-	for(int i=0,j=0;;++i)
+	jbl_uint8 len=0;
+	for(jbl_uint8 i=0,j=0;;++i)
 		if(domin[i]=='.'||(!domin[i]))
 		{
-			for(qname[len]=i-j,++len;j<i;qname[len]=domin[j],++j,++len);
-			j=i+1;
+			for(qname[len]=(jbl_uint8)(i-j),++len;j<i;qname[len]=domin[j],++j,++len);
+			j=(jbl_uint8)(1+i);
 			if(!domin[i])break;
 		}
 	++len,qname[len]=0;	
 	tmp=1;jbl_endian_to_big_uint16(&tmp,buf+sizeof(struct __jwl_dns_header)+len);
-	tmp=query_type;jbl_endian_to_big_uint16(&tmp,buf+sizeof(struct __jwl_dns_header)+len+2);
+	jbl_endian_to_big_uint16(&query_type,buf+sizeof(struct __jwl_dns_header)+len+2);
 	jwl_socket * socket=jwl_socket_connect(NULL,jwl_get_binary_ip_chars(UC JWL_DNS_SERVER),53,JWL_SOCKET_MODE_UDP);
 	jwl_socket_send_chars(socket,buf,sizeof(struct __jwl_dns_header)+len+sizeof(struct __jwl_dns_question));
-	jwl_socket_receive_chars(socket,buf,65536);
+	jwl_socket_receive_chars(socket,buf,65536,NULL);
 	socket=jwl_socket_free(socket);
 	dns=(struct __jwl_dns_header*)buf;
 	jbl_uint8 *reader=buf+sizeof(struct __jwl_dns_header)+len+sizeof(struct __jwl_dns_question);
@@ -122,7 +122,7 @@ sysfail:;
 		jbl_endian_to_big_uint16(&resource->len ,&tmp);resource->len =tmp;
 //		printf("type %d\tcla  %d\tttl  %d\tlen  %d\n",resource->type,resource->cla,resource->ttl,resource->len);
 		reader+=sizeof(struct __jwl_dns_receive_data);
-		if(resource->type==JWB_DNS_QUERY_TYPE_A)	{ip=*((jbl_uint64*)reader);break;}
+		if(resource->type==JWB_DNS_QUERY_TYPE_A)	{ip=*((jbl_uint32*)reader);break;}
 		reader+=resource->len;
 	}
 	jbl_free(buf);

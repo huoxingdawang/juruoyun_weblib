@@ -11,9 +11,10 @@
 #define __JWL_SOCKET_CONFIG_H
 #include "jwl_config.h"
 #if JWL_SOCKET_ENABLE==1
-#define	JWL_SOCKET_STREAM_BUF_LENGTH		4096
-#define	JWL_SOCKET_TRANSFER_MAX_TIME 		500			//单位是ms
-
+#define	JWL_SOCKET_STREAM_BUF_LENGTH		65536
+#define	JWL_SOCKET_TRANSFER_MAX_TIME 		500				//单位是ms
+#define	JWL_SOCKET_TRANSFER_RETRY_TIMES		30				//重试次数
+#define	JWL_SOCKET_DEBUG					0				//调试模式
 
 #endif
 #endif

@@ -26,7 +26,7 @@ typedef enum
 //	JWB_DNS_QUERY_TYPE_ANY		=255,
 }JWB_DNS_QUERY_TYPE;
 
-jbl_uint64 jwl_dns_get_ip_by_domin_chars(jbl_uint8 *domin,int query_type);
+jbl_uint32 jwl_dns_get_ip_by_domin_chars(jbl_uint8 *domin,int query_type);
 
 
 

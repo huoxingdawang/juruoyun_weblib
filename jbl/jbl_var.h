@@ -12,8 +12,8 @@
 #include "jbl_var_config.h"
 #if JBL_VAR_ENABLE==1
 #include "jbl_ying.h"
-#include "jbl_stream.h"	
 typedef struct __jbl_string jbl_string;
+typedef struct __jbl_stream jbl_stream;
 typedef struct __jbl_var_operators
 {
 	void*	(*free)(void*);
@@ -31,6 +31,7 @@ typedef struct __jbl_var_operators
 #endif
 #endif
 }jbl_var_operators;
+#define						jbl_var_ops_define			jbl_var_operators * var_ops
 
 #if JBL_STRING_ENABLE==1
 	#if JBL_STREAM_ENABLE==1
@@ -142,11 +143,11 @@ jbl_string *				jbl_var_json_encode			(void * this,jbl_string *out,jbl_uint8 for
 
 
 
-
 #include "jbl_var_data.h"
 #else
+#define						jbl_var_ops_define
 #define						jbl_var_set_operators(x,y)	
-#define						jbl_var_get_operators(x,y)	(NULL)
+#define						jbl_var_get_operators(x)	(NULL)
 #define						jbl_var_is(x,y)				(1)
 #define						jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)
 #define						jbl_var_operators_extern(name)

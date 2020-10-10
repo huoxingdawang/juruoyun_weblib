@@ -76,11 +76,12 @@ jbl_string * jbl_string_new()
 	jbl_string * this=jbl_malloc(sizeof(jbl_string));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数
+	jbl_var_set_operators(this,&jbl_string_operators);
+	jbl_pthread_lock_init(this);
 	this->len=0;
 	this->h=0;
 	this->size=0;
 	this->s=NULL;
-	jbl_var_set_operators(this,&jbl_string_operators);
 	return this;	
 }
 jbl_string* jbl_string_free(jbl_string *this)
@@ -548,8 +549,9 @@ jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 forma
 	jbl_stream_push_uint(out,thi->size);
 	jbl_stream_push_chars(out,UC"\tlen:");
 	jbl_stream_push_uint(out,thi->len);
-	jbl_stream_push_chars(out,UC"\ts:");
-	for(jbl_string_size_type i=0;i<thi->len;jbl_stream_push_char(out,thi->s[i]),++i);
+	jbl_stream_push_chars(out,UC"\ts:");	
+	for(jbl_string_size_type i=0;i<thi->len;++i)
+		jbl_stream_push_char(out,thi->s[i]);
 	jbl_stream_push_char(out,'\n');
 	return this;
 }
@@ -586,11 +588,6 @@ void __jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)
 		jbl_stream_do(nxt,flags);
 	}
 }
-jbl_string *jbl_string_copy_for_stream(jbl_string *that)
-{
-	if(!that)jbl_exception("NULL POINTER");
-	return jbl_string_copy(jbl_refer_pull(that));
-}
 void jbl_string_update_stream_buf(jbl_stream* this)
 {
 	this=jbl_refer_pull(this);
@@ -610,7 +607,7 @@ jbl_string*  jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,j
 		jbl_memory_copy(out->buf+out->en,thi->s+i,len);
 		i+=len;
 		out->en+=len;
-		{jbl_stream_do(out,0);if(1==out->stop)return this;}
+		{jbl_stream_do(out,0);if(out->stop)return this;}
 	}
 	return this;
 }

@@ -13,13 +13,14 @@
 #if JBL_VAR_ENABLE==1
 #include "jbl_ying.h"
 #include "jbl_stream.h"	
-#include "jbl_var.h"	
+#include "jbl_var.h"
+#include "jbl_pthread.h"
+#include "jbl_malloc.h"
 typedef struct __jbl_var_data
 {
-	jbl_gc gc;
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *		var_ops;
-#endif
+	jbl_gc						gc;
+	jbl_var_ops_define			;
+	jbl_pthread_lock_define		;
 	union
 	{
 		jbl_uint64 u;

@@ -21,6 +21,7 @@
 #include "jbl_ying.h"
 #include "jbl_string.h"
 #include "jbl_exception.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动 jbl_stream jbl_ll                                      */
 /*******************************************************************************************/
@@ -45,9 +46,8 @@ typedef struct __jbl_ht_data
 typedef struct __jbl_ht
 {
 	jbl_gc					gc;		//gc结构
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *		var_ops;
-#endif
+	jbl_var_ops_define			;
+	jbl_pthread_lock_define		;
 	jbl_ht_size_type		size;	//当前已申请的空间
 	jbl_ht_size_type		len;	//当前长度
 	jbl_ht_size_type		nxt;	//当前最后一个元素所在的位置
@@ -83,17 +83,17 @@ jbl_ht  *				jbl_ht_unset_int			(jbl_ht *this,jbl_string_hash_type h);				//以i
 void *					jbl_htv						(jbl_ht_data *node);								//获取一个node的var
 jbl_string * 			jbl_htk						(jbl_ht_data *node);								//获取一个node的key
 jbl_string_hash_type	jbl_hth						(jbl_ht_data *node);								//获取一个node的hash
-void *					jbl_ht_get					(const jbl_ht *this,jbl_string *k);					//获取一个var
-void *					jbl_ht_get_chars			(const jbl_ht *this,unsigned char *kk);				//以chars为key获取一个var
-void *					jbl_ht_get_int				(const jbl_ht *this,jbl_string_hash_type h);		//以chars为int获取一个var
-jbl_ht_data *			jbl_ht_get_ht_data			(const jbl_ht *this,jbl_string *k);					//获取一个ht_data
-jbl_ht_data *			jbl_ht_get_ht_data_chars	(const jbl_ht *this,const jbl_uint8 *chars);		//以chars为key获取一个ht_data
-jbl_ht_data *			jbl_ht_get_ht_data_int		(const jbl_ht *this,jbl_string_hash_type h);		//以int为key获取一个ht_data
+void *					jbl_ht_get					(jbl_ht *this,jbl_string *k);					//获取一个var
+void *					jbl_ht_get_chars			(jbl_ht *this,unsigned char *kk);				//以chars为key获取一个var
+void *					jbl_ht_get_int				(jbl_ht *this,jbl_string_hash_type h);		//以chars为int获取一个var
+jbl_ht_data *			jbl_ht_get_ht_data			(jbl_ht *this,jbl_string *k);					//获取一个ht_data
+jbl_ht_data *			jbl_ht_get_ht_data_chars	(jbl_ht *this,const jbl_uint8 *chars);		//以chars为key获取一个ht_data
+jbl_ht_data *			jbl_ht_get_ht_data_int		(jbl_ht *this,jbl_string_hash_type h);		//以int为key获取一个ht_data
 #define					jbl_ht_get_length(x)		(((jbl_ht *)jbl_refer_pull(x))->len)				//获取一个hash table的长度
 /*******************************************************************************************/
 /*                            以下函实现哈希表比较操作                                   */
 /*******************************************************************************************/
-char					jbl_ht_space_ship			(const jbl_ht *this,const jbl_ht *that);			//太空船操作符，参见php的太空船操作符
+char					jbl_ht_space_ship			(jbl_ht *this,jbl_ht *that);			//太空船操作符，参见php的太空船操作符
 #define					jbl_ht_if_big(x,y)			(jbl_ht_space_ship(x,y)>0)							//判断两个字符串是否相等
 #define					jbl_ht_if_equal(x,y)		(jbl_ht_space_ship(x,y)==0)							//判断this是否>that
 #define					jbl_ht_if_small(x,y)		(jbl_ht_space_ship(x,y)<0)							//判断this是否<that
@@ -122,9 +122,9 @@ jbl_ht *				jbl_ht_merge_ll				(jbl_ht *this,jbl_ll *that);						//合并一个l
 /*                            以下函实现哈希表JSON操作                                   */
 /*******************************************************************************************/
 #if JBL_JSON_ENABLE==1
-jbl_string *			jbl_ht_json_encode			(const jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON 编码
+jbl_string *			jbl_ht_json_encode			(jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON 编码
 #if JBL_STREAM_ENABLE==1
-void					jbl_ht_json_put				(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个hash table
+void					jbl_ht_json_put				(jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个hash table
 #endif
 #endif
 /*******************************************************************************************/

@@ -27,6 +27,7 @@
 #define JBL_JSON_ENABLE			1	//
 #define JBL_MALLOC_ENABLE		1	//need ying bitset
 #define JBL_MD5_ENABLE			1	//need ying bitset malloc string
+#define JBL_PTHREAD_ENABLE		0	//need ying
 #define JBL_RAND_ENABLE			1	//need 
 #define JBL_SCANNER_ENABLE		1	//
 #define JBL_SHA1_ENABLE			1	//need ying bitset malloc string

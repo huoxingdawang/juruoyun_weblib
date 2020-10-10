@@ -285,7 +285,7 @@ JBL_INLINE jbl_ht  * jbl_ht_unset_int	(jbl_ht *this,jbl_string_hash_type h)					
 JBL_INLINE void * jbl_htv(jbl_ht_data *node){return node->v;}
 JBL_INLINE jbl_string * jbl_htk(jbl_ht_data *node){return node->k;}
 JBL_INLINE jbl_string_hash_type jbl_hth(jbl_ht_data *node){return node->h;}
-jbl_ht_data * jbl_ht_get_ht_data(const jbl_ht *this,jbl_string *k)
+jbl_ht_data * jbl_ht_get_ht_data(jbl_ht *this,jbl_string *k)
 {
 	this=jbl_refer_pull(this);
 	if(this->size!=0&&k)
@@ -298,7 +298,7 @@ jbl_ht_data * jbl_ht_get_ht_data(const jbl_ht *this,jbl_string *k)
 	}
 	return NULL;
 }
-jbl_ht_data * jbl_ht_get_ht_data_chars(const jbl_ht *this,const jbl_uint8 *chars)
+jbl_ht_data * jbl_ht_get_ht_data_chars(jbl_ht *this,const jbl_uint8 *chars)
 {
 	this=jbl_refer_pull(this);
 	jbl_string_hash_type h=jbl_strhash(chars,0);
@@ -311,7 +311,7 @@ jbl_ht_data * jbl_ht_get_ht_data_chars(const jbl_ht *this,const jbl_uint8 *chars
 	}
 	return NULL;
 }
-jbl_ht_data * jbl_ht_get_ht_data_int(const jbl_ht *this,jbl_string_hash_type h)
+jbl_ht_data * jbl_ht_get_ht_data_int(jbl_ht *this,jbl_string_hash_type h)
 {
 	this=jbl_refer_pull(this);
 	if(this->size!=0)
@@ -323,7 +323,7 @@ jbl_ht_data * jbl_ht_get_ht_data_int(const jbl_ht *this,jbl_string_hash_type h)
 	}
 	return NULL;
 }
-JBL_INLINE void * jbl_ht_get(const jbl_ht *this,jbl_string *k)
+JBL_INLINE void * jbl_ht_get(jbl_ht *this,jbl_string *k)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data(this,k);
 	if(!data)return NULL;
@@ -334,7 +334,7 @@ JBL_INLINE void * jbl_ht_get(const jbl_ht *this,jbl_string *k)
 #endif
 	return jbl_var_copy(data->v);
 }
-JBL_INLINE void * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
+JBL_INLINE void * jbl_ht_get_chars(jbl_ht *this,unsigned char *kk)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data_chars(this,kk);
 	if(!data)return NULL;
@@ -345,7 +345,7 @@ JBL_INLINE void * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
 #endif
 	return jbl_var_copy(data->v);
 }
-JBL_INLINE void * jbl_ht_get_int(const jbl_ht *this,jbl_string_hash_type h)
+JBL_INLINE void * jbl_ht_get_int(jbl_ht *this,jbl_string_hash_type h)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data_int(this,h);
 	if(!data)return NULL;
@@ -359,7 +359,7 @@ JBL_INLINE void * jbl_ht_get_int(const jbl_ht *this,jbl_string_hash_type h)
 /*******************************************************************************************/
 /*                            以下函实现哈希表比较操作                                   */
 /*******************************************************************************************/
-char jbl_ht_space_ship(const jbl_ht *this,const jbl_ht *that)
+char jbl_ht_space_ship(jbl_ht *this,jbl_ht *that)
 {
 	if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}
 	this=jbl_refer_pull(this);
@@ -459,7 +459,7 @@ jbl_ht *jbl_ht_merge_ll(jbl_ht *this,jbl_ll *that)
 /*                            以下函实现哈希表JSON操作                                   */
 /*******************************************************************************************/
 #if JBL_JSON_ENABLE==1
-jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+jbl_string* jbl_ht_json_encode(jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 #if JBL_HT_SYS_ENABLE==1
 	if(this&&jbl_ht_is_sys_force(this))this=NULL;
@@ -487,7 +487,7 @@ jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,jbl_uint8 form
 	return out;
 }
 #if JBL_STREAM_ENABLE==1
-void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
+void jbl_ht_json_put(jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 #if JBL_HT_SYS_ENABLE==1
 	if(this&&jbl_ht_is_sys_force(this))this=NULL;

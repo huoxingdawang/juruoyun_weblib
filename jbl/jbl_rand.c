@@ -14,6 +14,7 @@
 /*******************************************************************************************/
 #include "jbl_exception.h"
 #include "jbl_ying.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动jbl_string                                               */
 /*******************************************************************************************/
@@ -22,36 +23,50 @@
 /*******************************************************************************************/
 /*                            以下函数完成梅森旋转树伪随机                               */
 /*******************************************************************************************/
-jbl_uint16 __jbl_rand_index;
-jbl_uint32 __jbl_rand_buf[624];
+static struct
+{
+	jbl_pthread_lock_define;
+	jbl_uint16 index;
+	jbl_uint32 buf[624];
+}__jbl_rand_data;
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
+void jbl_rand_start()
+{
+	jbl_pthread_lock_init(&__jbl_rand_data);
+	jbl_rand_srand(1);
+}
 void jbl_rand_srand(jbl_uint32 seed)
 {
-	__jbl_rand_buf[__jbl_rand_index=0]=seed;
+	jbl_pthread_lock_wrlock(&__jbl_rand_data);
+	__jbl_rand_data.buf[__jbl_rand_data.index=0]=seed;
 	for(jbl_uint16 i=1;i<624;++i)
-		__jbl_rand_buf[i]=(1812433253*(__jbl_rand_buf[i-1]^(__jbl_rand_buf[i-1]>>30))+i)&0xffffffff;
+		__jbl_rand_data.buf[i]=(1812433253*(__jbl_rand_data.buf[i-1]^(__jbl_rand_data.buf[i-1]>>30))+i)&0xffffffff;
+	jbl_pthread_lock_unlock(&__jbl_rand_data);
 }
 void __jbl_rand_generate()
 {
+	jbl_pthread_lock_wrlock(&__jbl_rand_data);
 	for(jbl_uint16 i=0;i<624;i++)
 	{
-		jbl_uint32 y=(__jbl_rand_buf[i]&0x80000000)+(__jbl_rand_buf[(i+1)%624]&0x7fffffff);
-		__jbl_rand_buf[i]=__jbl_rand_buf[(i+397)%624]^(y>>1);
-		if(y&1)__jbl_rand_buf[i]^=2567483615;
+		jbl_uint32 y=(__jbl_rand_data.buf[i]&0x80000000)+(__jbl_rand_data.buf[(i+1)%624]&0x7fffffff);
+		__jbl_rand_data.buf[i]=__jbl_rand_data.buf[(i+397)%624]^(y>>1);
+		if(y&1)__jbl_rand_data.buf[i]^=2567483615;
 	}
+	jbl_pthread_lock_unlock(&__jbl_rand_data);
 }
 jbl_uint32 jbl_rand()
 {
-	if(__jbl_rand_index==0)
-		__jbl_rand_generate();
-	jbl_uint32 y=__jbl_rand_buf[__jbl_rand_index];
+	if(!__jbl_rand_data.index)__jbl_rand_generate();
+	jbl_pthread_lock_wrlock(&__jbl_rand_data);
+	jbl_uint32 y=__jbl_rand_data.buf[__jbl_rand_data.index];
+	__jbl_rand_data.index=(__jbl_rand_data.index+1)%624;
+	jbl_pthread_lock_unlock(&__jbl_rand_data);
 	y=y^(y>>11);
 	y=y^((y<<7)&2636928640);
 	y=y^((y<<15)&4022730752);
 	y=y^(y>>18);
-	__jbl_rand_index=(__jbl_rand_index+1)%624;
 	return y;
 }
 #elif JBL_RAND_USE_STDLIB==1
@@ -65,15 +80,22 @@ JBL_INLINE jbl_uint32 jbl_rand(){return rand();}
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
-jbl_uint32 __jbl_rand_next;
+static struct
+{
+	jbl_pthread_lock_define;
+	jbl_uint32 next;
+}__jbl_rand_data;
 /*******************************************************************************************/
 /*                            以下函数完成我也不知道叫啥的伪随机                        */
 /*******************************************************************************************/
-JBL_INLINE void jbl_rand_srand(jbl_uint32 seed){__jbl_rand_next=seed;}
+JBL_INLINE void jbl_rand_srand(jbl_uint32 seed){jbl_pthread_lock_wrlock(&__jbl_rand_data);__jbl_rand_data.next=seed;jbl_pthread_lock_unlock(&__jbl_rand_data);}
 JBL_INLINE jbl_uint32 jbl_rand()
 {
-	__jbl_rand_next=__jbl_rand_next*1103515245+12345;
-	return((jbl_uint32)(__jbl_rand_next/65536)%32768);
+	jbl_pthread_lock_wrlock(&__jbl_rand_data);
+	jbl_uint32 i=__jbl_rand_data.next=__jbl_rand_data.next*1103515245+12345;
+	jbl_pthread_lock_unlock(&__jbl_rand_data);
+	return((jbl_uint32)(i/65536)%32768);
+
 }
 #endif
 JBL_INLINE jbl_uint32 jbl_rand_between(jbl_uint32 a,jbl_uint32 b)

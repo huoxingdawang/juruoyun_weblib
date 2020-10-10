@@ -18,6 +18,7 @@
 #include "jbl_gc.h"
 #include "jbl_malloc.h"
 #include "jbl_ying.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动jbl_string jbl_var                                       */
 /*******************************************************************************************/
@@ -34,10 +35,9 @@ jbl_var_operators_extern(jbl_time_operators);
 /*******************************************************************************************/
 typedef struct __jbl_time
 {
-	jbl_gc gc;									//gc结构
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *		var_ops;
-#endif
+	jbl_gc						gc;
+	jbl_var_ops_define			;
+	jbl_pthread_lock_define		;
 	jbl_int64 t;								//时间戳，带3位毫秒
 }jbl_time;										//蒟蒻云基础库时间结构
 typedef struct __jbl_time_decoded

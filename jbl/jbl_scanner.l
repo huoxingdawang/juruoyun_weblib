@@ -15,19 +15,20 @@
 #endif
 jbl_scanner_key jbl_scanner(unsigned char * YYCURSOR,unsigned char **addr)
 {
-//	unsigned char * YYMARKER;
+	unsigned char * YYMARKER;
 	#define YYCTYPE		unsigned char
 	/*!re2c
 re2c:yyfill:enable = 0;
-		[^]		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_UNDEFINED;}	
-		[\x00]	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_END;}	
-		"%d"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_INT;}	
-		"%f"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_DOUBLE;}
-		"%s"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_CHARS;}
-		"%c"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_CHAR;}
-		"%X"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_HEX;}
-		"%v"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_VAR;}
-		"%j"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_JSON;}
+		[^]			{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_UNDEFINED;}	
+		[\x00]		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_END;}	
+		"%d"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_INT;}	
+		"%f"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_DOUBLE;}
+		"%s"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_CHARS;}
+		"%c"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_CHAR;}
+		"%X"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_HEX;}
+		"%errstr"	{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_ERRSTR;}
+		"%v"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_VAR;}
+		"%j"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_JSON;}
      */
 	#undef YYCTYPE
 	#undef YYFILL	

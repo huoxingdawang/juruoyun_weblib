@@ -52,7 +52,7 @@ double jbl_pow(double a,jbl_uint8 b);
 #define	jbl_max_update(a,b)	(a)=(((a)>(b))?(a):(b))
 #define	jbl_min(a,b)		(((a)<(b))?(a):(b))
 #define	jbl_min_update(a,b)	(a)=(((a)<(b))?(a):(b))
-
+extern jbl_uint8 jbl_errno_table[][53];
 #define B0000_0000 0x00
 #define B0000_0001 0x01
 #define B0000_0010 0x02

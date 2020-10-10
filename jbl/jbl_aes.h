@@ -21,6 +21,7 @@ extern "C" {
 #include "jbl_malloc.h"
 #include "jbl_gc.h"
 #include "jbl_ying.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动jbl_stream jbl_string jbl_var                            */
 /*******************************************************************************************/
@@ -41,10 +42,9 @@ typedef jbl_uint8 __jbl_aes_128_ex_key[11][4][4];		//aes128扩展完毕的key
 #endif
 typedef struct __jbl_aes_128_key
 {
-	jbl_gc gc;												//gc结构
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *		var_ops;
-#endif
+	jbl_gc						gc;
+	jbl_var_ops_define			;
+	jbl_pthread_lock_define		;
 	__jbl_aes_128_ex_key key;								//密钥
 }jbl_aes_128_key;											//蒟蒻云基础库AES128密钥结构
 /*******************************************************************************************/

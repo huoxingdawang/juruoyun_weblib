@@ -10,16 +10,16 @@
 #include "jbl_var.h"
 #if JBL_VAR_ENABLE==1
 #include "jbl_exception.h"
-#include "jbl_ht.h"
-#include "jbl_file.h"
 #include "jbl_malloc.h"
-#include "jbl_ll.h"
 #include "jbl_string.h"
+#include "jbl_stream.h"
+#include "jbl_pthread.h"
 
 struct __jbl_var
 {
 	jbl_gc 					gc;
 	const jbl_var_operators	*var_ops;
+	jbl_pthread_lock_define		;
 };
 JBL_INLINE void * jbl_var_set_operators(void * this,const jbl_var_operators *ops)
 {

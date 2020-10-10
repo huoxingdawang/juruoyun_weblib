@@ -21,8 +21,9 @@ jbl_file * jbl_file_new()
 {
 	jbl_file * this=jbl_malloc(sizeof(jbl_file));
 	jbl_gc_init(this);
-	jbl_gc_plus(this);
+	jbl_gc_plus(this);//增加引用计数
 	jbl_var_set_operators(this,&jbl_file_operators);
+	jbl_pthread_lock_init(this);
 	this->dir					=NULL;
 	this->handle				=NULL;
 	this->type					=JBL_FILE_CLOSE;
@@ -221,7 +222,9 @@ JBL_INLINE jbl_file * jbl_file_set_offset(jbl_file * this,jbl_uint64 start)
 /*******************************************************************************************/
 jbl_file* jbl_file_view_put(jbl_file* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
+pl();
 	jbl_file *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_file",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
+pl();
 	jbl_stream_push_char(out,'\n');
 	++tabs;
 	char * type		[]={"close","read","write","RW","WR"};

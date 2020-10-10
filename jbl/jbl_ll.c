@@ -198,11 +198,11 @@ jbl_ll * jbl_ll_swap_node(jbl_ll *this,jbl_ll_node *a,jbl_ll_node *b)
 /*******************************************************************************************/
 /*                            以下函实现链表比较操作                                     */
 /*******************************************************************************************/
-char jbl_ll_space_ship(const jbl_ll *this,const jbl_ll *that)
+char jbl_ll_space_ship(jbl_ll *this,jbl_ll *that)
 {
 	if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}
-	const jbl_ll *thi=jbl_refer_pull(this);
-	const jbl_ll *tha=jbl_refer_pull(that);	
+	jbl_ll *thi=jbl_refer_pull(this);
+	jbl_ll *tha=jbl_refer_pull(that);	
 	if(thi==tha){return 0;}if(thi==NULL){return -1;}if(tha==NULL){return 1;}
 	if(thi->len!=tha->len)
 		return (thi->len>tha->len)?(1):(-1);
@@ -215,7 +215,7 @@ char jbl_ll_space_ship(const jbl_ll *this,const jbl_ll *that)
 /*                            以下函实现链表JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-jbl_string* jbl_ll_json_encode(const jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+jbl_string* jbl_ll_json_encode(jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
 	out=jbl_string_add_char(out,'[');
@@ -235,7 +235,7 @@ jbl_string* jbl_ll_json_encode(const jbl_ll* this,jbl_string *out,jbl_uint8 form
 }
 #endif
 #if JBL_STREAM_ENABLE==1
-void jbl_ll_json_put(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
+void jbl_ll_json_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;	
 	jbl_stream_push_char(out,'[');

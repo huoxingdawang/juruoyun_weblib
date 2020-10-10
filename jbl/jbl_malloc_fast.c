@@ -16,6 +16,7 @@
 #include "jbl_bitset.h"
 #include "jbl_exception.h"
 #include "jbl_log.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动 jbl_stream                                               */
 /*******************************************************************************************/
@@ -54,6 +55,7 @@ typedef struct __jbl_malloc_free_slot
 }jbl_malloc_free_slot;
 typedef struct __jbl_malloc_heap_struct
 {
+	jbl_pthread_lock_define;
 #if JBL_MALLOC_COUNT==1
 	jbl_malloc_size_type size;			//实际使用
 	jbl_malloc_size_type peak;			//峰值
@@ -132,11 +134,16 @@ jbl_malloc_heap_struct jbl_malloc_heap;
 #if JBL_MALLOC_COUNT==1
 jbl_malloc_size_type	jbl_malloc_used_size	(){return jbl_malloc_heap.size;}
 #endif
+#if JBL_MALLOC_LOG ==0
+#undef jbl_log
+#define jbl_log(x,...)
+#endif
 /*******************************************************************************************/
 /*                            以下函数完成内存管理组件启动和停止                           */
 /*******************************************************************************************/
 void jbl_malloc_start()
 {
+	jbl_pthread_lock_init(&jbl_malloc_heap);
 	jbl_malloc_heap.cached_chunk_count=0;
 	jbl_malloc_heap.huge_list=NULL;
 	jbl_malloc_heap.main_chunk=NULL;
@@ -189,6 +196,7 @@ void jbl_malloc_stop()
 /*******************************************************************************************/
 void* jbl_malloc(jbl_malloc_size_type size)
 {
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!size)jbl_exception("MEMORY ERROR");
 #endif
@@ -199,9 +207,8 @@ void* jbl_malloc(jbl_malloc_size_type size)
 		ptr=__jbl_malloc_large(size);
 	else//huge
 		ptr=__jbl_malloc_huge(size);
-#if JBL_MALLOC_LOG ==1
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 	jbl_log(UC "addr:0X%X\tsize:%d",ptr,jbl_malloc_size(ptr));
-#endif
 	return ptr;
 }
 jbl_malloc_size_type jbl_malloc_size(void* ptr)
@@ -209,17 +216,26 @@ jbl_malloc_size_type jbl_malloc_size(void* ptr)
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("NULL POINTER");	
 #endif
+	jbl_malloc_size_type size=0;
+	jbl_pthread_lock_rdlock(&jbl_malloc_heap);
 	if(is_aligned_2M(ptr))//按照2M对齐，huge
 		for(jbl_malloc_huge_struct *huge=jbl_malloc_heap.huge_list;huge;huge=huge->next)
 			if(ptr==huge->ptr)
-				return huge->size;
+			{
+				size=huge->size;
+				goto exit;
+			}
 	void *page=aligned_to_4K(ptr);
 	jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);
 	jbl_uint16 i=get_page_i(page,chunk);
 //	printf("%d 0X%X 0X%X 0X%X %d %X\n",__LINE__,ptr,page,chunk,i,chunk->map[i]);
 	if(chunk->map[i]&0X20000000)//small
-		return jbl_malloc_small_bins[chunk->map[i]&0X1F].size;
-	return (chunk->map[i]&0X1ff)<<12;//large
+		size=jbl_malloc_small_bins[chunk->map[i]&0X1F].size;
+	else 
+		size=(chunk->map[i]&0X1ff)<<12;
+exit:;
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
+	return size;//large
 }
 void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 {
@@ -228,11 +244,10 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 	if(size==0)jbl_exception("MEMORY ERROR");
 #endif
 	jbl_malloc_size_type size_now=jbl_malloc_size(ptr);
-	if(size_now>size)
-		return ptr;
-	
+	if(size_now>size)return ptr;
 	if(3072<size_now&&size_now<=2093056&&3072<size&&size<=2093056)//全在large
 	{
+		jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 #if JBL_MALLOC_COUNT==1		
 		++__jbl_malloc_count[1];
 #endif
@@ -250,31 +265,28 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 			jbl_bitset_set(chunk->fmap,i+n,page-n);
 			for(jbl_uint16 j=0;j<page;++j)
 				chunk->map[i+j]=tmp|(j<<10);//[30,29]U[19,10]U[9,0]
-#if JBL_MALLOC_LOG ==1
 			jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr,jbl_malloc_size(ptr));
-#endif
+			jbl_pthread_lock_unlock(&jbl_malloc_heap);
 			return ptr;
 		}
-	}
-	
+		jbl_pthread_lock_unlock(&jbl_malloc_heap);
+	}	
 	void * ptr2=jbl_malloc(size);
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr2)jbl_exception("MEMORY ERROR");	
 #endif
 	jbl_malloc_size_type size_new=jbl_malloc_size(ptr2);
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_min_update(size_new,size_now);
 	jbl_memory_copy(ptr2,ptr,size_new);
-#if JBL_MALLOC_LOG ==1
 	jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr2,jbl_malloc_size(ptr2));
-#endif
-//重写free减少查表
 	if(size_now<=3072)//small
 		__jbl_free_small(ptr);
 	else if(size_now<=2093056)//large 2*1024*1024-4*1024(2M-4K)
 		__jbl_free_large(ptr);
 	else//huge
 		__jbl_free_huge(ptr);
-		
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 	return ptr2;	
 }
 void jbl_free(void * ptr)
@@ -282,21 +294,23 @@ void jbl_free(void * ptr)
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("NULL POINTER");
 #endif
-#if JBL_MALLOC_LOG ==1
 	jbl_log(UC "addr:0X%X",ptr);
-#endif
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	if(!is_aligned_4K(ptr))//没有4k，small
-		return __jbl_free_small(ptr);
-	if(is_aligned_2M(ptr))//按照2M对齐，因为large的第一个page被用于管理自身，所以一定不会用这个函数释放
-		if(__jbl_free_huge(ptr))
-			return;
-	void *page=aligned_to_4K(ptr);
-	jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);
-	jbl_uint16 i=get_page_i(page,chunk);
-//	printf("%d 0X%X 0X%X 0X%X %d %X\n",__LINE__,ptr,page,chunk,i,chunk->map[i]);
-	if(chunk->map[i]&0X20000000)//small
-		return __jbl_free_small(ptr);
-	__jbl_free_large(ptr);
+		__jbl_free_small(ptr);
+	else
+	{
+		if(is_aligned_2M(ptr))//按照2M对齐，因为large的第一个page被用于管理自身，所以一定不会用这个函数释放
+			if(__jbl_free_huge(ptr))
+				goto exit;
+		void *page=aligned_to_4K(ptr);
+		jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);
+		jbl_uint16 i=get_page_i(page,chunk);
+		if(chunk->map[i]&0X20000000)	__jbl_free_small(ptr);
+		else							__jbl_free_large(ptr);
+	}
+exit:;
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 }
 //申请一段mmap
 void* __jbl_malloc_mmap(jbl_malloc_size_type size)

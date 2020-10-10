@@ -13,22 +13,19 @@
 #if JBL_GC_ENABLE==1
 #include "jbl_ying.h"
 typedef jbl_uint32 jbl_gc;
-#if JBL_VAR_ENABLE==1
-typedef	struct	__jbl_var_operators	jbl_var_operators;
-#endif
+#include "jbl_var.h"
+#include "jbl_pthread.h"
 typedef struct
 {
 	jbl_gc gc;
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *		var_ops;
-#endif
+	jbl_var_ops_define;
+	jbl_pthread_lock_define;
 	void * ptr;
 }jbl_reference;
-void *			jbl_refer					(void *ptr);										//引用一个变量，********************特别的该函数必须传入一个二级指针********************
-void *			jbl_derefer					(void *ptr);										//取消引用一个变量
-void *			jbl_refer_pull				(const void *ptr);									//脱离引用
-void *			jbl_refer_pull_keep_father	(const void *ptr,jbl_reference** ref);									//脱离引用
-//#define jbl_refer_pull(x)		(x?((jbl_gc_is_ref((const jbl_reference*)x))?(((const jbl_reference*)x)->ptr):x):NULL)	//脱离引用
+void *			jbl_refer					(void *ptr);						//引用一个变量，********************特别的该函数必须传入一个二级指针********************
+void *			jbl_derefer					(void *ptr);						//取消引用一个变量
+void *			jbl_refer_pull				(void *ptr);						//脱离引用
+void *			jbl_refer_pull_keep_father	(void *ptr,jbl_reference** ref);	//脱离引用
 
 #define			jbl_gc_init(x)				((x)->gc=0)			//初始化gc字段
 void *			jbl_gc_plus					(void *this);
@@ -54,7 +51,19 @@ void *			jbl_gc_minus				(void *this);
 							jbl_stream_push_char(jbl_stream_stdout,'\n'),jbl_stream_do(jbl_stream_stdout,1)
 #endif
 
-
+#if JBL_PTHREAD_ENABLE==1
+void *			jbl_refer_pull_wrlock				(void *ptr);
+void *			jbl_refer_pull_rdlock				(void *ptr);
+void *			jbl_refer_pull_unlock				(void *ptr);
+void *			jbl_refer_pull_keep_father_rwlock	(void *ptr,jbl_reference** ref);
+void *			jbl_refer_pull_keep_father_rdlock	(void *ptr,jbl_reference** ref);
+#else
+#define			jbl_refer_pull_wrlock(ptr)					jbl_refer_pull(ptr)
+#define			jbl_refer_pull_rdlock(ptr)					jbl_refer_pull(ptr)
+#define			jbl_refer_pull_unlock(ptr)
+#define			jbl_refer_pull_keep_father_wrlock(ptr,ref)	jbl_refer_pull_keep_father(ptr,ref)
+#define			jbl_refer_pull_keep_father_rdlock(ptr,ref)	jbl_refer_pull_keep_father(ptr,ref)	
+#endif
 
 
 #endif

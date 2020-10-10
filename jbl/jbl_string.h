@@ -18,6 +18,7 @@
 #include "jbl_gc.h"
 #include "jbl_malloc.h"
 #include "jbl_ying.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动 jbl_stream jbl_var jbl_ll jbl_ht                        */
 /*******************************************************************************************/
@@ -34,9 +35,8 @@ typedef	struct	__jbl_ll			jbl_ll;
 typedef struct __jbl_string
 {
 	jbl_gc 					gc;		//gc结构
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *		var_ops;
-#endif
+	jbl_var_ops_define			;
+	jbl_pthread_lock_define		;
 	jbl_string_size_type	len;	//当前字符串长度
 	jbl_string_size_type	size;	//当前已申请内存长度,如果size<len则该字符串是const,应及时扩容
 	jbl_string_hash_type	h;		//hash值缓冲

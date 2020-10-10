@@ -19,6 +19,7 @@
 #include "jbl_malloc.h"
 #include "jbl_ying.h"
 #include "jbl_var.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动jbl_stream jbl_string jbl_ht                             */
 /*******************************************************************************************/
@@ -39,9 +40,8 @@ typedef struct __jbl_ll_node
 typedef struct __jbl_ll
 {
 	jbl_gc				gc;			//gc结构
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *		var_ops;
-#endif
+	jbl_var_ops_define			;
+	jbl_pthread_lock_define		;
 	jbl_ll_node *		head;		//链头
 	jbl_ll_node *		tail;		//链尾
 	jbl_ll_size_type	len;		//长度
@@ -86,7 +86,7 @@ jbl_ll  *		jbl_ll_swap_node			(jbl_ll *this,jbl_ll_node *a,jbl_ll_node *b);					
 /*******************************************************************************************/
 /*                            以下函实现链表比较操作                                     */
 /*******************************************************************************************/
-char			jbl_ll_space_ship			(const jbl_ll *this,const jbl_ll *that);						//太空船操作符，参见php的太空船操作符
+char			jbl_ll_space_ship			(jbl_ll *this,jbl_ll *that);						//太空船操作符，参见php的太空船操作符
 #define			jbl_ll_if_big(x,y)			(jbl_ll_space_ship(x,y)>0)										//判断this是否>that
 #define			jbl_ll_if_equal(x,y)		(jbl_ll_space_ship(x,y)==0)										//判断this是否=that
 #define			jbl_ll_if_small(x,y)		(jbl_ll_space_ship(x,y)<0)										//判断this是否<that
@@ -97,18 +97,18 @@ char			jbl_ll_space_ship			(const jbl_ll *this,const jbl_ll *that);						//太�
 /*                            以下函实现链表JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-jbl_string*		jbl_ll_json_encode			(const jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码
+jbl_string*		jbl_ll_json_encode			(jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码
 #endif
 #if JBL_STREAM_ENABLE==1
-void			jbl_ll_json_put				(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个link list
+void			jbl_ll_json_put				(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个link list
 #endif
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函实现链表插看操作                                      */
 /*******************************************************************************************/
-jbl_ll*			jbl_ll_view_put						(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个link list
-#define			jbl_ll_view(x)						jbl_ll_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览link list
+jbl_ll*			jbl_ll_view_put					(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个link list
+#define			jbl_ll_view(x)					jbl_ll_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览link list
 #endif
 
 
